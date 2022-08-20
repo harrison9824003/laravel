@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Animal;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Cache;
 
 class AnimalController extends Controller
 {
@@ -13,9 +14,30 @@ class AnimalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index( Request $request)
     {
-        //
+        // 查詢快取
+        $url = $request->url();
+        $queryParams = $request->query();
+        ksort($queryParams);
+        $queryString = http_build_query($queryParams);
+        $fullUrl = "{$url}?{$queryString}";
+
+        if (Cache::has($fullUrl)) {            
+            return Cache::get($fullUrl);
+        }
+
+        // limit
+        $limit = $request->limit ?? 10;
+        //$animals = Animal::get();
+        $animals = Animal::orderBy( 'id', 'desc')
+        ->paginate($limit)
+        ->appends($request->query());
+
+        return Cache::remember($fullUrl, 60, function() use ($animals) {
+            $c_time = time();
+            return response([ 'data' => $animals, 'c_time' => $c_time ], Response::HTTP_OK );
+        });        
     }
 
     /**
@@ -51,6 +73,7 @@ class AnimalController extends Controller
     public function show(Animal $animal)
     {
         //
+        return response( $animal, Response::HTTP_OK );
     }
 
     /**
@@ -74,6 +97,8 @@ class AnimalController extends Controller
     public function update(Request $request, Animal $animal)
     {
         //
+        $animal->update( $request->all() );
+        return response( $animal, Response::HTTP_OK );
     }
 
     /**
