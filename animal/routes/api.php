@@ -20,6 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware(['auth:api', 'scope:user-info'])->get('/user', function ( Request $request ){
+    return $request->user();
+});
+
 // animals
 Route::apiResource( 'animals', AnimalController::class);
 
@@ -30,3 +34,4 @@ Route::get( 'types/{type}', [TypeController::class, 'show']);
 Route::patch( 'types/{type}', [TypeController::class, 'update']);
 Route::put( 'types/{type}', [TypeController::class, 'update']);
 Route::delete( 'types/{type}', [TypeController::class, 'destroy']);
+

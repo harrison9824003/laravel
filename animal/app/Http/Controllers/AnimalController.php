@@ -11,6 +11,12 @@ use App\Http\Resources\AnimalCollection;
 
 class AnimalController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware( 'auth:api', ['except' => ['index', 'show']]);
+        $this->middleware( 'client', ['only' => ['index', 'show']]);
+        $this->middleware( 'scopes:create-animals', ['only' => ['store']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -73,8 +79,9 @@ class AnimalController extends Controller
             'personality' => 'nullable'
         ]);
 
-        $request['user_id'] = $request['user_id'] ?? '1';
-        $animal = Animal::create($request->all());
+        //$request['user_id'] = $request['user_id'] ?? '1';
+        //$animal = Animal::create($request->all());
+        $animal = auth()->user()->animals()->create($request->all());
         $animal = $animal->refresh();
         return response( $animal, Response::HTTP_CREATED);
     }
@@ -114,7 +121,8 @@ class AnimalController extends Controller
     {
         //
         $animal->update( $request->all() );
-        return response( $animal, Response::HTTP_OK );
+        return new AnimalResource($animal);
+        //return response( $animal, Response::HTTP_OK );
     }
 
     /**

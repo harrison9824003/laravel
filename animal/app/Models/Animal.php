@@ -23,7 +23,7 @@ class Animal extends Model
         'fix',
         'description',
         'personality',
-        'user_id'
+        // 'user_id'
     ];
 
     public function type() {
