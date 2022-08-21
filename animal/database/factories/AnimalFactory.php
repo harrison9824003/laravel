@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Animal;
 use App\Models\User;
 //use Illuminate\Support\Str;
+use App\Models\Type;
 
 class AnimalFactory extends Factory
 {
@@ -19,7 +20,7 @@ class AnimalFactory extends Factory
     {
         return [
             //
-            'type_id' => $this->faker->numberBetween(1, 3),
+            'type_id' => Type::all()->random()->id,
             'name' => $this->faker->name,
             'birthday' => $this->faker->date(),
             'area' => $this->faker->city,
