@@ -22,6 +22,6 @@ class TypeCollection extends ResourceCollection
                     'sort' => $type->sort
                 ];
             })
-        ]
+        ];
     }
 }
