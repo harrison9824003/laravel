@@ -34,7 +34,8 @@ class MemberController extends Controller
             'email' => [
                 'required',
                 'max:150',
-                'email'
+                'email',
+                'unique:members,email'
             ],
             'password' => [
                 'required',
@@ -61,7 +62,7 @@ class MemberController extends Controller
 
         $input["password"] = Hash::make($input['password']);
 
-        $Users = Member::create($input);
+        $Members = Member::create($input);
 
         $mail_binding = [
             'nickname' => $input['nickname'] ?? $input['name']

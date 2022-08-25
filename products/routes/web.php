@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MerchandiseController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +41,8 @@ Route::group(['prefix' => 'merchandise'], function(){
 
     Route::get('/', [MerchandiseController::class, 'merchandiseListPage']);
 
-    Route::get('/create', [MerchandiseController::class, 'merchandiseCreateProcess'])->middleware(['user.auth.admin']);
+    Route::get('/create', [MerchandiseController::class, 'merchandiseCreate'])->middleware(['user.auth.admin']);
+    Route::post('/create', [MerchandiseController::class, 'merchandiseCreateProcess'])->middleware(['user.auth.admin']);
 
     Route::get('/manage', [MerchandiseController::class, 'merchandiseManageListPage'])->middleware(['user.auth.admin']);
 

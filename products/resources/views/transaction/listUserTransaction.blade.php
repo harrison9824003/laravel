@@ -8,7 +8,7 @@
 
 <!-- 傳送資料到母模板，並指定變數為 content -->
 @section('content')
-    <div class="container">
+    <div class="container p-0">
         <h1>{{ $title }}</h1>
 
         {{-- 錯誤訊息模板元件 --}}
@@ -34,7 +34,11 @@
                             </td>
                             <td>
                                 <a href="/merchandise/{{ $Transaction->Merchandise->id }}">
-                                    <img src="{{ $Transaction->Merchandise->photo or '/assets/images/default-merchandise.png' }}" />
+                                    @if ( $Transaction->Merchandise->photo != '' )
+                                    <img src="{{ $Transaction->Merchandise->photo }}" />
+                                    @else
+                                    <img src="{{ url('/images/450_300.png') }}" />
+                                    @endif
                                 </a>
                             </td>
                             <td>{{ $Transaction->price }}</td>

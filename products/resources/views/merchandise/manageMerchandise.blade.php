@@ -30,8 +30,12 @@
                         <tr>
                             <td> {{ $Merchandise->id }}</td>
                             <td> {{ $Merchandise->name }}</td>
-                            <td>
-                                <img src="{{ $Merchandise->photo or '/assets/images/default-merchandise.png' }}" />
+                            <td>    
+                                @if( $Merchandise->photo != '' )                            
+                                <img src="{{ $Merchandise->photo }}" />
+                                @else 
+                                <img src="/images/450_300.png" />
+                                @endif
                             </td>
                             <td>
                                 @if($Merchandise->status == 'C')

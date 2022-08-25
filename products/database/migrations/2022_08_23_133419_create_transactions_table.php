@@ -19,7 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('user_id');
             $table->integer('merchandise_id');
             $table->integer('price');
-            $table->integer('buy_price');
+            $table->integer('buy_count');
             $table->integer('total_price');
             
             $table->timestamps();

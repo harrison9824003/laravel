@@ -16,12 +16,10 @@
 
         <div class="row">
             <div class="col-md-12">
-                <form action="/merchandise/{{ $Merchandise->id }}"
+                <form action="/merchandise/create"
                       method="post"
                       enctype="multipart/form-data"
                 >
-                    {{-- 隱藏方法欄位 --}}
-                    {{ method_field('PUT') }}
 
                     <div class="form-group">
                         <label for="type">{{ trans('shop.merchandise.fields.status-name') }}</label>
@@ -29,14 +27,10 @@
                                 name="status"
                                 id="status"
                         >
-                            <option value="C"
-                                    @if(old('status', $Merchandise->status)=='C') selected @endif
-                            >
+                            <option value="C">
                                 {{ trans('shop.merchandise.fields.status.create') }}
                             </option>
-                            <option value="S"
-                                    @if(old('status', $Merchandise->status)=='S') selected @endif
-                            >
+                            <option value="S">
                                 {{ trans('shop.merchandise.fields.status.sell') }}
                             </option>
                         </select>
@@ -48,7 +42,7 @@
                                id="name"
                                name="name"
                                placeholder="{{ trans('shop.merchandise.fields.name') }}"
-                               value="{{ old('name', $Merchandise->name) }}"
+                               value=""
                         >
                     </div>
                     <div class="form-group">
@@ -58,7 +52,7 @@
                                id="name_en"
                                name="name_en"
                                placeholder="{{ trans('shop.merchandise.fields.name-en') }}"
-                               value="{{ old('name_en', $Merchandise->name_en) }}"
+                               value=""
                         >
                     </div>
                     <div class="form-group">
@@ -68,7 +62,7 @@
                                id="introduction"
                                name="introduction"
                                placeholder="{{ trans('shop.merchandise.fields.introduction') }}"
-                               value="{{ old('introduction', $Merchandise->introduction) }}"
+                               value=""
                         >
                     </div>
                     <div class="form-group">
@@ -78,7 +72,7 @@
                                id="introduction_en"
                                name="introduction_en"
                                placeholder="{{ trans('shop.merchandise.fields.introduction-en') }}"
-                               value="{{ old('introduction_en', $Merchandise->introduction_en) }}"
+                               value=""
                         >
                     </div>
                     <div class="form-group">
@@ -88,10 +82,7 @@
                                id="photo"
                                name="photo"
                                placeholder="{{ trans('shop.merchandise.fields.photo') }}"
-                        >
-                        @if( !empty($Merchandise->photo) )
-                        <img src="{{ $Merchandise->photo }}" />
-                        @endif
+                        >                        
                     </div>
 
                     <div class="form-group">
@@ -101,7 +92,7 @@
                                id="price"
                                name="price"
                                placeholder="{{ trans('shop.merchandise.fields.price') }}"
-                               value="{{ old('price', $Merchandise->price) }}"
+                               value=""
                         >
                     </div>
                     <div class="form-group">
@@ -111,10 +102,10 @@
                                id="remain_count"
                                name="remain_count"
                                placeholder="{{ trans('shop.merchandise.fields.remain-count') }}"
-                               value="{{ old('remain_count', $Merchandise->remain_count) }}"
+                               value=""
                         >
                     </div>
-                    <button type="submit" class="btn btn-default">{{ trans('shop.merchandise.update') }}</button>
+                    <button type="submit" class="btn btn-default">{{ trans('shop.merchandise.create') }}</button>
                     {{-- CSRF 欄位--}}
                     {{ csrf_field() }}
                 </form>

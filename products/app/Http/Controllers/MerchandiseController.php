@@ -9,7 +9,7 @@ use App\Shop\Entity\Member;
 use Validator;
 use DB;
 use Exception;
-use Illuminate\Pagination\Paginator;
+use Intervention\Image\Facades\Image;
 
 class MerchandiseController extends Controller
 {
@@ -17,14 +17,12 @@ class MerchandiseController extends Controller
     public function merchandiseItemEditPage($merchandise_id) {
 
         $Merchandise = Merchandise::findOrFail($merchandise_id);
-
-        if( !is_null($Merchandise->photo) ) {
-            $Merchandise->photo = url($Merchandise->photo);
-        }
-
+        
         // 圖片
-        if( !is_null($Merchandise->photo) ) {
+        if( !is_null($Merchandise->photo) && trim($Merchandise->photo) != '' ) {
             $Merchandise->photo = url($Merchandise->photo);
+        } else {
+            $Merchandise->photo = '';
         }
 
         $binding = [
@@ -36,22 +34,112 @@ class MerchandiseController extends Controller
 
     }
     
-    public function merchandiseCreateProcess() {
+    /** 
+     * 新建商品表單
+    */
+    public function merchandiseCreate() {
 
-        $merchandise_data = [
+        $Merchandise = [
             'status'    => 'C',
             'name'      => '',
             'name_en'   => '',
             'introduction' => '',
             'introduction_en' => '',
-            'photo' => null,
+            'photo' => '',
             'price' => 0,
             'remain_count' => 0
         ];
 
-        $Merchandise = Merchandise::create($merchandise_data);
+        // $Merchandise = Merchandise::create($merchandise_data);
 
-        return redirect( '/merchandise/' . $Merchandise->id . '/edit');
+        // return redirect( '/merchandise/' . $Merchandise->id . '/edit');
+
+        $binding = [
+            'title' => '新增商品',
+            'Merchandise' => $Merchandise
+        ];
+        //print_r($binding);exit;
+        return view('merchandise.addMerchandise', $binding);
+
+    }
+
+    /**
+     * 處理商品新增資料
+     */
+    public function merchandiseCreateProcess() {
+
+        $input = request()->all();
+
+        $rules = [
+            'status' => [
+                'required',
+                'in:C,S'
+            ],
+            'name' => [
+                'required',
+                'max:80'
+            ],
+            'name_en' => [
+                'required',
+                'max:80'
+            ],
+            'introduction' => [
+                'required',
+                'max:2000'
+            ],
+            'introduction' => [
+                'required',
+                'max:2000'
+            ],
+            'photo' => [
+                'file',
+                'image',
+                'max:10240'
+            ],
+            'price' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
+            'remain_count' => [
+                'required',
+                'integer',
+                'min:0',
+            ]
+        ];
+
+        $validator = Validator::make( $input, $rules);
+
+        if ( $validator->fails() ) {
+            return redirect('/merchandise/create')
+            ->withErrors($validator)
+            ->withInput();
+        }
+
+        // 圖片處理
+        if ( isset($input['photo'] ) ) {
+
+            $photo = $input['photo'];
+
+            $file_extension = $photo->getClientOriginalExtension();
+
+            $file_name = uniqid() . '.' . $file_extension;
+
+            $file_relative_path = 'images/merchandise/' . $file_name;
+
+            $file_path = public_path($file_relative_path);
+
+            $image = Image::make($photo)->fit(450, 300)->save($file_path);
+
+            $input['photo'] = $file_relative_path;
+
+        }
+
+        $Merchandise = Merchandise::create($input);
+        //print_r($input);exit;
+
+        return redirect('/merchandise/' . $Merchandise->id . '/edit');
+
     }
 
     public function merchandiseItemUpdateProcess($merchandise_id){
@@ -122,6 +210,7 @@ class MerchandiseController extends Controller
             $image = Image::make($photo)->fit(450, 300)->save($file_path);
 
             $input['photo'] = $file_relative_path;
+
         }
 
         $Merchandise->update($input);
@@ -136,11 +225,13 @@ class MerchandiseController extends Controller
         $MerchandisePaginate = Merchandise::OrderBy('created_at', 'desc')->paginate($row_per_page);
 
         foreach ($MerchandisePaginate as &$Merchandise) {
-            if (!is_null($Merchandise->photo)) {
+            if ( !is_null($Merchandise->photo) && trim($Merchandise->photo) != '' ) {
                 $Merchandise->photo = url($Merchandise->photo);
-            }
+            } else {           
+                $Merchandise->photo = '';
+            }            
         }
-
+        
         $binding = [
             'title' => '管理商品',
             'MerchandisePaginate' => $MerchandisePaginate
@@ -156,7 +247,7 @@ class MerchandiseController extends Controller
      public function merchandiseListPage(){
 
         $row_per_page = 10;
-        Paginator::useBootstrap();
+        
         $MerchandisePaginate = Merchandise::OrderBy('updated_at', 'desc')
         ->where('status', 'S')
         ->paginate($row_per_page);
@@ -180,8 +271,10 @@ class MerchandiseController extends Controller
      {
         $Merchandise = Merchandise::findOrFail($merchandise_id);
 
-        if ( !is_null($Merchandise->photo)) {
+        if ( !is_null($Merchandise->photo) && trim($Merchandise->photo) != '' ) {
             $Merchandise->photo = url($Merchandise->photo);
+        } else {
+            $Merchandise->photo = '';
         }
 
         $binding = [
@@ -217,11 +310,11 @@ class MerchandiseController extends Controller
             $member_id = session()->get('user_id');
             $Member = Member::findOrFail($member_id);
 
-            DB:beginTransaction();
+            DB::beginTransaction();
 
             $Merchandise = Merchandise::findOrFail($merchandise_id);
 
-            $buy_cnt = $input['but_count'];
+            $buy_cnt = $input['buy_count'];
 
             $remain_cnt_after_buy = $Merchandise->remain_count - $buy_cnt;
             

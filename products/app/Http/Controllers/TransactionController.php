@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
+use App\Shop\Entity\Transaction;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -19,8 +19,10 @@ class TransactionController extends Controller
         ->paginate($row_per_page);
 
         foreach ( $TransactionPaginate as &$Transaction) {
-            if (!is_null($Transaction->Merchandise->photo)) {
+            if (!is_null($Transaction->Merchandise->photo) && trim($Transaction->Merchandise->photo) != '') {                
                 $Transaction->Merchandise->photo = url($Transaction->Merchandise->photo);
+            } else {
+                $Transaction->Merchandise->photo = '';
             }
         }
 

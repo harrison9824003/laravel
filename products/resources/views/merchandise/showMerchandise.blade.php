@@ -8,64 +8,48 @@
 
 <!-- 傳送資料到母模板，並指定變數為 content -->
 @section('content')
-    <div class="container">
-        <h1>{{ $title }}</h1>
+    <div class="container px-0">       
 
         {{-- 錯誤訊息模板元件 --}}
         @include('components.validationErrorMessage')
 
         <div class="row">
-            <div class="col-md-12">
-                <table class="table">
-                    <tr>
-                        <th>{{ trans('shop.merchandise.fields.name') }}</th>
-                        <td>{{ $Merchandise->name }}</td>
-                    </tr>
-                    <tr>
-                        <th>{{ trans('shop.merchandise.fields.photo') }}</th>
-                        <td>
-                            <img src="{{ $Merchandise->photo or '/assets/images/default-merchandise.png' }}" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ trans('shop.merchandise.fields.price') }}</th>
-                        <td>
-                            {{ $Merchandise->price }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ trans('shop.merchandise.fields.remain-count') }}</th>
-                        <td>
-                            {{ $Merchandise->remain_count }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{{ trans('shop.merchandise.fields.introduction') }}</th>
-                        <td>
-                            {{ $Merchandise->introduction }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <form action="/merchandise/{{ $Merchandise->id }}/buy"
-                                  method="post"
-                            >
-                                {{ trans('shop.transaction.fields.buy-count') }}
-                                <select name="buy_count">
-                                    @for($count = 0; $count <= $Merchandise->remain_count; $count++)
-                                        <option value="{{ $count }}">{{ $count }}</option>
-                                    @endfor
-                                </select>
-                                <button type="submit" class="btn btn-info">
-                                    {{ trans('shop.transaction.buy') }}
-                                </button>
-                                {{ csrf_field() }}
-                            </form>
-                        </td>
-                    </tr>
-                </table>
-
+            <div class="col-lg-6 col-sm-12">
+                @if( $Merchandise->photo != '' )
+                    <img class="img-fluid" src="{{ $Merchandise->photo }}" />
+                @else
+                    <img class="img-fluid" src="{{ url('/images/450_300.png') }}" />
+                @endif
+                
             </div>
+            <div class="col-lg-6 col-sm-12">
+                <h1>{{ $Merchandise->name }}</h1>
+
+                <p class="mt-3">{{ trans('shop.merchandise.fields.price') }} : ${{ $Merchandise->price }}</p>
+                <p>{{ trans('shop.merchandise.fields.remain-count') }} : {{ $Merchandise->remain_count }}</p> 
+                <p>{{ trans('shop.merchandise.fields.introduction') }} : </p>
+                <div>{{ $Merchandise->introduction }}</div>
+                <!-- <p class="mb-0">{{ trans('shop.transaction.fields.buy-count') }} : </p> -->
+                <form action="/merchandise/{{ $Merchandise->id }}/buy" class="mt-3 row" method="post" > 
+                    <div class="col-lg-3 col-sm-12">
+                    {{ trans('shop.transaction.fields.buy-count') }} :
+                    </div>
+                    <div class="col-lg-3 col-sm-12">
+                        <select class="form-select" name="buy_count">
+                            @for($count = 0; $count <= $Merchandise->remain_count; $count++)
+                                <option value="{{ $count }}">{{ $count }}</option>
+                            @endfor
+                        </select>
+                    </div>                   
+                    <div class="col-lg-6 col-sm-12">
+                        <button type="submit" class="btn btn-info w-100">
+                            {{ trans('shop.transaction.buy') }}
+                        </button>
+                    </div>
+                    {{ csrf_field() }}
+                </form>       
+            </div>
+            
         </div>
     </div>
 @endsection

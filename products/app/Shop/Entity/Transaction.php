@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $table = 'transaction';
+    protected $table = 'transactions';
 
     
     protected $primaryKey = 'id';
@@ -16,7 +16,7 @@ class Transaction extends Model
         'user_id',
         'merchandise_id',
         'price',
-        'buy_price',
+        'buy_count',
         'total_price'
     ];
 
