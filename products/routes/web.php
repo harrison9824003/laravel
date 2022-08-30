@@ -33,8 +33,11 @@ Route::group(['prefix' => 'user'], function(){
         Route::get('/sign-in', [MemberController::class, 'signInPage']);
         Route::post('/sign-in', [MemberController::class, 'signInProcess']);
         Route::get('/sign-out', [MemberController::class, 'signOut']);
+
+        Route::get('/list-cart', [MemberController::class, 'listCart'])->middleware(['user.auth']);        
         
     });
+
 });
 
 Route::group(['prefix' => 'merchandise'], function(){
@@ -63,9 +66,18 @@ Route::group(['prefix' => 'merchandise'], function(){
             Route::put('/', [MerchandiseController::class, 'merchandiseItemUpdateProcess']);
         });
         
-        
     });
 
 });
 
-Route::get('/transaction', [TransactionController::class, 'transactionListPage'])->middleware(['user.auth']);
+Route::group(['prefix' => 'transaction'], function(){
+
+    Route::group(['middleware' => ['user.auth']], function(){
+        Route::get('/', [TransactionController::class, 'transactionListPage']);
+        Route::post('/', [TransactionController::class, 'transaction']);
+        //Route::post('/buy', [TransactionController::class, 'buy']);
+        Route::post('/buy', [TransactionController::class, 'buy']);
+        Route::get('/buy/success', [TransactionController::class, 'buySuccess']);
+    });
+
+});

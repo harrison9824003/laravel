@@ -114,4 +114,11 @@ class MemberController extends Controller
         session()->forget('user_id');
         return redirect('/');
     }
+
+    public function listCart() {
+        $binding = [
+            'title' => '購物車列表'
+        ];
+        return view('cart.listcart', $binding);
+    }
 }
