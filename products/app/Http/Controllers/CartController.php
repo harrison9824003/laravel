@@ -36,11 +36,6 @@ class CartController extends Controller
     public function store(Request $request)
     {
         //
-        if( session()->get('user_id') ){
-            die("1");
-        } else {
-            die("2");
-        }
     }
 
     /**

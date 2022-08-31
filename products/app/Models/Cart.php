@@ -11,6 +11,7 @@ class Cart extends Model
 
     protected $fillable = [
         'cart_id',
-        'content'
+        'content',
+        'updated_at'
     ];
 }

@@ -30,8 +30,14 @@
                             <a href="/merchandise/{{ $Merchandise->id }}" class="btn btn-primary w-100">詳細商品內容</a>
                         </div>                        
                     </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-6 text-center border-end"><a href="#" class="link-danger fs-3" onclick="addToLike({{ $Merchandise->id }})"><i class="bi bi-suit-heart-fill"></i></a></div>
+                            <div class="col-6 text-center"><a href="#" class="link-secondary fs-3" onclick="addToCart(event, {{ $Merchandise->id }})"><i class="bi bi-cart-plus"></i></a></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div>            
             @endforeach
             <hr>
             <div class="col-md-12 d-flex justify-content-end"> 

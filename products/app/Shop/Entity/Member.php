@@ -15,6 +15,10 @@ class Member extends Model
         'email',
         'password',
         'type',
-        'nickname'
+        'nickname',
+        '_user_check',
+        '_token_',
+        '_access_token_time',
+        '_refersh_token_time'
     ];
 }

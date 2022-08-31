@@ -118,8 +118,15 @@
     @yield('content')
 </div>
 
+
+<div id="toastArea" class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+    <!-- toast 內容 -->  
+</div>
+
+
 <footer class="footer p-5"></footer>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
 <script src="{{ mix('/js/app.js') }}"></script>
+<script src="{{ url('/js/custom.js') }}"></script>
 </html>

@@ -34,7 +34,8 @@ Route::group(['prefix' => 'user'], function(){
         Route::post('/sign-in', [MemberController::class, 'signInProcess']);
         Route::get('/sign-out', [MemberController::class, 'signOut']);
 
-        Route::get('/list-cart', [MemberController::class, 'listCart'])->middleware(['user.auth']);        
+        Route::get('/list-cart', [MemberController::class, 'listCart'])->middleware(['user.auth']);
+        Route::post('/add-cart', [MemberController::class, 'addCart']);       
         
     });
 

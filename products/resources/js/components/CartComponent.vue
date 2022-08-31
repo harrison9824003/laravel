@@ -16,6 +16,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default { 
         data(){
             return {
@@ -37,7 +38,21 @@
         },
         mounted() {        
             this.cartItems = this.cartProducts.length > 5 ? this.cartProducts.slice(0,5) : this.cartProducts
-            this.cartItemCnt = this.cartProducts.length    
+            this.cartItemCnt = this.cartProducts.length   
+            
+            // 取得 cart 內容
+            let url = 'http://127.0.0.1:8000/user/auth/get-cart'
+            axios.post(url, {}).then(
+                response => {
+                    console.log(this)
+                    console.log(response.data)
+                },
+                error => {
+                    console.log(this)
+                    console.log(error)
+                }
+            )
+
         },
         beforeDestroy() {
         }

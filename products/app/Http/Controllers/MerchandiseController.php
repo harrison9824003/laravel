@@ -246,7 +246,7 @@ class MerchandiseController extends Controller
 
      public function merchandiseListPage(){
 
-        $row_per_page = 10;
+        $row_per_page = 8;
         
         $MerchandisePaginate = Merchandise::OrderBy('updated_at', 'desc')
         ->where('status', 'S')
@@ -358,6 +358,6 @@ class MerchandiseController extends Controller
 
             return redirect()->back()->withErrors($error_message)->withInput();
         }
-     }
+    }
 
 }

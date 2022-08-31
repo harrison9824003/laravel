@@ -40,9 +40,7 @@
 </template>
 
 <script>
-import { computed } from "vue";
-
-
+    import axios from 'axios'
     export default {
         data(){
             return {
@@ -110,7 +108,8 @@ import { computed } from "vue";
         },
         mounted() {        
             console.log('cartlist is mounted')
-            this.cartItemCnt = this.cartProducts.length    
+            this.cartItemCnt = this.cartProducts.length 
+            console.log(axios)             
         },
         beforeDestroy() {
         }
