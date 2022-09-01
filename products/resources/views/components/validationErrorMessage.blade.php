@@ -3,7 +3,10 @@
         <ul>
             @foreach($errors->all() as $err)
                 <li> {{ $err }} </li>
-            @endforeach
+            @endforeach            
         </ul>
     </div>
+@endif
+@if(isset($successMsg))
+    {{ $successMsg }}
 @endif

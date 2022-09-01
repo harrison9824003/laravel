@@ -36,7 +36,10 @@ Route::group(['prefix' => 'user'], function(){
 
         Route::get('/list-cart', [MemberController::class, 'listCart'])->middleware(['user.auth']);
         Route::post('/add-cart', [MemberController::class, 'addCart']);       
-        
+        Route::get('/get-carts', [MemberController::class, 'getCarts']);
+        Route::post('/cart-edit-number', [MemberController::class, 'cartEditNumber']);
+        Route::post('/cart-delete', [MemberController::class, 'cartDelete']);
+
     });
 
 });

@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Shop\Entity\Transaction;
+use App\Models\TransactionDetail;
 use App\Shop\Entity\Merchandise;
 use App\Shop\Entity\Member;
-use Illuminate\Http\Request;
+use App\Models\Cart;
+use Exception;
+// use Illuminate\Http\Request;
 use Validator;
+use Illuminate\Support\Facades\Mail;
 
 class TransactionController extends Controller
 {
@@ -18,14 +22,14 @@ class TransactionController extends Controller
 
         $TransactionPaginate = Transaction::where('user_id', $user_id)
         ->OrderBy('created_at', 'desc')
-        ->with('Merchandise')
+        ->with('transaction_detail')
         ->paginate($row_per_page);
-
+        
         foreach ( $TransactionPaginate as &$Transaction) {
-            if (!is_null($Transaction->Merchandise->photo) && trim($Transaction->Merchandise->photo) != '') {                
-                $Transaction->Merchandise->photo = url($Transaction->Merchandise->photo);
-            } else {
-                $Transaction->Merchandise->photo = '';
+            foreach( $Transaction->transaction_detail as &$product ) {
+                $product_detail = $product->Merchandise->toArray();
+                $product->photo = $product_detail['photo'];
+                $product->name = $product_detail['name'];
             }
         }
 
@@ -125,14 +129,83 @@ class TransactionController extends Controller
 
         $vaildator = Validator::make($input, $rules);
 
-        if ( $vaildator->fails() ) {
+        if ( $vaildator->fails() ) {            
             return redirect('/user/auth/list-cart')
             ->withErrors($vaildator)
             ->withInput();
         }
 
-        extract($input);
-        echo "<pre>";
-        print_r($input);exit;
+        try{
+
+            extract($input);
+            $Merchandises = json_decode($final_list, true);
+            // $Meta_data = json_decode($final_meta, true);
+
+            $user_id = session()->get('user_id');
+            $member = Member::find($user_id);
+
+            $transaction = [
+                "user_id" => $user_id,
+                "send_user" => $send_user,
+                "send_email" => $send_email,
+                "user" => $user,
+                "email" => $email,
+                "address" => $address,            
+                "total_price" => $total_money,
+                "buy_count" => count($Merchandises),
+                "delivery_money" => $delivery_money,
+            ];
+            
+            $transaction_create = Transaction::create($transaction);
+
+            // 移除購物車內容
+            $cart = Cart::where('cart_id', '=', $user_id)->first();            
+            $cart_content = unserialize($cart->content);
+
+            foreach ( $Merchandises as $Merchandise ) {
+
+                // $T_Merchandise = Merchandise::find($Merchandise->id);
+
+                $detail_input = [
+                    'transaction_id' => $transaction_create->id,
+                    'product_id' => $Merchandise['id'],
+                    'num' => $Merchandise['num'],
+                    'price' => $Merchandise['price']
+                ];
+
+                $transaction_detail_create = TransactionDetail::create($detail_input);
+                unset($cart_content[$Merchandise['id']]);
+            }
+
+            // 更新購物車內容
+            $cart->where('cart_id', '=', $user_id)->update([
+                'content' => serialize($cart_content)
+            ]);
+
+            $mail_binding = [
+                'name' => $member->name,
+                'transaction_id' => $transaction_create->id,
+                'products' => $Merchandises,
+                'delivery_money' => $delivery_money,
+                "total_price" => $total_money,
+            ];
+    
+            Mail::send('email.successTransaction', $mail_binding,
+            function($mail) use ($member){
+                $mail->to($member->email);
+                $mail->from('harrison9824003@gmail.com');
+                $mail->subject('您的交易訂單已成立');
+            });
+
+            return redirect('/user/auth/list-cart')
+            ->with('successMsg', '訂單建立成功');
+
+        }catch(Exception $e){
+
+            return redirect('/user/auth/list-cart')
+            ->with('errors', [$e->getMessage]);
+
+        }  
+
     }
 }

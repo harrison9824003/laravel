@@ -30,8 +30,15 @@ Vue.component('cartlist-component', require('./components/CartList.vue').default
  */
 
 const cart = new Vue({
-    el: '#cart',    
+    el: '#cart',
+    data:{
+        'test':1
+    }    
 });
-const cartlist = new Vue({
-    el: '#cartlist',    
-});
+
+if( document.querySelector("#cartlist") != undefined ){
+    const cartlist = new Vue({
+        el: '#cartlist',    
+    });
+}
+

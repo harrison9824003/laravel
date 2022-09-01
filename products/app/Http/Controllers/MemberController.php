@@ -132,9 +132,12 @@ class MemberController extends Controller
         // 產生 token
         $token = Crypt::encrypt($member->_user_check . '#' . $member->id . '#' . $member->email);
         $member->_token_ = $token;
-        $member->update();
+        $member->where("id", "=", $member->id)->update([
+            "_token_" => $token,
+            "_access_token_time" => $member->_access_token_time,
+            "_refersh_token_time" => $member->_refersh_token_time
+        ]);
         //response()->withCookie((cookie('user_token', $token, 86400)));
-        
         // 將未登入購物車加進購物車
         $user_id = $member->id;
         $cookie_id = request()->cookie('laravel_session');
@@ -173,7 +176,7 @@ class MemberController extends Controller
            
 
         // 導回原本頁面,若沒有則返回首頁
-        return redirect()->intended('/')->withCookie((cookie('user_token', $token, 1440)));
+        return redirect()->intended('/')->withCookie((cookie('user_token', $member->_token_, 1440)));
 
     }
 
@@ -212,7 +215,16 @@ class MemberController extends Controller
 
                 $cart_ary = unserialize($cart->content);
                 if( in_array($input['p_id'], array_keys($cart_ary)) ) {
-                    $cart_ary[$p_id]['cnt'] += 1;
+                    /*$cart_ary[$p_id]['cnt'] += 1;
+                    $cart_ary[$p_id]['a_time'] = time();*/
+                    return response()->json([
+                        'status' => 0,
+                        'p_id' => $p_id,
+                        'p_name' => $Merchandise->name,
+                        'errorMsg' => '商品已存在購物車內',
+                        'time' => date("Y-m-d H:i:s")
+                    ]);
+
                 } else {
                     
                     $cart_info = [
@@ -220,12 +232,13 @@ class MemberController extends Controller
                         'name' => $Merchandise->name,
                         'name_en' => $Merchandise->name_en,
                         'price' => $Merchandise->price,
-                        'cnt'   => 1
+                        'cnt'   => 1,
+                        "a_time" => time()
                     ];
     
                     $cart_ary[$p_id] = $cart_info;
                 }
-
+                
                 if ( count($cart_ary) > $max_cnt ) {
                     return response()->json([
                         'status' => 0,
@@ -233,7 +246,7 @@ class MemberController extends Controller
                         'time' => date("Y-m-d H:i:s")
                     ]);
                 }
-    
+                uasort($cart_ary, 'self::my_usort');
                 $cart->content = serialize($cart_ary);
                 $cart->where('cart_id', '=', (String) $user_id)->update(
                     [ 
@@ -252,10 +265,11 @@ class MemberController extends Controller
                     'name' => $Merchandise->name,
                     'name_en' => $Merchandise->name_en,
                     'price' => $Merchandise->price,
-                    'cnt'   => 1
+                    'cnt'   => 1,
+                    "a_time" => time()
                 ];
     
-                $cart->content = serialize($cart_info);
+                $cart->content = serialize([$p_id => $cart_info]);
                 $cart->save();
                 $status = 1;    
 
@@ -279,5 +293,151 @@ class MemberController extends Controller
 
         }
         
+    }
+
+    public function getCarts()
+    {
+        $input = request()->all();
+        $user_id = session()->get('user_id');
+        if ( isset($input['pageCnt']) ) $pageCnt = $input['pageCnt'];
+        else $pageCnt = 0;
+
+        if(!$user_id) $user_id = request()->cookie('laravel_session');
+        else {
+            // 有登入使用者
+            // 檢查 token
+            $user = Member::find($user_id);
+            $chk_token = request()->cookie('user_token');
+
+            // 檢查
+            if ( $user->_token_ != $chk_token ) {
+                return response()->json([
+                    'status' => 0,
+                    'errorMsg' => 'errorToken',
+                    'time' => date("Y-m-d H:i:s")
+                ]);
+            }
+
+        }
+        
+        // 取購物車資料
+        $cart = Cart::where('cart_id', '=', $user_id)->first();
+        $cart_content = unserialize($cart->content);
+        //print_r($cart_content);exit;
+        $cart_cnt = count($cart_content);
+        if($pageCnt) {
+            $cart_content = array_slice($cart_content, 0, $pageCnt);
+        } else {
+            $cart_content = array_values($cart_content);
+        }
+
+        $product_ids = array_column($cart_content, 'id');
+        $result = Merchandise::select('id', 'photo')->whereIn('id', $product_ids)->get();
+        $result = $result->toArray();
+        $imgAry = [];
+        foreach( $result as $r ) {
+            $imgAry[$r['id']] = $r['photo'];
+        }
+        //
+        return response()->json([
+            'status' => 1,
+            'cart_cnt' => $cart_cnt,
+            'cart_data' => $cart_content,
+            'cart_img' => $imgAry,
+            'time' => date("Y-m-d H:i:s")
+        ]);
+    }
+
+    private static function my_usort($a, $b)
+    {
+        return $a['a_time'] < $b['a_time'];
+    }
+
+    public function cartEditNumber()
+    {
+        $input = request()->all();
+        $product_id = $input['p_id']; // 商品 id
+        $number = $input['p_num']; // 商品號碼
+
+        try{
+
+            $user_id = session()->get('user_id');
+            $cart = Cart::where('cart_id', '=', $user_id)->first();
+            $Merchandise = Merchandise::find($product_id);
+            if( $Merchandise->remain_count < $number ) {
+                return response()->json([
+                    'status' => 0,
+                    'product_id' => $product_id,
+                    'p_num' => $number,
+                    'errorMsg' => '購買數量超過上限!',
+                    'time' => date("Y-m-d H:i:s")
+                ]);
+            }
+
+            $cart_content = unserialize($cart->content);
+            $cart_content[$product_id]['cnt'] = $number;
+
+            $cart->where('cart_id', '=', $user_id)->update([
+                'content' => serialize($cart_content)
+            ]);
+
+        }catch(Exception $e){
+
+            return response()->json([
+                'status' => 0,
+                'product_id' => $product_id,
+                'p_num' => $number,
+                'errorMsg' => $e->getMessage(),
+                'time' => date("Y-m-d H:i:s")
+            ]);
+
+        }
+        
+
+        return response()->json([
+            'status' => 1,
+            'product_id' => $product_id,
+            'p_num' => $number,
+            'time' => date("Y-m-d H:i:s")
+        ]);
+    }
+
+    public function cartDelete()
+    {   
+        try{
+
+            $input = request()->all();
+            $product_id = $input['p_id']; // 商品 id
+
+            $user_id = session()->get('user_id');
+
+            $cart = Cart::where('cart_id', '=', $user_id)->first();
+            $Merchandise = Merchandise::find($product_id);
+            $cart_content = unserialize($cart->content);
+            unset($cart_content[$product_id]);
+
+            $cart->where('cart_id', '=', $user_id)->update([
+                'content' => serialize($cart_content)
+            ]);
+
+
+        }catch(Exception $e){
+            return response()->json([
+                'status' => 0,
+                'product_id' => $product_id,
+                'p_name' => $Merchandise->name,
+                'errorMsg' => $e->getMessage(),
+                'time' => date("Y-m-d H:i:s")
+            ]);
+        }
+        
+
+        return response()->json([
+            'status' => 1,
+            'product_id' => $product_id,
+            'p_name' => $Merchandise->name,
+            'time' => date("Y-m-d H:i:s")
+        ]);
+
     }
 }

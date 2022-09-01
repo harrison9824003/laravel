@@ -26,7 +26,7 @@ function addToCart(event, p_id){
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
-                        `+data.p_name + ` : ` + (data.status == '1' ? '商品成功加入購物車' : '商品加入購物車失敗') +`
+                        `+data.p_name + ` : ` + (data.status == '1' ? '商品成功加入購物車' : ( data.errorMsg != '' ? data.errorMsg :'商品加入購物車失敗' ) ) +`
                     </div>
                 </div>
             `
@@ -34,6 +34,8 @@ function addToCart(event, p_id){
             $("#toastArea").append(template)
 
             $('.toast').toast('show')
+            window.$cartComponent.getCart()
+
         },
         error:function(a,b,c){
             console.log(a)

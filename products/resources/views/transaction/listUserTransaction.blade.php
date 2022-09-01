@@ -19,8 +19,8 @@
                 <table class="table">
                     <tr>
                         <th>商品名稱</th>
-                        <th>圖片</th>
-                        <th>單價</th>
+                        <!-- <th>圖片</th> -->
+                        <!-- <th>單價</th> -->
                         <th>數量</th>
                         <th>總金額</th>
                         <th>購買時間</th>
@@ -28,20 +28,13 @@
                     @foreach($TransactionPaginate as $Transaction)
                         <tr>
                             <td>
-                                <a href="/merchandise/{{ $Transaction->Merchandise->id }}">
-                                    {{ $Transaction->Merchandise->name }}
-                                </a>
-                            </td>
-                            <td>
-                                <a href="/merchandise/{{ $Transaction->Merchandise->id }}">
-                                    @if ( $Transaction->Merchandise->photo != '' )
-                                    <img src="{{ $Transaction->Merchandise->photo }}" />
-                                    @else
-                                    <img src="{{ url('/images/450_300.png') }}" />
-                                    @endif
-                                </a>
-                            </td>
-                            <td>{{ $Transaction->price }}</td>
+                                @foreach( $Transaction->transaction_detail as $product )
+                                <a href="/merchandise/{{ $product->id }}">
+                                    {{ $product->name }}
+                                </a><br/>
+                                @endforeach
+                            </td>                            
+                            <!-- <td>{{ $Transaction->price }}</td> -->
                             <td>{{ $Transaction->buy_count }}</td>
                             <td>{{ $Transaction->total_price }}</td>
                             <td>{{ $Transaction->created_at }}</td>

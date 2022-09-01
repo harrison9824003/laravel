@@ -5,8 +5,11 @@
         </a>
 
         <ul class="dropdown-menu">
-            <li v-for="(product) in cartItems" :key="product.id">
-                <a class="dropdown-item me-1" href="#">{{product.name}}</a>
+            <li v-for="(product) in cartProducts" :key="product.id">                
+                <a class="dropdown-item me-1" href="#">
+                    <img v-if="product.photo" :src="product.photo" class="img-cover cart-list-img me-1" alt="">
+                    <span>{{product.name}}</span>
+                </a>
             </li>
             <li class="w-100" v-if="cartItemCnt > 0 && cartItemCnt > 5"><p class="text-center mb-0">...共 {{cartItemCnt}} 商品</p></li>
             <li class="w-100" v-if="cartItemCnt > 0"><a href="/user/auth/list-cart" class="btn btn-outline-primary border-0 w-100">前往購物車</a></li>
@@ -17,41 +20,53 @@
 
 <script>
     import axios from 'axios'
+    axios.defaults.withCredentials = true
     export default { 
         data(){
             return {
                 cartItems:[],
                 cartItemCnt:0,
-                cartProducts: [
-                    {id:1,name:'商品1',cnt:2},
-                    {id:2,name:'商品2',cnt:3},
-                    {id:3,name:'商品3',cnt:1},
-                    {id:4,name:'商品4',cnt:1},
-                    {id:5,name:'商品5',cnt:1},
-                    {id:6,name:'商品6',cnt:1},
-                ]
+                cartProducts: [],
+            }
+        },
+        methods:{
+            getCart(){
+                // 取得 cart 內容
+                let url = 'http://127.0.0.1:8000/user/auth/get-carts?pageCnt=5'
+                axios.get(url).then(
+                    response => {
+                        //console.log("success",this)
+                        //console.log(response)
+                       
+                       // 原本內容初始,每次新增到購物車後會更新
+                        this.cartProducts = []
+                        this.cartItemCnt = 0
+
+                        // 添加傳回的資料
+                        for ( let i = 0 ; i < response.data.cart_data.length ; i++ ) {
+                            //console.log(response.data.cart_data[i]);
+                            response.data.cart_data[i]['photo'] = response.data.cart_img[response.data.cart_data[i]['id']]
+                            if ( response.data.cart_data[i]['photo'] != '' ) response.data.cart_data[i]['photo'] = '/' + response.data.cart_data[i]['photo']
+                            this.cartProducts.push(response.data.cart_data[i])
+                        }
+                        console.log(response.data.cart_cnt);
+                        this.cartItemCnt = response.data.cart_cnt
+                    },
+                    error => {
+                        //console.log("erros",this)
+                        console.log(error)
+                    }
+                )
             }
         },
         beforeCreate() {
             // 建立全局事件總線
             Vue.prototype.$bus = this
         },
-        mounted() {        
-            this.cartItems = this.cartProducts.length > 5 ? this.cartProducts.slice(0,5) : this.cartProducts
-            this.cartItemCnt = this.cartProducts.length   
+        mounted() {   
             
-            // 取得 cart 內容
-            let url = 'http://127.0.0.1:8000/user/auth/get-cart'
-            axios.post(url, {}).then(
-                response => {
-                    console.log(this)
-                    console.log(response.data)
-                },
-                error => {
-                    console.log(this)
-                    console.log(error)
-                }
-            )
+            this.getCart()
+            window.$cartComponent = this
 
         },
         beforeDestroy() {

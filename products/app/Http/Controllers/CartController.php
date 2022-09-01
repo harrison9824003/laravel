@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Shop\Entity\Member;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -14,7 +15,45 @@ class CartController extends Controller
      */
     public function index()
     {
+        $input = request()->all();
+        $user_id = session()->get('user_id');
+
+        if ( isset($input['pageCnt']) ) $pageCnt = $input['pageCnt'];
+        else $pageCnt = 0;
+
+        if($user_id) $user_id = request()->cookie('laravel_session');
+        else {
+            // 有登入使用者
+            // 檢查 token
+            $user = Member::find($user_id);
+            $chk_token = request()->cookie('user_token');
+
+            // 檢查
+            if ( $user->_token_ != $chk_token ) {
+                return response()->json([
+                    'status' => 0,
+                    'errorMsg' => 'errorToken',
+                    'time' => date("Y-m-d H:i:s")
+                ]);
+            }
+
+        }
+        
+        // 取購物車資料
+        $cart = Cart::where('cart_id', '=', $user_id)->first();
+        $cart_content = unserialize($cart->content);
+        $cart_cnt = count($cart_content);
+        if($pageCnt) {
+            $cart_content = array_slice($cart_content, 0, $pageCnt);
+        }
+
         //
+        return response()->json([
+            'status' => 1,
+            'cart_cnt' => $cart_cnt,
+            'cart_data' => $cart_content,
+            'time' => date("Y-m-d H:i:s")
+        ]);
     }
 
     /**
@@ -25,6 +64,7 @@ class CartController extends Controller
     public function create()
     {
         //
+        dd('1');
     }
 
     /**
@@ -36,6 +76,7 @@ class CartController extends Controller
     public function store(Request $request)
     {
         //
+        dd('2');
     }
 
     /**
@@ -47,6 +88,7 @@ class CartController extends Controller
     public function show(Cart $cart)
     {
         //
+        dd('3');
     }
 
     /**
@@ -58,6 +100,7 @@ class CartController extends Controller
     public function edit(Cart $cart)
     {
         //
+        dd('4');
     }
 
     /**
@@ -70,6 +113,7 @@ class CartController extends Controller
     public function update(Request $request, Cart $cart)
     {
         //
+        dd('5');
        
     }
 
@@ -82,5 +126,6 @@ class CartController extends Controller
     public function destroy(Cart $cart)
     {
         //
+        dd('6');
     }
 }

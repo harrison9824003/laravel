@@ -27,7 +27,7 @@
                         <h5 class="card-title">{{ $Merchandise->name }}</h5>
                         <p class="card-text">{{ Str::limit($Merchandise->introduction, 100, $end='...') }}</p>
                         <div class="mt-auto">
-                            <a href="/merchandise/{{ $Merchandise->id }}" class="btn btn-primary w-100">詳細商品內容</a>
+                            <a href="/merchandise/{{ $Merchandise->id }}" class="btn btn-outline-secondary w-100">詳細商品內容</a>
                         </div>                        
                     </div>
                     <div class="card-footer">

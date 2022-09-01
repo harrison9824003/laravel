@@ -14,14 +14,17 @@ class Transaction extends Model
     protected $fillable = [
         'id',
         'user_id',
-        'merchandise_id',
-        'price',
         'buy_count',
-        'total_price'
+        'total_price',
+        'send_user',
+        'send_email',
+        'user',
+        'email',
+        'address',
+        'delivery_money'
     ];
-
-    public function Merchandise()
-    {
-        return $this->hasOne('App\Shop\Entity\Merchandise', 'id', 'merchandise_id');
+    
+    public function transaction_detail() {
+        return $this->hasMany('App\Models\TransactionDetail', 'transaction_id', 'id');
     }
 }

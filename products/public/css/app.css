@@ -4,6 +4,11 @@
   background-size: cover;
 }
 
+.cart-list-img {
+  width: 20px;
+  height: 20px;
+}
+
 .dropdown-menu li:hover .sub-menu {
   visibility: visible;
 }

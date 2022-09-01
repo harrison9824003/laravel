@@ -44,10 +44,10 @@
 
                     @if(session()->has('user_id'))
 
-                        {{-- 交易 --}}
+                        {{-- 會員 --}}
                         <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-wallet2 me-1"></i>{{ trans('shop.transaction.name') }}
+                            <i class="bi bi-wallet2 me-1"></i>{{ trans('shop.user.page') }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="/transaction">{{ trans('shop.transaction.list') }}</a></li>                   
@@ -74,26 +74,34 @@
                         
                     @else
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/user/auth/sign-in">
-                                <i class="bi bi-box-arrow-in-right me-1"></i>{{ trans('shop.auth.sign-in') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/user/auth/github-sign-in">
-                                <i class="bi bi-github me-1"></i>{{ trans('shop.auth.github-sign-in') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/user/auth/facebook-sign-in">
-                                <i class="bi bi-facebook me-1"></i>{{ trans('shop.auth.facebook-sign-in') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/user/auth/sign-up">
-                                <i class="bi bi-plus-square me-1"></i>{{ trans('shop.auth.sign-up') }}
-                            </a>
-                        </li>
+                        {{-- 會員 --}}
+                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-wallet2 me-1"></i>{{ trans('shop.user.page') }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">   
+                            <li>
+                                <a class="dropdown-item" href="/user/auth/sign-in">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>{{ trans('shop.auth.sign-in') }}
+                                </a>
+                            </li>
+                            <!-- <li>
+                                <a class="dropdown-item" href="/user/auth/github-sign-in">
+                                    <i class="bi bi-github me-1"></i>{{ trans('shop.auth.github-sign-in') }}
+                                </a>
+                            </li> -->
+                            <li>
+                                <a class="dropdown-item" href="/user/auth/facebook-sign-in">
+                                    <i class="bi bi-facebook me-1"></i>{{ trans('shop.auth.facebook-sign-in') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/user/auth/sign-up">
+                                    <i class="bi bi-plus-square me-1"></i>{{ trans('shop.auth.sign-up') }}
+                                </a>
+                            </li>                
+                        </ul>
+                        </li>                        
 
                     @endif
 
@@ -102,9 +110,9 @@
                     </div>
                     
                 </ul>
-                <form class="ms-lg-3">
+                <form action="/" method="get" class="ms-lg-3">
                     <div class="input-group">
-                        <input class="form-control" type="search" placeholder="商品搜尋" aria-label="Search">
+                        <input class="form-control" type="search" name="searchKeyoword" placeholder="商品搜尋" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
                     </div>                    
                 </form>
