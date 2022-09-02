@@ -10,7 +10,7 @@
 
 <h3>GET</h3>
 
-<table>
+<table width="100%" style="table-layout:fixed">
     <tr>
         <td>URI</td>
         <td>Action</td>
