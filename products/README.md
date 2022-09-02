@@ -8,8 +8,6 @@
 </p>
 <h2>網站路由</h2>
 
-![image-20220902153227622](C:\Users\harri\AppData\Roaming\Typora\typora-user-images\image-20220902153227622.png)
-
 <h3>GET</h3>
 
 <table>
