@@ -10,6 +10,7 @@ return [
         'fields' => [
             'buy-count' => '購買數量',
         ],
+        'add_cart' => '加入購物車'
     ],
     'merchandise' => [
         'name'             => '商品',

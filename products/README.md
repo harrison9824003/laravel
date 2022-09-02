@@ -6,59 +6,141 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
+<h2>網站路由</h2>
 
-## About Laravel
+![image-20220902153227622](C:\Users\harri\AppData\Roaming\Typora\typora-user-images\image-20220902153227622.png)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<h3>GET</h3>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<table>
+    <tr>
+        <td>URI</td>
+        <td>Action</td>
+        <td>說明</td>
+    </tr>
+	<tr>
+        <td>/</td>
+        <td>App\Http\Controllers\MerchandiseController@merchandiseListPage</td>
+        <td>商品列表頁</td>
+	</tr>
+	<tr>
+        <td>/merchandise</td>
+        <td>App\Http\Controllers\MerchandiseController@merchandiseListPage</td>
+        <td>商品列表頁</td>
+	</tr>
+	<tr>
+        <td>/merchandise/create</td>
+        <td>App\Http\Controllers\MerchandiseController@merchandiseCreate</td>
+        <td>商品修改表單頁面</td>
+	</tr>
+    <tr>
+        <td>/merchandise/manage</td>
+        <td>App\Http\Controllers\MerchandiseController@merchandiseManageListPage</td>
+        <td>管理人員商品列表(一般使用者不能檢視)</td>
+	</tr>
+    <tr>
+        <td>/merchandise/{merchandise_id}</td>
+        <td>App\Http\Controllers\MerchandiseController@merchandiseItemPage</td>
+        <td>商品單品顯示頁面</td>
+	</tr>
+    <tr>
+        <td>/merchandise/{merchandise_id}/edit</td>
+        <td>App\Http\Controllers\MerchandiseController@merchandiseItemEditPage</td>
+        <td>商品單品編輯表單頁面</td>
+	</tr>
+    <tr>
+        <td>/transaction</td>
+        <td>App\Http\Controllers\TransactionController@transactionListPage</td>
+        <td>使用者訂單列表</td>
+	</tr>
+    <tr>
+        <td>/user/auth/get-carts</td>
+        <td>App\Http\Controllers\MemberController@getCarts</td>
+        <td>API取得使用者購物車內容,顯示於右上方購物車區域,只抓前5筆資料,其他須到購物車列表頁面才會顯示完整內容</td>
+	</tr>
+    <tr>
+        <td>/user/auth/list-cart</td>
+        <td>App\Http\Controllers\MemberController@listCart</td>
+        <td>購物車列表頁API,取得使用者購物車內容</td>
+	</tr>
+    <tr>
+        <td>/user/auth/sign-in</td>
+        <td>App\Http\Controllers\MemberController@signInPage</td>
+        <td>使用者登入表單頁面</td>
+	</tr>
+    <tr>
+        <td>/user/auth/sign-out</td>
+        <td>App\Http\Controllers\MemberController@signOut</td>
+        <td>使用者登出程序</td>
+	</tr>
+    <tr>
+        <td>/user/auth/sign-up</td>
+        <td>App\Http\Controllers\MemberController@signUpPage</td>
+        <td>使用者註冊頁面</td>
+	</tr>
+</table>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+<h3>POST</h3>
 
-## Learning Laravel
+<table>
+    <tr>
+        <td>URI</td>
+        <td>Action</td>
+        <td>說明</td>
+    </tr>
+	<tr>
+        <td>/merchandise/create</td>
+        <td>App\Http\Controllers\MerchandiseController@merchandiseCreateProcess</td>
+        <td>商品新增表單處理頁面</td>
+	</tr>
+    <tr>
+        <td>/transaction</td>
+        <td>App\Http\Controllers\TransactionController@transaction</td>
+        <td>訂單確認頁面</td>
+	</tr>
+    <tr>
+        <td>/transaction/buy</td>
+        <td>App\Http\Controllers\TransactionController@buy</td>
+        <td>訂單確認後,後端處理程序,新增訂單、訂單商品資料,寄信通知使用者下單成功</td>
+	</tr>
+    <tr>
+        <td>/user/auth/add-cart</td>
+        <td>App\Http\Controllers\MemberController@addCart</td>
+        <td>API新商商品到購物車</td>
+	</tr>
+    <tr>
+        <td>/user/auth/cart-delete</td>
+        <td>App\Http\Controllers\MemberController@cartDelete</td>
+        <td>API刪除購物車商品</td>
+	</tr>
+    <tr>
+        <td>/user/auth/cart-edit-number</td>
+        <td>App\Http\Controllers\MemberController@cartEditNumber</td>
+        <td>API修改購物車數量</td>
+	</tr>
+    <tr>
+        <td>/user/auth/sign-in</td>
+        <td>App\Http\Controllers\MemberController@signInProcess</td>
+        <td>使用者登入處理程序</td>
+	</tr>
+    <tr>
+        <td>user/auth/sign-up</td>
+        <td>App\Http\Controllers\MemberController@signUpProcess</td>
+        <td>使用者註冊處理程序</td>
+	</tr>
+</table>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+<h3>PUT</h3>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<table>
+    <tr>
+        <td>URI</td>
+        <td>Action</td>
+        <td>說明</td>
+    </tr>
+	<tr>
+        <td>/merchandise/{merchandise_id}</td>
+        <td>App\Http\Controllers\MerchandiseController@merchandiseItemUpdateProcess</td>
+        <td>商品更新(後端)處理</td>
+	</tr>
+</table>

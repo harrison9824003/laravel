@@ -14,16 +14,16 @@
         {{-- 錯誤訊息模板元件 --}}
         @include('components.validationErrorMessage')
 
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row justify-content-center">
+            <div class="col-md-6 border shadow p-3">
                 <form action="/merchandise/create"
                       method="post"
                       enctype="multipart/form-data"
                 >
 
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="type">{{ trans('shop.merchandise.fields.status-name') }}</label>
-                        <select class="form-control"
+                        <select class="form-select"
                                 name="status"
                                 id="status"
                         >
@@ -35,7 +35,7 @@
                             </option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="name">{{ trans('shop.merchandise.fields.name') }}</label>
                         <input type="text"
                                class="form-control"
@@ -45,7 +45,7 @@
                                value=""
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="name_en">{{ trans('shop.merchandise.fields.name-en') }}</label>
                         <input type="text"
                                class="form-control"
@@ -55,7 +55,7 @@
                                value=""
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="introduction">{{ trans('shop.merchandise.fields.introduction') }}</label>
                         <input type="text"
                                class="form-control"
@@ -65,7 +65,7 @@
                                value=""
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="introduction_en">{{ trans('shop.merchandise.fields.introduction-en') }}</label>
                         <input type="text"
                                class="form-control"
@@ -75,7 +75,7 @@
                                value=""
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="photo">{{ trans('shop.merchandise.fields.photo') }}</label>
                         <input type="file"
                                class="form-control"
@@ -85,7 +85,7 @@
                         >                        
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="price">{{ trans('shop.merchandise.fields.price') }}</label>
                         <input type="text"
                                class="form-control"
@@ -95,7 +95,7 @@
                                value=""
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="remain_count">{{ trans('shop.merchandise.fields.remain-count') }}</label>
                         <input type="text"
                                class="form-control"
@@ -105,7 +105,9 @@
                                value=""
                         >
                     </div>
-                    <button type="submit" class="btn btn-default">{{ trans('shop.merchandise.create') }}</button>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-outline-secondary mt-3">{{ trans('shop.merchandise.create') }}</button>
+                    </div>
                     {{-- CSRF 欄位--}}
                     {{ csrf_field() }}
                 </form>

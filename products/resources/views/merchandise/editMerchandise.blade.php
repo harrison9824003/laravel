@@ -9,13 +9,13 @@
 <!-- 傳送資料到母模板，並指定變數為 content -->
 @section('content')
     <div class="container">
-        <h1>{{ $title }}</h1>
+        <h1 class="text-center">{{ $title }}</h1>
 
         {{-- 錯誤訊息模板元件 --}}
         @include('components.validationErrorMessage')
 
-        <div class="row">
-            <div class="col-md-12">
+        <div class="row justify-content-center">
+            <div class="col-md-6  border shadow p-3">
                 <form action="/merchandise/{{ $Merchandise->id }}"
                       method="post"
                       enctype="multipart/form-data"
@@ -23,9 +23,9 @@
                     {{-- 隱藏方法欄位 --}}
                     {{ method_field('PUT') }}
 
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="type">{{ trans('shop.merchandise.fields.status-name') }}</label>
-                        <select class="form-control"
+                        <select class="form-select"
                                 name="status"
                                 id="status"
                         >
@@ -41,7 +41,7 @@
                             </option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="name">{{ trans('shop.merchandise.fields.name') }}</label>
                         <input type="text"
                                class="form-control"
@@ -51,7 +51,7 @@
                                value="{{ old('name', $Merchandise->name) }}"
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="name_en">{{ trans('shop.merchandise.fields.name-en') }}</label>
                         <input type="text"
                                class="form-control"
@@ -61,7 +61,7 @@
                                value="{{ old('name_en', $Merchandise->name_en) }}"
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="introduction">{{ trans('shop.merchandise.fields.introduction') }}</label>
                         <input type="text"
                                class="form-control"
@@ -71,7 +71,7 @@
                                value="{{ old('introduction', $Merchandise->introduction) }}"
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="introduction_en">{{ trans('shop.merchandise.fields.introduction-en') }}</label>
                         <input type="text"
                                class="form-control"
@@ -81,7 +81,7 @@
                                value="{{ old('introduction_en', $Merchandise->introduction_en) }}"
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="photo">{{ trans('shop.merchandise.fields.photo') }}</label>
                         <input type="file"
                                class="form-control"
@@ -90,11 +90,11 @@
                                placeholder="{{ trans('shop.merchandise.fields.photo') }}"
                         >
                         @if( !empty($Merchandise->photo) )
-                        <img src="{{ $Merchandise->photo }}" />
+                        <img src="{{ $Merchandise->photo }}" class="img-fluid mt-3" />
                         @endif
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="price">{{ trans('shop.merchandise.fields.price') }}</label>
                         <input type="text"
                                class="form-control"
@@ -104,7 +104,7 @@
                                value="{{ old('price', $Merchandise->price) }}"
                         >
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="remain_count">{{ trans('shop.merchandise.fields.remain-count') }}</label>
                         <input type="text"
                                class="form-control"
@@ -114,7 +114,10 @@
                                value="{{ old('remain_count', $Merchandise->remain_count) }}"
                         >
                     </div>
-                    <button type="submit" class="btn btn-default">{{ trans('shop.merchandise.update') }}</button>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-outline-secondary mt-3">{{ trans('shop.merchandise.update') }}</button>
+                    </div>
+                    
                     {{-- CSRF 欄位--}}
                     {{ csrf_field() }}
                 </form>

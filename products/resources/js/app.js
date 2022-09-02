@@ -29,16 +29,13 @@ Vue.component('cartlist-component', require('./components/CartList.vue').default
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const cart = new Vue({
-    el: '#cart',
-    data:{
-        'test':1
-    }    
+const app = new Vue({
+    el: '#app'
 });
 
-if( document.querySelector("#cartlist") != undefined ){
-    const cartlist = new Vue({
-        el: '#cartlist',    
-    });
-}
+// if( document.querySelector("#cartlist") != undefined ){
+//     const cartlist = new Vue({
+//         el: '#cartlist',    
+//     });
+// }
 

@@ -31,19 +31,19 @@
                 <div>{{ $Merchandise->introduction }}</div>
                 <!-- <p class="mb-0">{{ trans('shop.transaction.fields.buy-count') }} : </p> -->
                 <form action="/merchandise/{{ $Merchandise->id }}/buy" class="mt-3 row" method="post" > 
-                    <div class="col-lg-3 col-sm-12">
+                    <!-- <div class="col-lg-3 col-sm-12">
                     {{ trans('shop.transaction.fields.buy-count') }} :
-                    </div>
-                    <div class="col-lg-3 col-sm-12">
+                    </div> -->
+                    <!-- <div class="col-lg-3 col-sm-12">
                         <select class="form-select" name="buy_count">
                             @for($count = 0; $count <= $Merchandise->remain_count; $count++)
                                 <option value="{{ $count }}">{{ $count }}</option>
                             @endfor
                         </select>
-                    </div>                   
+                    </div>                    -->
                     <div class="col-lg-6 col-sm-12">
-                        <button type="submit" class="btn btn-info w-100">
-                            {{ trans('shop.transaction.buy') }}
+                        <button type="submit" class="btn btn-outline-secondary w-100" onclick="addToCart(event, {{ $Merchandise->id }})">
+                            {{ trans('shop.transaction.add_cart') }}
                         </button>
                     </div>
                     {{ csrf_field() }}

@@ -2448,18 +2448,13 @@ Vue.component('cartlist-component', (__webpack_require__(/*! ./components/CartLi
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-var cart = new Vue({
-  el: '#cart',
-  data: {
-    'test': 1
-  }
-});
-
-if (document.querySelector("#cartlist") != undefined) {
-  var cartlist = new Vue({
-    el: '#cartlist'
-  });
-}
+var app = new Vue({
+  el: '#app'
+}); // if( document.querySelector("#cartlist") != undefined ){
+//     const cartlist = new Vue({
+//         el: '#cartlist',    
+//     });
+// }
 
 /***/ }),
 
