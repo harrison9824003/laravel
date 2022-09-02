@@ -80,7 +80,7 @@
 
 <h3>POST</h3>
 
-<table>
+<table width="100%" style="table-layout:fixed">
     <tr>
         <td>URI</td>
         <td>Action</td>
@@ -130,7 +130,7 @@
 
 <h3>PUT</h3>
 
-<table>
+<table width="100%" style="table-layout:fixed">
     <tr>
         <td>URI</td>
         <td>Action</td>
