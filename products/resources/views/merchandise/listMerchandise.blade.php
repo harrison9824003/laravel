@@ -42,7 +42,7 @@
             <hr>
             <div class="col-md-12 d-flex justify-content-end"> 
                 {{-- 分頁頁數按鈕 --}}
-                {{ $MerchandisePaginate->links() }}
+                {{ $MerchandisePaginate->appends(['searchKeyword'=> $searchKeyword])->links() }}
             </div>
         </div>
     </div>

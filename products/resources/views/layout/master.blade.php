@@ -110,7 +110,7 @@
                     </ul>
                     <form action="/" method="get" class="ms-lg-3">
                         <div class="input-group">
-                            <input class="form-control" type="search" name="searchKeyoword" placeholder="商品搜尋" aria-label="Search">
+                            <input class="form-control" type="search" name="searchKeyword" placeholder="商品搜尋" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
                         </div>                    
                     </form>

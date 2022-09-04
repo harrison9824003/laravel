@@ -163,7 +163,7 @@
                             response.data.cart_data[i]['isShow'] = true
                             this.cartProducts.push(response.data.cart_data[i])
                         }
-                        console.log(response.data.cart_cnt);
+                        // console.log(response.data.cart_cnt);
                         this.cartItemCnt = response.data.cart_cnt
                     },
                     error => {

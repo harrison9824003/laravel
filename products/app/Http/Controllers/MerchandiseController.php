@@ -245,10 +245,16 @@ class MerchandiseController extends Controller
      */
 
      public function merchandiseListPage(){
-
+        $input = request()->all();
         $row_per_page = 8;
+
+        $query = Merchandise::query();
+
+        if ( isset($input['searchKeyword']) && $input['searchKeyword'] != '' ) {
+            $query = $query->where('name', 'like', '%'.$input['searchKeyword'].'%');
+        }
         
-        $MerchandisePaginate = Merchandise::OrderBy('updated_at', 'desc')
+        $MerchandisePaginate = $query->orderBy('updated_at', 'desc')
         ->where('status', 'S')
         ->paginate($row_per_page);
 
@@ -261,7 +267,8 @@ class MerchandiseController extends Controller
         }
         $binding = [
             'title' => '商品列表',
-            'MerchandisePaginate' => $MerchandisePaginate
+            'MerchandisePaginate' => $MerchandisePaginate, 
+            'searchKeyword' => $input['serachKeyword'] ?? ''           
         ];
 
         return view('merchandise.listMerchandise', $binding);

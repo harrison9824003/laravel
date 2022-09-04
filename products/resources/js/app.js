@@ -4,9 +4,12 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-//require('./bootstrap');
+require('./bootstrap');
 
 window.Vue = require('vue').default;
+// import store from './store'
+// const store = require('./store').default
+import store from './Store/index'
 
 /**
  * The following block of code may be used to automatically register your
@@ -19,7 +22,7 @@ window.Vue = require('vue').default;
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('cart-component', require('./components/CartComponent.vue').default);
 Vue.component('cartlist-component', require('./components/CartList.vue').default);
 
@@ -30,8 +33,15 @@ Vue.component('cartlist-component', require('./components/CartList.vue').default
  */
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store: store,
+    mounted(){        
+        //Vue.$store = $this.$options.store
+    }
 });
+// app.use(store)
+// console.log(app)
+
 
 // if( document.querySelector("#cartlist") != undefined ){
 //     const cartlist = new Vue({

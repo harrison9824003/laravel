@@ -322,7 +322,7 @@ class MemberController extends Controller
         
         // 取購物車資料
         $cart = Cart::where('cart_id', '=', $user_id)->first();
-        $cart_content = unserialize($cart->content);
+        $cart_content = isset($cart->content) ? unserialize($cart->content) : [];
         //print_r($cart_content);exit;
         $cart_cnt = count($cart_content);
         if($pageCnt) {
