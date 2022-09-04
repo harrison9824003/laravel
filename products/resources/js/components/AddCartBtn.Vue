@@ -1,24 +1,30 @@
 <template>
-    <a href="#" class="link-secondary fs-3" @click.prevent="add_cart(product_id)"><i class="bi bi-cart-plus"></i></a>
+    <a role="button" @click.pervent="$store.dispatch('addCartBtn/addToCart', id)" :class="classArr"><i class="bi bi-cart-plus me-3"></i>{{ text }}</a>
 </template>
 
 <script>
-import axios from 'axios'
-export default {
-    props:['product_id'],
-    methods:{
-        add_cart(product_id) {
-            axios.post('http:\/\/localhost:8080/user/auth/getCart', {
-
-            }).then(
-                response => {
-                    console.log('success', response.data)
-                },
-                error => {
-                    console.log('error', error.message)
-                }
-            )
+    
+    export default {
+        data(){
+            return {
+                classArr: ['link-secondary', 'fs-3']
+            }
+        },
+        props:['id', 'text'],
+        mounted(){
+            if ( this.text != '' ) {
+                this.classArr = [
+                    'btn', 
+                    'btn-outline-secondary', 
+                    'w-100'
+                ];
+                console.log(this.classArr)
+            } else {
+                this.classArr = [
+                    'link-secondary', 
+                    'fs-3'
+                ];
+            }
         }
     }
-}
 </script>

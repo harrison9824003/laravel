@@ -1,13 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+// import axios from 'axios'
 import CartList from './cartlist'
+import addCartBtn from './add_cart_btn'
 
 Vue.use(Vuex)
 console.log('store/index.js import')
 
 export default new Vuex.Store({
     modules: {
-        CartList
+        CartList,
+        addCartBtn
     }
 })

@@ -2,7 +2,7 @@
     <form action="/transaction" method="post" enctype="multipart/form-data">
         <ul class="list-group">
             <transition-group name="hello" appear>
-                <li v-show="cartitem.isShow" class="list-group-item d-flex align-items-center" v-for="(cartitem,index) in cartProducts" :key="cartitem.id">
+                <li v-show="cartitem.isShow" class="list-group-item d-flex align-items-center" v-for="(cartitem,index) in getLocationCartData" :key="cartitem.id">
                     <span class="me-1">
                         <input type="checkbox" name="cartCheckBox[]" :id="cartitem.id" :checked="cartitem.pcheck" :value="cartitem.id" @click="handleCheck(cartitem.id)">
                     </span>
@@ -43,11 +43,10 @@
 
 <script>
     import axios from 'axios'
+    import {mapState, mapGetters} from 'vuex'
     export default {
         data(){
             return {
-                cartItemCnt:0,
-                cartProducts: [],
                 delivery:true,
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
@@ -55,8 +54,8 @@
         methods:{
             MinuxNum(e){
                 let c_id = $(e.currentTarget).data("c_id")
-                console.log(this.cartProducts)
-                this.cartProducts.forEach((current,idx) => {
+                // console.log(this.cartProducts)
+                this.getLocationCartData.forEach((current,idx) => {
                     if(current.id == c_id) {
                         console.log(current);
                         let cnt = current.cnt
@@ -69,7 +68,7 @@
             },
             PlusNum(e){
                 let c_id = $(e.currentTarget).data("c_id")
-                this.cartProducts.forEach((current) => {
+                this.getLocationCartData.forEach((current) => {
                     if(current.id == c_id) {
                         let cnt = current.cnt
                         current.cnt = ++cnt
@@ -79,28 +78,25 @@
             },
             UpdateInputNum(e, c_id){
                 //let c_id = $(e.currentTarget).data("c_id")
-                this.cartProducts.forEach((current) => {
+                this.getLocationCartData.forEach((current) => {
                     if(current.id == c_id) {                        
                         this.updateCartNum(current.id, current.cnt)
                     }
                 })
             },
             handleCheck(c_id){
-                this.cartProducts.forEach((current,idx) => {
+                this.getLocationCartData.forEach((current,idx) => {
                     if(current.id == c_id) current.pcheck = !current.pcheck
                 })
             },deleteItem(id){
                 //console.log(id)
                 //console.log(this.cartProducts)
                 if ( !confirm('確定要將商品移出購物車?') ) return false
-                this.cartProducts.forEach((element, idx) => {
+                this.getLocationCartData.forEach((element, idx) => {
                     console.log(idx)
                     if( element.id == id ) {
                         element.isShow = !element.isShow
-                        setTimeout(() => {
-                            //console.log("@@@",this)
-                            this.cartProducts.splice(idx, 1);
-                        }, 500)    
+                        
                         
                         // axios 移除購物車內的商品
                         let url = 'http://127.0.0.1:8000/user/auth/cart-delete'
@@ -125,9 +121,16 @@
                                         `+response.data.p_name + ` : ` + (response.data.status == '1' ? '商品從購物車刪除' : ( response.data.errorMsg != '' ? response.data.errorMsg :'商品從購物車刪除失敗' ) ) +`
                                     </div>
                                 </div>
-                            `
-                            $("#toastArea").html('');
-                            $("#toastArea").append(template)
+                                `
+
+                                setTimeout(() => {
+                                    //console.log("@@@",this)
+                                    // this.getLocationCartData.splice(idx, 1);
+                                    this.$store.dispatch('CartList/delete', idx)
+                                }, 500)    
+
+                                $("#toastArea").html('');
+                                $("#toastArea").append(template)
 
                             $('.toast').toast('show')
 
@@ -140,38 +143,7 @@
 
                     }                        
                 })
-            },
-            getCart(){
-                // 取得 cart 內容
-                let url = 'http://127.0.0.1:8000/user/auth/get-carts'
-                axios.get(url).then(
-                    response => {
-                        //console.log("success",this)
-                        console.log(response)
-                       
-                        // 原本內容初始,每次新增到購物車後會更新
-                        this.cartProducts = []
-                        this.cartItemCnt = 0
-
-                        // 添加傳回的資料
-                        console.log(response.data.cart_data.length);
-                        for ( let i = 0 ; i < response.data.cart_data.length ; i++ ) {
-                            console.log(response.data.cart_data[i]);
-                            response.data.cart_data[i]['photo'] = response.data.cart_img[response.data.cart_data[i]['id']]
-                            if ( response.data.cart_data[i]['photo'] != '' ) response.data.cart_data[i]['photo'] = '/' + response.data.cart_data[i]['photo']
-                            response.data.cart_data[i]['pcheck'] = true
-                            response.data.cart_data[i]['isShow'] = true
-                            this.cartProducts.push(response.data.cart_data[i])
-                        }
-                        // console.log(response.data.cart_cnt);
-                        this.cartItemCnt = response.data.cart_cnt
-                    },
-                    error => {
-                        //console.log("erros",this)
-                        console.log(error)
-                    }
-                )
-            },
+            },            
             updateCartNum(p_id, p_num){
                 let url = 'http://127.0.0.1:8000/user/auth/cart-edit-number'
                 axios.post(url,{
@@ -203,7 +175,7 @@
                             $("#toastArea").append(template)
 
                             $('.toast').toast('show')
-                            this.cartProducts.forEach((element) => {
+                            this.getLocationCartData.forEach((element) => {
                                 // console.log('update to 0', element.id, response.data.product_id)
                                 if ( element.id == response.data.product_id ){
                                     // console.log('update to 0', element)
@@ -222,29 +194,22 @@
         computed:{
             getTotalPrice(){
                 let total = 0
-                for( let i in this.cartProducts) {
-                    let p = this.cartProducts[i]
+                let carts = this.getLocationCartData
+                for( let i in carts) {
+                    let p = carts[i]
                     if ( !p.pcheck ) continue
                     let p_total = parseInt(p.price) * parseInt(p.cnt)
                     total += p_total
                 }
                 this.delivery = !(total > 500)
                 return new Intl.NumberFormat('zh-TW').format(total)
-            }
+            },
+            ...mapState('CartList', ['userCartCnt']),
+            ...mapGetters('CartList', ['getLocationCartData'])
         },
-        beforeCreate() {
-            // 建立全局事件總線
-            Vue.prototype.$bus = this
-        },
-        mounted() {        
-            // console.log('cartlist is mounted')
-            this.cartItemCnt = this.cartProducts.length
-            window.$cartList = this
-            this.getCart()
-            // console.log(axios)
-        },
-        beforeDestroy() {
-        }
+        beforeCreate() {},
+        mounted() {},
+        beforeDestroy() {}
     }
 </script>
 

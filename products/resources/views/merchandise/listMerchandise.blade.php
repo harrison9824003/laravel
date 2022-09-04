@@ -33,7 +33,10 @@
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-6 text-center border-end"><a href="#" class="link-danger fs-3" onclick="addToLike({{ $Merchandise->id }})"><i class="bi bi-suit-heart-fill"></i></a></div>
-                            <div class="col-6 text-center"><a href="#" class="link-secondary fs-3" onclick="addToCart(event, {{ $Merchandise->id }})"><i class="bi bi-cart-plus"></i></a></div>
+                            <div class="col-6 text-center">
+                                <!-- <a href="#" class="link-secondary fs-3" onclick="addToCart(event, {{ $Merchandise->id }})"><i class="bi bi-cart-plus"></i></a> -->
+                                <cart-add-btn id="{{ $Merchandise->id }}" text="" />
+                            </div>
                         </div>
                     </div>
                 </div>

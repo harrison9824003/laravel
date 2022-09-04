@@ -12,7 +12,7 @@ export default {
             // axios 更新購物車資料
             // 取回最新內容更新到 state 內 
             // 取得 cart 內容
-            let url = 'http://127.0.0.1:8000/user/auth/get-carts?pageCnt=5'
+            let url = 'http://127.0.0.1:8000/user/auth/get-carts'
             axios.get(url).then(
                 response => {
                    
@@ -27,16 +27,15 @@ export default {
                         //console.log(response.data.cart_data[i]);
                         response.data.cart_data[i]['photo'] = response.data.cart_img[response.data.cart_data[i]['id']]
                         if ( response.data.cart_data[i]['photo'] != '' ) response.data.cart_data[i]['photo'] = '/' + response.data.cart_data[i]['photo']
+                        response.data.cart_data[i]['pcheck'] = true
                         data.push(response.data.cart_data[i])
                     }
     
                     cnt = response.data.cart_cnt
-                    //let keyForCartData = 'cartData'
-                    //window.sessionStorage.setItem(keyForCartData, JSON.stringify(data))
-                    // 提交給 mutations 更新 state
-                    //context.commit('GETCART', {data:keyForCartData, cnt})
+                    
+                    // 提交給 mutations 更新 state                    
                     context.commit('GETCART', data)
-                    //return {data:data, cnt:cnt, error:0};
+
                 },
                 error => {
                     //console.log("erros",this)
@@ -45,6 +44,11 @@ export default {
                 }
             )
     
+        },
+        delete(context, value) {
+            
+            context.commit('DELETE', value)
+
         }
     },
     mutations:{
@@ -56,14 +60,14 @@ export default {
         GETCART(state, data){
            
             // 更新 userCart
-            //console.log(data, cnt)
             console.log(data)
             state.userCart = data
-            // console.log(data.length)
             state.userCartCnt = data.length
-            //state.userCartCnt = cnt
-            //console.log('in',state.userCartCnt)  
     
+        },
+        DELETE(state, value){
+            state.userCart.splice(value, 1);
+            state.userCartCnt = state.userCart.length
         }
     },
     state:{

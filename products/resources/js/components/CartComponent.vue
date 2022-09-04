@@ -19,9 +19,9 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    // import axios from 'axios'
     import {mapState, mapGetters} from 'vuex'
-    axios.defaults.withCredentials = true
+    // axios.defaults.withCredentials = true
     export default { 
         data(){
             return {

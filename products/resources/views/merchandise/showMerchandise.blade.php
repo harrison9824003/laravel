@@ -42,9 +42,7 @@
                         </select>
                     </div>                    -->
                     <div class="col-lg-6 col-sm-12">
-                        <button type="submit" class="btn btn-outline-secondary w-100" onclick="addToCart(event, {{ $Merchandise->id }})">
-                            {{ trans('shop.transaction.add_cart') }}
-                        </button>
+                        <cart-add-btn id="{{ $Merchandise->id }}" text="{{ trans('shop.transaction.add_cart') }}" />
                     </div>
                     {{ csrf_field() }}
                 </form>       

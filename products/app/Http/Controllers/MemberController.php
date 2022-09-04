@@ -164,9 +164,9 @@ class MemberController extends Controller
             }
         }
 
-        $member_cart->where('cart_id', '=', (String) $user_id)->update(
+        $member_cart->where('cart_id', '=', $user_id)->update(
             [
-                'content' => serialize($m_cart_content)
+                'content' => serialize($m_cart_content),
             ]
         );
         
@@ -278,8 +278,10 @@ class MemberController extends Controller
     
             return response()->json([
                 'status' => $status,
-                'p_id' => $p_id,
+                'p_id' => $p_id,                 
                 'p_name' => $Merchandise->name,
+                'p_name_en' => $Merchandise->name_en,
+                'price' => $Merchandise->price,
                 'time' => date("Y-m-d H:i:s")
             ]);
 
@@ -377,8 +379,8 @@ class MemberController extends Controller
             $cart_content = unserialize($cart->content);
             $cart_content[$product_id]['cnt'] = $number;
 
-            $cart->where('cart_id', '=', $user_id)->update([
-                'content' => serialize($cart_content)
+            $cart->where('cart_id', '=', (String) $user_id)->update([
+                'content' => (String) serialize($cart_content)
             ]);
 
         }catch(Exception $e){
@@ -416,8 +418,8 @@ class MemberController extends Controller
             $cart_content = unserialize($cart->content);
             unset($cart_content[$product_id]);
 
-            $cart->where('cart_id', '=', $user_id)->update([
-                'content' => serialize($cart_content)
+            $cart->where('cart_id', '=', (String) $user_id)->update([
+                'content' => (String) serialize($cart_content)
             ]);
 
 

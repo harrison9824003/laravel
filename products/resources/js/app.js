@@ -7,8 +7,8 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
-// import store from './store'
-// const store = require('./store').default
+
+import Vue from 'vue';
 import store from './Store/index'
 
 /**
@@ -22,9 +22,10 @@ import store from './Store/index'
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+
 Vue.component('cart-component', require('./components/CartComponent.vue').default);
 Vue.component('cartlist-component', require('./components/CartList.vue').default);
+Vue.component('cart-add-btn', require('./components/AddCartBtn').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -35,17 +36,8 @@ Vue.component('cartlist-component', require('./components/CartList.vue').default
 const app = new Vue({
     el: '#app',
     store: store,
-    mounted(){        
-        //Vue.$store = $this.$options.store
-    }
+    beforeCreate() {
+        // 建立全局事件總線
+        Vue.prototype.$bus = this
+    },
 });
-// app.use(store)
-// console.log(app)
-
-
-// if( document.querySelector("#cartlist") != undefined ){
-//     const cartlist = new Vue({
-//         el: '#cartlist',    
-//     });
-// }
-
