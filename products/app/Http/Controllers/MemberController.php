@@ -166,7 +166,7 @@ class MemberController extends Controller
 
         $member_cart->where('cart_id', '=', $user_id)->update(
             [
-                'content' => serialize($m_cart_content),
+                'content' => strval(serialize($m_cart_content)),
             ]
         );
         
@@ -250,7 +250,7 @@ class MemberController extends Controller
                 $cart->content = serialize($cart_ary);
                 $cart->where('cart_id', '=', (String) $user_id)->update(
                     [ 
-                        'content' => $cart->content,
+                        'content' => strval($cart->content),
                     ]
                 );
                 $status = 1;
@@ -380,7 +380,7 @@ class MemberController extends Controller
             $cart_content[$product_id]['cnt'] = $number;
 
             $cart->where('cart_id', '=', (String) $user_id)->update([
-                'content' => (String) serialize($cart_content)
+                'content' => strval(serialize($cart_content))
             ]);
 
         }catch(Exception $e){
@@ -419,7 +419,7 @@ class MemberController extends Controller
             unset($cart_content[$product_id]);
 
             $cart->where('cart_id', '=', (String) $user_id)->update([
-                'content' => (String) serialize($cart_content)
+                'content' => strval(serialize($cart_content))
             ]);
 
 
