@@ -1,6 +1,8 @@
 {
     "/js/app.js": "/js/app.js?id=79fe361d30066a27c9f88dc4614f1b56",
+    "/admin/assets/js/filepond.js": "/admin/assets/js/filepond.js?id=2dcf3f00290fcc50156401e21405af94",
     "/admin/assets/css/demo.css": "/admin/assets/css/demo.css?id=8a804dae81f41c0f9fcbef2fa8316bdd",
+    "/admin/assets/css/filepond.min.css": "/admin/assets/css/filepond.min.css?id=ffe7068655f3edc79d252d08194012ea",
     "/admin/assets/img/avatars/1.png": "/admin/assets/img/avatars/1.png?id=5796977fc4f3e274a96000087952dbd8",
     "/admin/assets/img/avatars/5.png": "/admin/assets/img/avatars/5.png?id=20bcd3daa136178725439f548cb55312",
     "/admin/assets/img/avatars/6.png": "/admin/assets/img/avatars/6.png?id=ce9a43448b6df72ca417b68dc4d03902",
@@ -49,6 +51,7 @@
     "/admin/assets/js/config.js": "/admin/assets/js/config.js?id=e14b9213443639ee2d0e32e344637565",
     "/admin/assets/js/dashboards-analytics.js": "/admin/assets/js/dashboards-analytics.js?id=4aea3a6b35aff7685d8ecce88032fdea",
     "/admin/assets/js/extended-ui-perfect-scrollbar.js": "/admin/assets/js/extended-ui-perfect-scrollbar.js?id=2e640a82958d624b397a79b11dab0e6f",
+    "/admin/assets/js/filepond.js.LICENSE.txt": "/admin/assets/js/filepond.js.LICENSE.txt?id=ace18e7d9a8fb8ea7085d244e96c62ea",
     "/admin/assets/js/form-basic-inputs.js": "/admin/assets/js/form-basic-inputs.js?id=dcd37afef2ca6db0be39e0e90112c32f",
     "/admin/assets/js/main.js": "/admin/assets/js/main.js?id=0c91cceb5195b308a36d5ac021b16464",
     "/admin/assets/js/pages-account-settings-account.js": "/admin/assets/js/pages-account-settings-account.js?id=de6d8550aec875155415d6c9392688bc",

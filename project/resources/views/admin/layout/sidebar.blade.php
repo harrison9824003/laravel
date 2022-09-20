@@ -70,6 +70,17 @@
 
         <!-- 商品管理 -->
         <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">全站管理</span>
+        </li>
+        <li class="menu-item active">
+            <a href="{{ route('datatype.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-cog"></i>
+                <div data-i18n="Analytics">Model 模組</div>
+            </a>
+        </li>
+
+        <!-- 商品管理 -->
+        <li class="menu-header small text-uppercase">
             <span class="menu-header-text">內容管理</span>
         </li>
         <li class="menu-item">
@@ -79,8 +90,8 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link">
-                    <div data-i18n="Account">商品分類</div>
+                    <a href="{{ route('spec.index') }}" class="menu-link">
+                    <div data-i18n="Account">商品規格分類</div>
                     </a>
                 </li>
                 <li class="menu-item">

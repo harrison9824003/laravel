@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -13,8 +14,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
-        return view('admin.pages.product.list');
+        $products = app(\App\Models\Shop\Product::class);
+        $paginate = $products->paginate(10); 
+        $binding = [
+            'paginate' => $paginate
+        ];   
+        return view('admin.pages.product.list', $binding);
     }
 
     /**
@@ -37,6 +42,36 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
+        $input = $request->all();
+        $files = $request->file('productImg');
+
+        $rules = [
+            'name' => 'required|unique:pj_product|max:255',
+            'price' => 'required|integer|max:6',
+            'market_price' => 'nullable|integer|max:6',
+            'simple_intro' => 'nullable|string|max:255',
+            'intro' => 'required|string|max:2000',
+            'part_number' => 'nullable|string|max:100',
+            'start_date' => 'required|date_format:Y-m-d',
+            'productImg.*' => 'mimes:jpg,jpeg,png|max:2000'
+        ];
+
+        $rule_text =[            
+            'productImg.*.mimes' => 'Only jpg,jpeg,png images are allowed',
+            'productImg.*.max' => 'Sorry! Maximum allowed size for an image is 2MB',
+        ];
+
+        
+        $validator = Validator::make($input, $rules, $rule_text);
+        if($validator->fails()){
+            return back()->withErrors($validator)->withInput($input);
+        }
+
+        echo "<pre>";
+        var_dump($request->hasFile('productImg'));
+        print_r($input);
+        print_r($files);
+        exit;
     }
 
     /**

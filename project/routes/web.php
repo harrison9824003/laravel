@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminController;
 
 /*
@@ -25,5 +24,7 @@ Route::group(['prefix' => 'adm'], function(){
 
     Route::resource('product', 'App\Http\Controllers\ProductController');
     Route::resource('article', 'App\Http\Controllers\ArticleController');
+    Route::resource('spec', 'App\Http\Controllers\SpecCategoryController');
+    Route::resource('datatype', 'App\Http\Controllers\DataTypeController')->except(['create', 'store', 'destory']);
 
 });

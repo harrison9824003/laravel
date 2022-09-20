@@ -30,6 +30,8 @@
     <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
 
     <meta name="description" content="" />
+    <!-- csrf -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ mix('/admin/assets/img/favicon/favicon.ico') }}" />
@@ -62,7 +64,9 @@
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="{{ mix('admin/assets/js/config.js') }}"></script>
+    <script src="{{ mix('admin/assets/js/config.js') }}"></script>    
+
+    @stack('styles')
   </head>
 
   <body>
@@ -84,6 +88,7 @@
             
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
+                @include('admin.layout.error')
                 @yield('content')
             </div>
             <!-- / Content -->
@@ -163,5 +168,6 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <!-- <script async defer src="https://buttons.github.io/buttons.js') }}"></script> -->
+    @stack('scripts')
   </body>
 </html>

@@ -12,4 +12,6 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js');
+// mix.css('node_modules/filepond/dist/filepond.min.css', 'public/admin/assets/css/filepond.min.css');
+mix.js('resources/js/filepond.js', 'public/admin/assets/js/filepond.js');
 mix.copyDirectory('resources/admin', 'public/admin').version();
