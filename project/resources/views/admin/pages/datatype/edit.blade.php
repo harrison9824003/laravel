@@ -17,6 +17,10 @@
                     <input type="text" name="icon" class="form-control" id="icon" placeholder="" aria-describedby="defaultFormControlHelp" value="{{ $datatype->icon }}">                    
                 </div>
                 <div class="col-6">
+                    <label for="router_path" class="form-label">路由路徑(判斷是否為當下選單)</label>
+                    <input type="text" name="router_path" class="form-control" id="router_path" placeholder="" aria-describedby="defaultFormControlHelp" value="{{ $datatype->router_path }}">                    
+                </div>
+                <div class="col-6">
                     <label class="form-check-label" for="flexSwitchCheckDefault">是否隱藏</label>
                     <div class="form-check form-switch d-flex align-items-center h-100">
                         <input class="form-check-input" 

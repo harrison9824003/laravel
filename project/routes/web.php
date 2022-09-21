@@ -18,13 +18,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(['prefix' => 'adm'], function(){
+Route::group(['prefix' => 'adm', 'middleware' => ['admin.menu']], function(){
     
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
 
     Route::resource('product', 'App\Http\Controllers\ProductController');
     Route::resource('article', 'App\Http\Controllers\ArticleController');
     Route::resource('spec', 'App\Http\Controllers\SpecCategoryController');
+    Route::resource('category', 'App\Http\Controllers\CategoryController');
+    Route::resource('datatypefolder', 'App\Http\Controllers\DataTypeFolderController');
     Route::resource('datatype', 'App\Http\Controllers\DataTypeController')->except(['create', 'store', 'destory']);
 
 });

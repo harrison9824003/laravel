@@ -67,20 +67,45 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-
+        {{-- 執行分類陣列 --}}
+        @foreach ( $admin_menus as $folder )
+            {{-- 執行分類下 Models 陣列 --}}
+            @foreach( $folder as $menu )
+                {{-- 當為陣列第一個時顯示分類名稱 --}}
+                @if($loop->first)
+                    <li class="menu-header small text-uppercase">
+                        <span class="menu-header-text">
+                        @if($menu->folder_id!='0')                             
+                            {{ $menu->folder->name }}
+                        @else 
+                            未定義 
+                        @endif
+                        </span>
+                    </li>
+                @endif
+                
+                {{-- 顯示 Model 連結並判斷是否為當下路徑 --}}
+                <li class="menu-item {{ request()->is($menu->router_path.'/*') || request()->is($menu->router_path) ? 'active' : '' }}">
+                    <a href="{{ url($menu->router_path) }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx {{ $menu->icon }}"></i>
+                        <div data-i18n="Analytics">{{ $menu->name }}</div>
+                    </a>
+                </li>
+            @endforeach
+        @endforeach
         <!-- 商品管理 -->
-        <li class="menu-header small text-uppercase">
+        <!-- <li class="menu-header small text-uppercase">
             <span class="menu-header-text">全站管理</span>
         </li>
-        <li class="menu-item active">
+        <li class="menu-item">
             <a href="{{ route('datatype.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-cog"></i>
                 <div data-i18n="Analytics">Model 模組</div>
             </a>
-        </li>
+        </li> -->
 
         <!-- 商品管理 -->
-        <li class="menu-header small text-uppercase">
+        <!-- <li class="menu-header small text-uppercase">
             <span class="menu-header-text">內容管理</span>
         </li>
         <li class="menu-item">
@@ -100,10 +125,10 @@
                     </a>
                 </li>
             </ul>
-        </li>
+        </li> -->
 
         <!-- 文章管理頁面 -->
-        <li class="menu-item">
+        <!-- <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bxs-notepad"></i>
             <div data-i18n="Account Settings">文章</div>
@@ -120,7 +145,7 @@
                     </a>
                 </li>     
             </ul>
-        </li>
+        </li> -->
 
         <!-- Dashboard -->
         <!-- <li class="menu-item active">

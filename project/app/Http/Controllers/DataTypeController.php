@@ -63,7 +63,7 @@ class DataTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->only(['name', 'icon', 'disabled']);
+        $input = $request->only(['name', 'icon', 'disabled', 'router_path']);
         $rules = [
             'name' => [
                 'required', 
@@ -72,6 +72,7 @@ class DataTypeController extends Controller
             ],
             'icon' => 'nullable|string',
             'disabled' => 'nullable|boolean',
+            'router_path' => 'nullable|string',
         ];
         $validator = Validator::make($input, $rules);
         if($validator->fails()){
@@ -84,10 +85,11 @@ class DataTypeController extends Controller
         $data->name = $input['name'];
         $data->icon = $input['icon'] != '' ? $input['icon'] : 'bx-note';
         $data->disabled = ( isset($input['disabled']) && $input['disabled'] == '1' ) ? '1' : '0';
+        $data->router_path = $input['router_path'] ?? '';
 
         $data->update();
 
-        return redirect()->route('datatype.edit', ['datatype' => $id ]);        
+        return redirect()->route('datatype.edit', ['datatype' => $id ]);
     }
 
     /**

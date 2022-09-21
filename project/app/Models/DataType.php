@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasModelId;
+use App\Models\DataTypeFolder;
 
 class DataType extends Model
 {
@@ -17,6 +18,12 @@ class DataType extends Model
         'name',
         'class_name',
         'disabled',
-        'icon'
+        'icon',
+        'folder_id',
+        'router_path'
     ];
+
+    public function folder(){
+        return $this->hasOne(DataTypeFolder::class, 'id', 'folder_id');
+    }
 }
