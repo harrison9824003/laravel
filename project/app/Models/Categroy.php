@@ -20,4 +20,8 @@ class Categroy extends Model
     public function category() {
         return $this->hasMany(\App\Models\RelationShipCatory::class, 'category_id', 'id');
     }
+
+    public function parent() {
+        return $this->belongsTo(\App\Models\Categroy::class);
+    }
 }

@@ -29,8 +29,19 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
-        return view('admin.pages.product.create');
+        // 全站分類
+        $category = app(\App\Models\Categroy::class);
+        $data = $category->where('parent_id', '0')->get();
+
+        // 規格
+        $spec = app(\App\Models\Shop\SpecCategory::class);
+        $spec_data = $spec->where('parent_id', '0')->get();
+
+        $binding = [
+            'category_parent' => $data,
+            'spec_parent' => $spec_data
+        ];
+        return view('admin.pages.product.create', $binding);
     }
 
     /**

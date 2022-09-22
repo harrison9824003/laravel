@@ -29,4 +29,7 @@ Route::group(['prefix' => 'adm', 'middleware' => ['admin.menu']], function(){
     Route::resource('datatypefolder', 'App\Http\Controllers\DataTypeFolderController');
     Route::resource('datatype', 'App\Http\Controllers\DataTypeController')->except(['create', 'store', 'destory']);
 
+    // API
+    Route::post('/get_childen_category/{category}', [App\Http\Controllers\CategoryController::class, 'get_childen_category'])->name('get_childen_category');
+
 });

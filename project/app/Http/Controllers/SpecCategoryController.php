@@ -67,7 +67,6 @@ class SpecCategoryController extends Controller
         $spec_category->create($input);
 
         return redirect(route('spec.index'));
-
     }
 
     /**
@@ -158,8 +157,7 @@ class SpecCategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
+    {        
         $spec_category = app(\App\Models\Shop\SpecCategory::class);
         $spec_category = $spec_category->findOrFail($id);
         $spec_category->delete();

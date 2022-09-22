@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class DataTypeFolderController extends Controller
 {
@@ -51,7 +52,13 @@ class DataTypeFolderController extends Controller
             'name' => 'required|unique:pj_datatype_folder,name|max:255',
             'datatype' => 'required'
         ];
-        $validator = Validator::make($input, $rules);
+
+        $column_name = [            
+            'name' => '分類名稱',
+            'datatype' => 'models 模組'
+        ];
+
+        $validator = Validator::make($input, $rules, [], $column_name);
         if($validator->fails()){
             return back()->withErrors($validator)->withInput($input);
         }
@@ -124,7 +131,13 @@ class DataTypeFolderController extends Controller
             ],
             'datatype' => 'required'
         ];
-        $validator = Validator::make($input, $rules);
+
+        $column_name = [            
+            'name' => '分類名稱',
+            'datatype' => 'models 模組'
+        ];
+        
+        $validator = Validator::make($input, $rules, [], $column_name);
         if($validator->fails()){
             return back()->withErrors($validator)->withInput($input);
         }
@@ -153,6 +166,15 @@ class DataTypeFolderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $datatypefolder = app(\App\Models\DataTypeFolder::class);
+        $object = $datatypefolder->findOrFail($id);        
+        $datatype = app(\App\Models\DataType::class);
+
+        DB::transaction(function () use ($datatype, $object, $id){
+            $datatype->where('folder_id', $id)->update(['folder_id' => '0']);
+            $object->delete();
+        });        
+
+        return response()->json(['status' => '1', 'msg' => '刪除成功']);
     }
 }
