@@ -87,70 +87,70 @@
 
                 <div class="spec_wapper">
                     <h3>規格</h3>                    
-                    <div class="spec_sub_item row"> 
+                    <div class="spec_sub_item row" data-order="1"> 
                         <div class="col-12">
                             <div class="row">                                
                                 <div class="mb-3 col-2">
-                                    <label for="spec_name_parent" class="form-label">規格分類</label>    
+                                    <label for="spec_name_parent[1]" class="form-label">規格分類</label>    
                                     <div id="category">
                                         <!-- 全站分類 -->
                                         <input
                                             class="form-control"
-                                            list="spec_parent"
-                                            id="spec_parent_name"
+                                            list="spec_parent[1]"
+                                            id="spec_parent_name[1]"
                                             placeholder=""
-                                            name="spec_parent_name"
-                                            value="{{ old('spec_parent_name', '') }}"
+                                            name="spec_parent_name[1]"
+                                            value="{{ old('spec_parent_name[1]', '') }}"
                                         />
-                                        <datalist id="spec_parent">  
+                                        <datalist id="spec_parent[1]">  
                                             @foreach( $spec_parent as $spec )
                                                 <option value="{{ $spec->name }}" data-id="{{ $spec->id }}" />
                                             @endforeach
                                         </datalist>
-                                        <input type="hidden" name="spec_parent" id="spec_parent" value="">
+                                        <input type="hidden" name="spec_parent[1]" id="spec_parent[1]" value="{{ old('spec_parent[1]', '') }}">
                                     </div>                
                                 </div>
                                 <div class="mb-3 col-2">
-                                    <label for="spec_name_childen" class="form-label">全站分類子階層</label>    
+                                    <label for="spec_name_childen[1]" class="form-label">全站分類子階層</label>    
                                     <div id="category">
                                         <!-- 全站分類 -->
                                         <input
                                             class="form-control"
-                                            list="spec_childen"
-                                            id="spec_name_childen"
+                                            list="spec_childen[1]"
+                                            id="spec_name_childen[1]"
                                             placeholder=""
-                                            name="spec_name_childen[]"
-                                            value="{{ old('spec_name_childen', '') }}"
+                                            name="spec_name_childen[1]"
+                                            value="{{ old('spec_name_childen[1]', '') }}"
                                         />
-                                        <datalist id="spec_childen">                            
+                                        <datalist id="spec_childen[1]">                            
                                         </datalist>
-                                        <input type="hidden" name="spec_childen[]" id="spec_childen" value="">
+                                        <input type="hidden" name="spec_childen[1]" id="spec_childen[1]" value="{{ old('spec_childen[1]', '') }}">
                                     </div>                
                                 </div> 
                             </div>                              
                         </div>          
                         <div class="mb-3 col-2">
-                            <label for="spec_reserve" class="form-label">庫存</label> 
-                            <input type="number" name="spec_reserve" class="form-control" id="spec_reserve" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_reserve[1]" class="form-label">庫存</label> 
+                            <input type="number" name="spec_reserve[1]" class="form-control" id="spec_reserve[1]" placeholder="" aria-describedby="defaultFormControlHelp">
                         </div>
                         <div class="mb-3 col-2">
-                            <label for="spec_low_reserve" class="form-label">最低庫存</label> 
-                            <input type="number" name="spec_low_reserve" class="form-control" id="spec_low_reserve" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_low_reserve[1]" class="form-label">最低庫存</label> 
+                            <input type="number" name="spec_low_reserve[1]" class="form-control" id="spec_low_reserve[1]" placeholder="" aria-describedby="defaultFormControlHelp">
                         </div>
                         <div class="mb-3 col-2">
-                            <label for="spec_volume" class="form-label">材積</label> 
-                            <input type="number" name="spec_volume" class="form-control" id="spec_volume" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_volume[1]" class="form-label">材積</label> 
+                            <input type="number" name="spec_volume[1]" class="form-control" id="spec_volume[1]" placeholder="" aria-describedby="defaultFormControlHelp">
                         </div>
                         <div class="mb-3 col-2">
-                            <label for="spec_weight" class="form-label">重量</label> 
-                            <input type="number" name="spec_weight" class="form-control" id="spec_weight" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_weight[1]" class="form-label">重量</label> 
+                            <input type="number" name="spec_weight[1]" class="form-control" id="spec_weight[1]" placeholder="" aria-describedby="defaultFormControlHelp">
                         </div>
                         <div class="mb-3 col-2">
-                            <label for="spec_order" class="form-label">排序</label> 
-                            <input type="number" name="spec_order" class="form-control" id="spec_order" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_order[1]" class="form-label">排序</label> 
+                            <input type="number" name="spec_order[1]" class="form-control" id="spec_order[1]" placeholder="" aria-describedby="defaultFormControlHelp">
                         </div>
                         <div class="mb-3 col-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-icon">
+                            <button type="button" class="btn btn-danger btn-icon spec_delete_btn" id="spec_delete_btn[1]" data-order="1">
                                 <i class='bx bx-message-square-x'></i>
                             </button>
                         </div>
@@ -190,70 +190,70 @@
 
     <!-- template -->
     <template id="spec_template">
-        <div class="spec_sub_item row"> 
+        <div class="spec_sub_item row" data-order="@{{order}}"> 
             <div class="col-12">
                 <div class="row">                                
                     <div class="mb-3 col-2">
-                        <label for="spec_name_parent" class="form-label">規格分類</label>    
-                        <div id="category">
+                        <label for="spec_name_parent[@{{order}}]" class="form-label">規格分類</label>    
+                        <div>
                             <!-- 全站分類 -->
                             <input
                                 class="form-control"
-                                list="spec_parent"
-                                id="spec_parent_name"
+                                list="spec_parent[@{{order}}]"
+                                id="spec_parent_name[@{{order}}]"
                                 placeholder=""
-                                name="spec_parent_name"
-                                value="{{ old('spec_parent_name', '') }}"
+                                name="spec_parent_name[@{{order}}]"
+                                value=""
                             />
-                            <datalist id="spec_parent">  
+                            <datalist id="spec_parent[@{{order}}]">  
                                 @foreach( $spec_parent as $spec )
                                     <option value="{{ $spec->name }}" data-id="{{ $spec->id }}" />
                                 @endforeach
                             </datalist>
-                            <input type="hidden" name="spec_parent" id="spec_parent" value="">
+                            <input type="hidden" name="spec_parent[@{{order}}]" id="spec_parent[@{{order}}]" value="">
                         </div>                
                     </div>
                     <div class="mb-3 col-2">
-                        <label for="spec_name_childen" class="form-label">規格子階層</label>    
-                        <div id="category">
+                        <label for="spec_name_childen[@{{order}}]" class="form-label">規格子階層</label>
+                        <div>
                             <!-- 全站分類 -->
                             <input
                                 class="form-control"
-                                list="spec_childen"
-                                id="spec_name_childen"
+                                list="spec_childen[@{{order}}]"
+                                id="spec_name_childen[@{{order}}]"
                                 placeholder=""
-                                name="spec_name_childen[]"
-                                value="{{ old('spec_name_childen', '') }}"
+                                name="spec_name_childen[@{{order}}]"
+                                value=""
                             />
-                            <datalist id="spec_childen">                            
+                            <datalist id="spec_childen[@{{order}}]">                            
                             </datalist>
-                            <input type="hidden" name="spec_childen[]" id="spec_childen" value="">
+                            <input type="hidden" name="spec_childen[@{{order}}]" id="spec_childen[@{{order}}]" value="">
                         </div>                
                     </div> 
                 </div>                              
             </div>          
             <div class="mb-3 col-2">
-                <label for="spec_reserve" class="form-label">庫存</label> 
-                <input type="number" name="spec_reserve" class="form-control" id="spec_reserve" placeholder="" aria-describedby="defaultFormControlHelp">
+                <label for="spec_reserve[@{{order}}]" class="form-label">庫存</label> 
+                <input type="number" name="spec_reserve[@{{order}}]" class="form-control" id="spec_reserve[@{{order}}]" placeholder="" aria-describedby="defaultFormControlHelp">
             </div>
             <div class="mb-3 col-2">
-                <label for="spec_low_reserve" class="form-label">最低庫存</label> 
-                <input type="number" name="spec_low_reserve" class="form-control" id="spec_low_reserve" placeholder="" aria-describedby="defaultFormControlHelp">
+                <label for="spec_low_reserve[@{{order}}]" class="form-label">最低庫存</label> 
+                <input type="number" name="spec_low_reserve[@{{order}}]" class="form-control" id="spec_low_reserve[@{{order}}]" placeholder="" aria-describedby="defaultFormControlHelp">
             </div>
             <div class="mb-3 col-2">
-                <label for="spec_volume" class="form-label">材積</label> 
-                <input type="number" name="spec_volume" class="form-control" id="spec_volume" placeholder="" aria-describedby="defaultFormControlHelp">
+                <label for="spec_volume[@{{order}}]" class="form-label">材積</label> 
+                <input type="number" name="spec_volume[@{{order}}]" class="form-control" id="spec_volume[@{{order}}]" placeholder="" aria-describedby="defaultFormControlHelp">
             </div>
             <div class="mb-3 col-2">
-                <label for="spec_weight" class="form-label">重量</label> 
-                <input type="number" name="spec_weight" class="form-control" id="spec_weight" placeholder="" aria-describedby="defaultFormControlHelp">
+                <label for="spec_weight[@{{order}}]" class="form-label">重量</label> 
+                <input type="number" name="spec_weight[@{{order}}]" class="form-control" id="spec_weight[@{{order}}]" placeholder="" aria-describedby="defaultFormControlHelp">
             </div>
             <div class="mb-3 col-2">
-                <label for="spec_order" class="form-label">排序</label> 
-                <input type="number" name="spec_order" class="form-control" id="spec_order" placeholder="" aria-describedby="defaultFormControlHelp">
+                <label for="spec_order[@{{order}}]" class="form-label">排序</label> 
+                <input type="number" name="spec_order[@{{order}}]" class="form-control" id="spec_order[@{{order}}]" placeholder="" aria-describedby="defaultFormControlHelp">
             </div>
             <div class="mb-3 col-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger btn-icon">
+                <button type="button" class="btn btn-danger btn-icon spec_delete_btn" id="spec_delete_btn[@{{order}}]" data-order="@{{order}}">
                     <i class='bx bx-message-square-x'></i>
                 </button>
             </div>
@@ -290,7 +290,7 @@
                 $("[name='category_parent']").val(option_obj.data('id'));
             }
             $('#datalistOptions_childen').empty();
-            $('#datalistOptions_childen').hide();
+            $('#category_name_childen').hide();
             $.ajax({
                 url: '/adm/get_childen_category/'+option_obj.data('id'),
                 method: 'post',
@@ -308,7 +308,7 @@
                             template += `<option value='`+res.data[i].name+`' data-id="`+res.data[i].id+`"></option>`;
                         }
                         $('#datalistOptions_childen').append(template);
-                        $('#datalistOptions_childen').show();
+                        $('#category_name_childen').show();
                     } else {
                         alert('此類別無子分類, 請到全站分類設定, 或選擇其他分類!');
                     }
@@ -333,12 +333,77 @@
 
         // 規格新增按鈕        
         $("#add_spec_btn").on('click', function(){
-            console.log('111');
+            let order = parseInt($(".spec_sub_item").last().data('order'));
             let ele = $("#spec_template").clone().html();
-            console.log('222');
-            $(".spec_wapper").append(ele);
-            console.log('333');
+            let newEle = ele.replaceAll('@{{order}}', ++order);            
+            $(".spec_wapper").append(newEle);
+            $("[name='spec_parent_name["+order+"]']").on('change', get_childen_spec);
+            $("[id='spec_delete_btn["+order+"]']").on('click', spec_delete_btn);
         });
+
+        // 規格改變撈子規格資料
+        $("[name^='spec_parent_name[']").on('change', get_childen_spec);
+
+        function get_childen_spec(){
+            let val = $(this).val();
+            let wapper = $(this).parents(".spec_sub_item");
+            let parent_row_order = wapper.data('order');
+            let name_object = $("[name='spec_parent_name["+parent_row_order+"]']");
+            let option_obj = wapper.find('option[value="'+name_object.val()+'"]');
+            // option_obj = $(option_obj);
+            // console.log(option_obj);
+
+            if( option_obj.length > 0 ) {                
+                $("[name='spec_parent["+parent_row_order+"]']").val(option_obj.data('id'));
+            } else {
+                $('[id="spec_childen['+parent_row_order+']"]').empty();
+                $('[id="spec_name_childen['+parent_row_order+']"]').hide();
+                return;
+            }
+            
+            $('[id="spec_childen['+parent_row_order+']"]').empty();
+            $('[id="spec_name_childen['+parent_row_order+']"]').hide();
+            $.ajax({
+                url: '/adm/get_childen_spec/'+option_obj.data('id'),
+                method: 'post',
+                dataType: 'json',
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {},
+                success:function(res) {
+                    
+                    if ( res.data.length != undefined && res.data.length > 0 ) {
+                        let template = '';
+                        for ( var i in res.data ) {
+                            template += `<option value='`+res.data[i].name+`' data-id="`+res.data[i].id+`"></option>`;
+                        }
+                        $('[id="spec_childen['+parent_row_order+']"]').append(template);
+                        $('[id="spec_name_childen['+parent_row_order+']"]').show();
+                    } else {
+                        alert('此類別無子規格, 請到規格分類內設定, 或選擇其他規格!');
+                    }
+                    
+                },
+                error:function(a,b,c) {
+                    console.log(a);
+                    console.log(b);
+                    console.log(c);
+                }
+            });
+        }
+
+        // 規格刪除按鈕
+        $(".spec_delete_btn").on('click', spec_delete_btn);
+
+        function spec_delete_btn() {
+            let sid = $(this).data('sid')
+            if ( sid === undefined ) {
+                console.log('123'); 
+                return 
+            }
+        }
+
     });
     
 </script>

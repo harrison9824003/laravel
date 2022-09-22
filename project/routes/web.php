@@ -31,5 +31,6 @@ Route::group(['prefix' => 'adm', 'middleware' => ['admin.menu']], function(){
 
     // API
     Route::post('/get_childen_category/{category}', [App\Http\Controllers\CategoryController::class, 'get_childen_category'])->name('get_childen_category');
+    Route::post('/get_childen_spec/{spec}', [App\Http\Controllers\ProductController::class, 'get_childen_spec'])->name('get_childen_spec');
 
 });

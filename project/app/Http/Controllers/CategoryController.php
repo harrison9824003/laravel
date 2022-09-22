@@ -198,7 +198,7 @@ class CategoryController extends Controller
                 'error' => $e->getMessage(),
                 'status' => 0
             ]);
-            
+
         }        
 
         return response()->json([
