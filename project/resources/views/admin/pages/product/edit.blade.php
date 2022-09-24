@@ -1,35 +1,32 @@
 @extends('admin.layout.master')
 
 @section('content')
-    <form action="{{ route('product.store') }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('product.edit', ['product', $product->id]) }}" method="post" enctype="multipart/form-data">
         <div class="d-flex flex-column h-100 bg-white p-3 rounded">
-            <div class="row g-3">
+            <div class="row g-3 mb-3">
                 <div class="col-6">
                     <label for="name" class="form-label">商品名稱(*)</label>
-                    <input type="text" name="name" class="form-control" id="name" placeholder="" aria-describedby="defaultFormControlHelp">
-                    <!-- <div id="defaultFormControlHelp" class="form-text">
-                        We'll never share your details with anyone else.
-                    </div> -->
+                    <input type="text" name="name" class="form-control" id="name" placeholder="" aria-describedby="defaultFormControlHelp" value="{{ old('name', $product->name) }}">
                 </div>
                 <div class="col-6">
                     <label for="html5-date-input" class="form-label">上架日期(*)</label>
-                    <input class="form-control" name='start_date' type="date" value="<?= date("Y-m-d"); ?>" id="html5-date-input">
+                    <input class="form-control" name='start_date' type="date" value="{{ old('start_date', date('Y-m-d', strtotime($product->start_date))) }}" id="html5-date-input">
                 </div>
                 <div class="col-6">
                     <label for="price" class="form-label">商品售價(*)</label>
-                    <input type="text" name="price" class="form-control" id="price" placeholder="" aria-describedby="defaultFormControlHelp">                
+                    <input type="text" name="price" class="form-control" id="price" placeholder="" value="{{ old('price', $product->price) }}" aria-describedby="defaultFormControlHelp">                
                 </div>
                 <div class="col-6">
                     <label for="market_price" class="form-label">建議售價</label>
-                    <input type="text" name="market_price" class="form-control" id="market_price" placeholder="" aria-describedby="defaultFormControlHelp">                
+                    <input type="text" name="market_price" class="form-control" id="market_price" placeholder="" value="{{ old('market_price', $product->market_price) }}" aria-describedby="defaultFormControlHelp">                
                 </div>            
                 <div class="col-6">
                     <label for="part_number" class="form-label">店家料號</label>
-                    <input type="text" name="part_number" class="form-control" id="part_number" placeholder="" aria-describedby="defaultFormControlHelp">                
+                    <input type="text" name="part_number" class="form-control" id="part_number" placeholder="" aria-describedby="defaultFormControlHelp" value="{{ old('part_number', $product->part_number) }}">                
                 </div>
                 <div class="col-6">
                     <label for="simple_intro" class="form-label">商品簡介</label>
-                    <textarea name="simple_intro" class="form-control" id="simple_intro" rows="3"></textarea>
+                    <textarea name="simple_intro" class="form-control" id="simple_intro" rows="3">{{ old('sample_intro', $product->simple_intro) }}</textarea>
                 </div>              
                 <div class="text-success">
                     <hr>
@@ -37,7 +34,7 @@
 
                 <div class="mb-3 col-12">
                     <label for="intro" class="form-label">商品介紹(*)</label>
-                    <textarea name="intro" class="form-control ckeditor" id="intro" rows="5"></textarea>
+                    <textarea name="intro" class="form-control ckeditor" id="intro" rows="5">{{ old('intro', $product->intro) }}</textarea>
                 </div>
                 <div class="text-success">
                     <hr>
@@ -54,14 +51,14 @@
                             id="category_name_parent"
                             placeholder="請輸入要搜尋的分類名稱..."
                             name="category_name_parent"
-                            value="{{ old('category_name_parent', '') }}"
+                            value="{{ old('category_name_parent', $product->category->parent->name) }}"
                         />
                         <datalist id="datalistOptions_parent">  
                             @foreach( $category_parent as $category )
                                 <option value="{{ $category->name }}" data-id="{{ $category->id }}" />
                             @endforeach                          
                         </datalist>
-                        <input type="hidden" name="category_parent" id="category_parent" value="">
+                        <input type="hidden" name="category_parent" id="category_parent" value="{{ old('category_parent', $product->category->parent->name) }}">
                     </div>                
                 </div>
                 <div class="mb-3 col-6">
@@ -74,11 +71,14 @@
                             id="category_name_childen"
                             placeholder="請輸入要搜尋的分類名稱..."
                             name="category_name_childen"
-                            value="{{ old('category_name_childen', '') }}"
+                            value="{{ old('category_name_childen', $product->category->name) }}"
                         />
-                        <datalist id="datalistOptions_childen">                            
+                        <datalist id="datalistOptions_childen">   
+                            @foreach( $product->category->parent->childern as $category )
+                                <option value="{{ $category->name }}" data-id="{{ $category->id }}" />
+                            @endforeach             
                         </datalist>
-                        <input type="hidden" name="category_childen" id="category_childen" value="">
+                        <input type="hidden" name="category_childen" id="category_childen" value="{{ old('category_childen', $product->category->id) }}">
                     </div>                
                 </div>
                 <div class="text-success">
@@ -86,78 +86,119 @@
                 </div>
 
                 <div class="spec_wapper">
-                    <h3>規格</h3>                    
-                    <div class="spec_sub_item row" data-order="1"> 
+                    <h3>規格</h3>    
+                    @foreach( $p_specs as $p_spec )                
+                    <div class="spec_sub_item row" data-order="{{ $loop->iteration }}"> 
                         <div class="col-12">
                             <div class="row">                                
                                 <div class="mb-3 col-2">
-                                    <label for="spec_name_parent[1]" class="form-label">規格分類</label>    
+                                    <label for="spec_name_parent[{{ $loop->iteration }}]" class="form-label">規格分類</label>    
                                     <div id="category">
-                                        <!-- 全站分類 -->
+                                        <!-- 規格 -->
                                         <input
                                             class="form-control"
-                                            list="spec_parent_list[1]"
-                                            id="spec_parent_name[1]"
+                                            list="spec_parent_list[{{ $loop->iteration }}]"
+                                            id="spec_parent_name[{{ $loop->iteration }}]"
                                             placeholder=""
-                                            name="spec_parent_name[1]"
-                                            value="{{ old('spec_parent_name[1]', '') }}"
+                                            name="spec_parent_name[{{ $loop->iteration }}]"
+                                            value="{{ old('spec_parent_name[$loop->iteration]', $p_spec->category->parent->name) }}"
                                         />
-                                        <datalist id="spec_parent_list[1]">  
+                                        <datalist id="spec_parent_list[{{ $loop->iteration }}]">  
                                             @foreach( $spec_parent as $spec )
                                                 <option value="{{ $spec->name }}" data-id="{{ $spec->id }}" />
                                             @endforeach
                                         </datalist>
-                                        <input type="hidden" name="spec_parent[1]" id="spec_parent[1]" value="{{ old('spec_parent[1]', '') }}">
+                                        <input type="hidden" 
+                                                name="spec_parent[{{ $loop->iteration }}]" 
+                                                id="spec_parent[{{ $loop->iteration }}]" 
+                                                value="{{ old('spec_parent[$loop->iteration]', $p_spec->category->parent->id) }}">
                                     </div>                
                                 </div>
                                 <div class="mb-3 col-2">
-                                    <label for="spec_name_childen[1]" class="form-label">全站分類子階層</label>    
+                                    <label for="spec_name_childen[{{ $loop->iteration }}]" class="form-label">全站分類子階層</label>    
                                     <div id="category">
                                         <!-- 全站分類 -->
                                         <input
                                             class="form-control"
-                                            list="spec_childen_list[1]"
-                                            id="spec_name_childen[1]"
+                                            list="spec_childen_list[{{ $loop->iteration }}]"
+                                            id="spec_name_childen[{{ $loop->iteration }}]"
                                             placeholder=""
-                                            name="spec_name_childen[1]"
-                                            value="{{ old('spec_name_childen[1]', '') }}"
+                                            name="spec_name_childen[{{ $loop->iteration }}]"
+                                            value="{{ old('spec_name_childen[$loop->iteration]', $p_spec->category->name) }}"
                                         />
-                                        <datalist id="spec_childen_list[1]">                            
+                                        <datalist id="spec_childen_list[{{ $loop->iteration }}]">   
+                                            {{$p_spec->category->parent->childern}}
+                                            @foreach( $p_spec->category->parent->childern as $spec )
+                                                <option value="{{ $spec->name }}" data-id="{{ $spec->id }}" />
+                                            @endforeach
                                         </datalist>
-                                        <input type="hidden" name="spec_childen[1]" id="spec_childen[1]" value="{{ old('spec_childen[1]', '') }}">
+                                        <input type="hidden" 
+                                                name="spec_childen[{{ $loop->iteration }}]" 
+                                                id="spec_childen[{{ $loop->iteration }}]" 
+                                                value="{{ old('spec_childen[$loop->iteration]', $p_spec->category->id) }}">
                                     </div>                
-                                </div> 
+                                </div>
                             </div>                              
                         </div>          
                         <div class="mb-3 col-2">
-                            <label for="spec_reserve[1]" class="form-label">庫存</label> 
-                            <input type="number" name="spec_reserve[1]" class="form-control" id="spec_reserve[1]" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_reserve[{{ $loop->iteration }}]" class="form-label">庫存</label> 
+                            <input type="number" 
+                                    name="spec_reserve[{{ $loop->iteration }}]" 
+                                    class="form-control" 
+                                    id="spec_reserve[{{ $loop->iteration }}]" 
+                                    placeholder="" 
+                                    aria-describedby="defaultFormControlHelp"
+                                    value="{{ old('spec_reserve[$loop->iteration]', $p_spec->reserve_num ) }}" >
                         </div>
                         <div class="mb-3 col-2">
-                            <label for="spec_low_reserve[1]" class="form-label">最低庫存</label> 
-                            <input type="number" name="spec_low_reserve[1]" class="form-control" id="spec_low_reserve[1]" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_low_reserve[{{ $loop->iteration }}]" class="form-label">最低庫存</label> 
+                            <input type="number" 
+                                name="spec_low_reserve[{{ $loop->iteration }}]" 
+                                class="form-control" 
+                                id="spec_low_reserve[{{ $loop->iteration }}]" 
+                                placeholder="" aria-describedby="defaultFormControlHelp"
+                                value="{{ old('spec_low_reserve[$loop->iteration]', $p_spec->low_reserve_num ) }}">
                         </div>
                         <div class="mb-3 col-2">
-                            <label for="spec_volume[1]" class="form-label">材積</label> 
-                            <input type="number" name="spec_volume[1]" class="form-control" id="spec_volume[1]" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_volume[{{ $loop->iteration }}]" class="form-label">材積</label> 
+                            <input type="number" 
+                                    name="spec_volume[{{ $loop->iteration }}]" 
+                                    class="form-control" 
+                                    id="spec_volume[{{ $loop->iteration }}]" 
+                                    placeholder="" 
+                                    aria-describedby="defaultFormControlHelp"
+                                    value="{{ old('spec_volume[$loop->iteration]', $p_spec->volume ) }}">
                         </div>
                         <div class="mb-3 col-2">
-                            <label for="spec_weight[1]" class="form-label">重量</label> 
-                            <input type="number" name="spec_weight[1]" class="form-control" id="spec_weight[1]" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_weight[{{ $loop->iteration }}]" class="form-label">重量</label> 
+                            <input type="number" 
+                                    name="spec_weight[{{ $loop->iteration }}]" 
+                                    class="form-control" 
+                                    id="spec_weight[{{ $loop->iteration }}]" 
+                                    placeholder="" 
+                                    aria-describedby="defaultFormControlHelp"
+                                    value="{{ old('spec_weight[$loop->iteration]', $p_spec->weight ) }}">
                         </div>
                         <div class="mb-3 col-2">
-                            <label for="spec_order[1]" class="form-label">排序</label> 
-                            <input type="number" name="spec_order[1]" class="form-control" id="spec_order[1]" placeholder="" aria-describedby="defaultFormControlHelp">
+                            <label for="spec_order[{{ $loop->iteration }}]" class="form-label">排序</label> 
+                            <input type="number" 
+                                    name="spec_order[{{ $loop->iteration }}]" 
+                                    class="form-control" 
+                                    id="spec_order[{{ $loop->iteration }}]" 
+                                    placeholder="" 
+                                    aria-describedby="defaultFormControlHelp"
+                                    value="{{ old('spec_order[$loop->iteration]', $p_spec->order ) }}">
                         </div>
                         <div class="mb-3 col-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-icon spec_delete_btn" id="spec_delete_btn[1]" data-order="1">
+                            <button type="button" class="btn btn-danger btn-icon spec_delete_btn" id="spec_delete_btn[{{ $loop->iteration }}]" data-order="{{ $loop->iteration }}">
                                 <i class='bx bx-message-square-x'></i>
                             </button>
                         </div>
                         <div class="text-success">
                             <hr>
                         </div>
-                    </div>                                        
+                    </div>
+                    @endforeach                                        
                 </div>
                 <div class="row">
                     <div class="col-12">
@@ -172,12 +213,25 @@
                 </div>
 
                 <div class="col-6">
-                    <label for="productImg" class="form-label">商品圖片</label>
+                    <label for="productImg" class="form-label">上傳商品圖片</label>
                     <input class="form-control" type="file" id="productImg" multiple>
                 </div>  
-                <!-- <div class="col-6">
-                    <label for="formFile" class="form-label">已上傳圖片</label>
-                </div>   -->
+                <div class="col-6">
+                    <div class="row">                        
+                        @foreach( $p_images as $p_image )       
+                            <div class="col-6 position-relative">
+                                <img class="img-fluid" src="{{ url($p_image->path) }}" style="background-position: center center; background-size: cover;" alt="">
+                                <button type="button" 
+                                        class="btn btn-icon btn-danger position-absolute top-0 start-75 translate-middle" 
+                                        onclick="deleteImg(this)" 
+                                        data-id="{{ $p_image->id }}">
+                                    <i class='bx bxs-message-alt-x'></i>
+                                </button>
+                            </div> 
+                        @endforeach
+                    </div>                    
+                </div>
+                
             </div>
 
             <div class="mt-auto text-end">
@@ -275,7 +329,7 @@
         name: 'productImg[]',
         storeAsFile: true,
         allowMultiple: true,
-        maxFiles: 5,
+        maxFiles: 5 - parseInt('{{ $p_images->count() }}'),
         acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg'],
     });
     const pond = FilePond.create(inputElement);  
@@ -381,7 +435,6 @@
                         }
                         $('[id="spec_childen_list['+parent_row_order+']"]').append(template);
                         $('[id="spec_name_childen['+parent_row_order+']"]').show();
-                        
                         $('[id="spec_name_childen['+parent_row_order+']"]').on('change', spec_change);
                     } else {
                         alert('此類別無子規格, 請到規格分類內設定, 或選擇其他規格!');
@@ -414,12 +467,13 @@
         $(".spec_delete_btn").on('click', spec_delete_btn);
 
         function spec_delete_btn() {
+            //let sid = $(this).data('sid')
             let order = $(this).data('order')
-            //console.log(order);
-            //console.log($('.spec_sub_item[data-order="'+order+'"]'));
-            if( $('.spec_sub_item').length > 1 )
-                $('.spec_sub_item[data-order="'+order+'"]').remove();
-            //$('[data-id="'+order+'"]').remove()            
+            $('[data-id="'+order+'"]').remove()
+            /*if ( sid === undefined ) {
+                return 
+            }*/
+            
         }
 
     });

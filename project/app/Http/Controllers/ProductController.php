@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -19,7 +21,7 @@ class ProductController extends Controller
         $paginate = $products->paginate(10); 
         $binding = [
             'paginate' => $paginate
-        ];   
+        ];           
         return view('admin.pages.product.list', $binding);
     }
 
@@ -55,7 +57,7 @@ class ProductController extends Controller
     {
         $input = $request->all();
         $files = $request->file('productImg');
-        
+       
         $rules = [
             'name' => 'required|unique:pj_product|max:255',
             'price' => 'required|integer',
@@ -117,15 +119,75 @@ class ProductController extends Controller
             'part_number',
             'start_date'
         ]);
+
+        if ( !isset($p_input['market_price']) || empty($p_input['market_price']) ) {
+            $p_input['market_price'] = 0;
+        }
+
+        if ( !isset($p_input['simple_intro']) || empty($p_input['simple_intro']) ) {
+            $p_input['simple_intro'] = '';
+        }
+
+        if ( !isset($p_input['simple_intro']) || empty($p_input['simple_intro']) ) {
+            $p_input['part_number'] = '';
+        }
+
+        $p_input['end_date'] = '2035-12-31';
+
         $product = \App\Models\Shop\Product::create($p_input);
-        print_r($product);exit;
+        $product_id = $product->id;
+
+        $p_class = app(\App\Models\Shop\Product::class);
+
+        // 商品圖片
+        if ( is_array($files) && count($files) > 0 ) {
+
+            foreach($files as $file) {
+
+                $path = $file->storeAs('images', md5(time()).".".$file->extension());
+                
+                $img_input = [
+                    'data_id' => $p_class->get_model_id(),
+                    'item_id' => $product_id,
+                    'path' => $path,
+                    'data_type' => $file->getClientMimeType(),
+                    'description' => $file->getClientOriginalName()
+                ];
+                $product_img  = \App\Models\Shop\ProductImage::create($img_input);
+
+            }
+
+        }
         
 
-        echo "<pre>";
-        var_dump($request->hasFile('productImg'));
-        print_r($input);
-        print_r($files);
-        exit;
+        // 規格
+        //$p_spec = app(\App\Models\Shop\ProductSpec::class);
+        foreach($input['spec_parent_name'] as $k => $spec_name ) {
+
+            $spec_input = [
+                'category_id' => $input["spec_childen"][$k],
+                'product_id' => $product_id,
+                'reserve_num' => $input["spec_reserve"][$k],
+                'low_reserve_num' => $input["spec_low_reserve"][$k],
+                'volume' => $input["spec_volume"][$k],
+                'weight' => $input["spec_weight"][$k],
+                'order' => $input["spec_order"][$k]
+            ];
+
+            $p_spec = \App\Models\Shop\ProductSpec::create($spec_input);
+            
+        }
+
+        // 全站分類
+        $category_input = [
+            'data_id' => $p_class->get_model_id(),
+            'category_id' => $input['category_childen'],
+            'item_id' => $product_id
+        ];
+
+        $category = \App\Models\RelationShipCatory::create($category_input);
+        
+        return redirect()->route('product.index');
     }
 
     /**
@@ -147,7 +209,27 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = app(\App\Models\Shop\Product::class);
+        $p_image = app(\App\Models\Shop\ProductImage::class);
+        $p_spec = app(\App\Models\Shop\ProductSpec::class);
+        $r_category = app(\App\Models\RelationShipCatory::class);
+
+        // 全站分類
+        $category = app(\App\Models\Categroy::class);
+
+        // 規格
+        $spec = app(\App\Models\Shop\SpecCategory::class);
+
+        $binding = [
+            'product' => $product->findOrFail($id),
+            'p_images' => $p_image->where('item_id', $id)->where('data_id', $product->get_model_id())->get(),
+            'p_specs' => $p_spec->where('product_id', $id)->get(),
+            'r_category' => $r_category->where('item_id', $id)->where('data_id', $product->get_model_id())->get(),
+            'category_parent' => $category->where('parent_id', '0')->get(),
+            'spec_parent' => $spec->where('parent_id', '0')->get()
+        ];
+
+        return view('admin.pages.product.edit', $binding);
     }
 
     /**
@@ -169,11 +251,56 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
+    {    
+        
+        try{
+            
+            DB::transaction(function() use($id) {
+
+                $product = app(\App\Models\Shop\Product::class);
+                $p_image = app(\App\Models\Shop\ProductImage::class);
+                $p_spec = app(\App\Models\Shop\ProductSpec::class);
+                $r_category = app(\App\Models\RelationShipCatory::class);
+
+                // 商品資料刪除
+                $product->where('id', $id)->delete();
+
+                // 圖片資料
+                $images = $p_image->where('item_id', $id)->where('data_id', $product->get_model_id())->get();
+                $d_image = [];
+                foreach( $images as $k => $image ){
+                    $d_image[] = storage_path($image->path);
+                    $image->delete();
+                    
+                }
+
+                // 規格
+                $p_spec->where('product_id', $id)->delete();
+
+                // 全站分類
+                $r_category->where('item_id', $id)->where('data_id', $product->get_model_id())->delete();
+                
+                // 圖片檔案刪除
+                foreach ( $d_image as $k => $path ){
+                    @unlink(storage_path($path));
+                }
+
+            });
+
+        } catch(Exception $e) {
+
+            return response()->json([
+                'data' => [],
+                'error' => $e->getMessage(),
+                'status' => 0
+            ]);
+
+        } 
+        
+        return response()->json(['status' => '1', 'msg' => '刪除成功']);
     }
 
-    public function get_childen_spec($id) {        
+    public function get_childen_spec($id) {
 
         try {
 

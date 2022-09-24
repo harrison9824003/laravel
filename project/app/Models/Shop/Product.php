@@ -21,12 +21,21 @@ class Product extends Model
         'simple_intro',
         'intro',
         'part_number',
-        'start_date'
+        'start_date',
+        'end_date',
     ];
 
-    public function image()
+    public function images()
     {
         $images = MyImage::where('item_id', $this->id)->where('data_id', $this->get_model_id())->get();
         return $images;
+    }
+
+    public function category() {
+        return $this->hasOneThrough(\App\Models\Categroy::class, \App\Models\RelationShipCatory::class, 'item_id', 'id', 'id', 'category_id');
+    }
+
+    public function specs() {
+        return $this->hasMany(\App\Models\Shop\ProductSpec::class, 'product_id', 'id');
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Categroy;
 use App\Models\DataTypeFolder;
 use App\Models\Shop\Product;
 use App\Models\Shop\SpecCategory;
+use App\Models\Shop\ProductImage;
 
 class ModelSetterProvider extends ServiceProvider
 {
@@ -19,6 +20,7 @@ class ModelSetterProvider extends ServiceProvider
         DataType::class => 4,
         Categroy::class => 5,
         DataTypeFolder::class => 6,
+        ProductImage::class => 7,
     ];
 
     /**
@@ -69,6 +71,13 @@ class ModelSetterProvider extends ServiceProvider
             $category->set_model_id(self::ModelIds[Categroy::class]);
             return $category;
         });
+
+        // 圖片
+        $this->app->singleton(ProductImage::class, function($app) {
+            $productimg = new ProductImage();
+            $productimg->set_model_id(self::ModelIds[ProductImage::class]);
+            return $productimg;
+        });
     }
 
     /**
@@ -89,7 +98,9 @@ class ModelSetterProvider extends ServiceProvider
                     'name' => $model_name,
                     'class_name' => $model_name,
                     'disabled' => 0,
-                    'icon' => 'bx-note'
+                    'icon' => 'bx-note',
+                    'folder_id' => 0,
+                    'router_path' => 'adm'
                 ]);
                 //$datetype->save();                
             }

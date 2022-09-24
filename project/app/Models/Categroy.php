@@ -24,4 +24,9 @@ class Categroy extends Model
     public function parent() {
         return $this->belongsTo(\App\Models\Categroy::class);
     }
+
+    public function childern()
+    {
+        return $this->hasMany(\App\Models\Categroy::class, 'parent_id', 'id');
+    }
 }
