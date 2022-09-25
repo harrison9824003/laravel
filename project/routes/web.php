@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,5 +33,10 @@ Route::group(['prefix' => 'adm', 'middleware' => ['admin.menu']], function(){
     // API
     Route::post('/get_childen_category/{category}', [App\Http\Controllers\CategoryController::class, 'get_childen_category'])->name('get_childen_category');
     Route::post('/get_childen_spec/{spec}', [App\Http\Controllers\ProductController::class, 'get_childen_spec'])->name('get_childen_spec');
+    Route::post('/delete/spec/{id}', [App\Http\Controllers\ProductController::class, 'delete_spec'])->name('delete_spec');
+    Route::post('/delete/img/{id}', [App\Http\Controllers\AdminController::class, 'delete_img'])->name('delete_img');
 
 });
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -1,7 +1,8 @@
 @extends('admin.layout.master')
 
 @section('content')
-    <form action="{{ route('product.edit', ['product', $product->id]) }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('product.update', ['product' => $product->id]) }}" method="post" enctype="multipart/form-data">
+        {{ method_field('PATCH') }}
         <div class="d-flex flex-column h-100 bg-white p-3 rounded">
             <div class="row g-3 mb-3">
                 <div class="col-6">
@@ -58,7 +59,7 @@
                                 <option value="{{ $category->name }}" data-id="{{ $category->id }}" />
                             @endforeach                          
                         </datalist>
-                        <input type="hidden" name="category_parent" id="category_parent" value="{{ old('category_parent', $product->category->parent->name) }}">
+                        <input type="hidden" name="category_parent" id="category_parent" value="{{ old('category_parent', $product->category->parent->id) }}">
                     </div>                
                 </div>
                 <div class="mb-3 col-6">
@@ -79,6 +80,7 @@
                             @endforeach             
                         </datalist>
                         <input type="hidden" name="category_childen" id="category_childen" value="{{ old('category_childen', $product->category->id) }}">
+                        <input type="hidden" name="category_id" value="{{ $r_category->id }}">
                     </div>                
                 </div>
                 <div class="text-success">
@@ -135,7 +137,7 @@
                                         <input type="hidden" 
                                                 name="spec_childen[{{ $loop->iteration }}]" 
                                                 id="spec_childen[{{ $loop->iteration }}]" 
-                                                value="{{ old('spec_childen[$loop->iteration]', $p_spec->category->id) }}">
+                                                value="{{ old('spec_childen[$loop->iteration]', $p_spec->category->id) }}">                                        
                                     </div>                
                                 </div>
                             </div>                              
@@ -190,9 +192,14 @@
                                     value="{{ old('spec_order[$loop->iteration]', $p_spec->order ) }}">
                         </div>
                         <div class="mb-3 col-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger btn-icon spec_delete_btn" id="spec_delete_btn[{{ $loop->iteration }}]" data-order="{{ $loop->iteration }}">
+                            <button type="button" 
+                                    class="btn btn-danger btn-icon spec_delete_btn" 
+                                    id="spec_delete_btn[{{ $loop->iteration }}]" 
+                                    data-order="{{ $loop->iteration }}"
+                                    data-sid="{{ $p_spec->id }}">
                                 <i class='bx bx-message-square-x'></i>
                             </button>
+                            <input type="hidden" name="spec_id[{{ $loop->iteration }}]" value="{{ $p_spec->id }}">
                         </div>
                         <div class="text-success">
                             <hr>
@@ -219,11 +226,10 @@
                 <div class="col-6">
                     <div class="row">                        
                         @foreach( $p_images as $p_image )       
-                            <div class="col-6 position-relative">
+                            <div class="col-6 position-relative mt-5">
                                 <img class="img-fluid" src="{{ url($p_image->path) }}" style="background-position: center center; background-size: cover;" alt="">
                                 <button type="button" 
-                                        class="btn btn-icon btn-danger position-absolute top-0 start-75 translate-middle" 
-                                        onclick="deleteImg(this)" 
+                                        class="btn btn-icon btn-danger position-absolute top-0 start-75 translate-middle img_delete_btn" 
                                         data-id="{{ $p_image->id }}">
                                     <i class='bx bxs-message-alt-x'></i>
                                 </button>
@@ -236,7 +242,7 @@
 
             <div class="mt-auto text-end">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <button type="submit" class="btn btn-primary">新增</button>
+                <button type="submit" class="btn btn-primary">修改</button>
                 <!-- <button type="button" class="btn btn-secondary">儲存草稿</button> -->
             </div>        
         </div>
@@ -310,6 +316,7 @@
                 <button type="button" class="btn btn-danger btn-icon spec_delete_btn" id="spec_delete_btn[@{{order}}]" data-order="@{{order}}">
                     <i class='bx bx-message-square-x'></i>
                 </button>
+                <input type="hidden" name="spec_id[@{{order}}]" value="0">
             </div>
             <div class="text-success">
                 <hr>
@@ -467,13 +474,74 @@
         $(".spec_delete_btn").on('click', spec_delete_btn);
 
         function spec_delete_btn() {
-            //let sid = $(this).data('sid')
-            let order = $(this).data('order')
-            $('[data-id="'+order+'"]').remove()
-            /*if ( sid === undefined ) {
-                return 
-            }*/
             
+            let sid = $(this).data('sid')
+            let order = $(this).data('order')
+
+            if ( $(".spec_sub_item").length < 2 ) {
+                alert("至少需要一個規格")
+                return
+            }
+
+            if ( sid !== undefined ) {
+                $.ajax({
+                    url: '/adm/delete/spec/'+sid,
+                    method: 'post',
+                    dataType: 'json',
+                    headers:{
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {},
+                    success:function(res) {                        
+                        
+                        if(res.status == 1) {
+                            $('[data-order="'+order+'"]').remove()
+                            alert(res.msg);
+                            //window.location.reload();
+                        }
+                        
+                    },
+                    error:function(a,b,c) {
+                        console.log(a);
+                        console.log(b);
+                        console.log(c);
+                    }
+                });
+            } else {
+                // 為頁面中新增的直接移除 element
+                $('[data-order="'+order+'"]').remove()
+            }
+        } 
+        $('.img_delete_btn').on('click', deleteImg);
+        function deleteImg(){
+            let obj = this
+            let id = $(obj).data('id')
+            
+            if ( id !== undefined ) {
+                $.ajax({
+                    url: '/adm/delete/img/'+id,
+                    method: 'post',
+                    dataType: 'json',
+                    headers:{
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {},
+                    success:function(res) {                        
+                        
+                        if(res.status == 1) {
+                            $(obj).remove()
+                            alert(res.msg);
+                            //window.location.reload();
+                        }
+                        
+                    },
+                    error:function(a,b,c) {
+                        console.log(a);
+                        console.log(b);
+                        console.log(c);
+                    }
+                });
+            }
         }
 
     });

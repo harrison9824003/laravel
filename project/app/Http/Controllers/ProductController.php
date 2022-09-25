@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -57,9 +58,9 @@ class ProductController extends Controller
     {
         $input = $request->all();
         $files = $request->file('productImg');
-       
+
         $rules = [
-            'name' => 'required|unique:pj_product|max:255',
+            'name' => 'required|unique:pj_product|max:255',   
             'price' => 'required|integer',
             'market_price' => 'nullable|integer',
             'simple_intro' => 'nullable|string|max:255',
@@ -224,7 +225,7 @@ class ProductController extends Controller
             'product' => $product->findOrFail($id),
             'p_images' => $p_image->where('item_id', $id)->where('data_id', $product->get_model_id())->get(),
             'p_specs' => $p_spec->where('product_id', $id)->get(),
-            'r_category' => $r_category->where('item_id', $id)->where('data_id', $product->get_model_id())->get(),
+            'r_category' => $r_category->where('item_id', $id)->where('data_id', $product->get_model_id())->first(),
             'category_parent' => $category->where('parent_id', '0')->get(),
             'spec_parent' => $spec->where('parent_id', '0')->get()
         ];
@@ -241,7 +242,151 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->all();
+        $files = $request->file('productImg');      
+       
+        $rules = [
+            'name' => [
+                'required', 
+                Rule::unique('pj_product')->ignore($id), 
+                'max:255'
+            ],             
+            'price' => 'required|integer',
+            'market_price' => 'nullable|integer',
+            'simple_intro' => 'nullable|string|max:255',
+            'intro' => 'required|string|max:2000',
+            'part_number' => 'nullable|string|max:100',
+            'start_date' => 'required|date_format:Y-m-d',
+            'productImg.*' => 'mimes:jpg,jpeg,png|max:2000',
+            'category_name_parent' => 'string',
+            'category_parent' => 'integer',
+            'category_name_childen' => 'string',
+            'category_childen' => 'integer',
+            'spec_parent_name.*' => 'string',
+            'spec_parent.*' => 'integer',
+            'spec_name_childen.*' => 'string',
+            'spec_childen.*' => 'integer',
+            'spec_reserve.*' => 'integer|min:1',
+            'spec_low_reserve.*' => 'integer|min:1',
+            'spec_volume.*' => 'string|max:100',
+            'spec_weight.*' => 'string|max:100',
+            'spec_order.*' => 'integer',
+        ];
+
+        $rule_text =[            
+            'productImg.*.mimes' => '僅能上傳格視為 jpg,jpeg,png 圖片',
+            'productImg.*.max' => '圖片最大尺寸為 2MB',
+            'category_name_parent.string' => '全站類別名稱須為文字',
+            'category_parent.integer' => '全站類別id必須為數字',
+            'category_name_childen.string' => '全站子類別名稱須為文字',
+            'category_childen.integer' => '全站子類別id必須為數字',
+            'spec_parent_name.*.string' => '規格分類名稱須為文字',
+            'spec_parent.*.integer' => '規格分類id須為數字',
+            'spec_name_childen.*.string' => '規格子分類名稱須為文字',
+            'spec_childen.*.integer' => '規格子分類id須為數字',
+            'spec_reserve.*.integer' => '庫存必須為數字',
+            'spec_reserve.*.min' => '庫存數須大於等於 :min',
+            'spec_low_reserve.*.integer' => '最小警告值須為數字',
+            'spec_low_reserve.*.min' => '最小警告值須大於等於 :min',
+            'spec_volume.*.string' => '材積須為數字',
+            'spec_volume.*.max' => '材積值長度最大為 :max',
+            'spec_weight.*.string' => '重量須為文字',
+            'spec_weight.*.max' => '重量最大長度須為 :max',
+            'spec_order.*.integer' => '排序值須為數字',
+        ];
+        
+        $validator = Validator::make($input, $rules, $rule_text);
+        if($validator->fails()){
+            return back()->withErrors($validator)->withInput($input);
+        }
+
+        // 商品基本資料
+        $p_input = $request->only([
+            'name',
+            'price',
+            'market_price',
+            'simple_intro',
+            'intro',
+            'part_number',
+            'start_date'
+        ]);
+        
+        if ( !isset($p_input['market_price']) || empty($p_input['market_price']) ) {
+            $p_input['market_price'] = 0;
+        }
+
+        if ( !isset($p_input['simple_intro']) || empty($p_input['simple_intro']) ) {
+            $p_input['simple_intro'] = '';
+        }
+
+        if ( !isset($p_input['simple_intro']) || empty($p_input['simple_intro']) ) {
+            $p_input['part_number'] = '';
+        }
+
+        $p_input['end_date'] = '2035-12-31';
+        $product = app(\App\Models\Shop\Product::class);
+        $product = $product->findOrFail($id);
+        $product_id = $product->id;
+        $product->update($p_input);
+
+        $p_class = app(\App\Models\Shop\Product::class);
+
+        // 商品圖片
+        if ( is_array($files) && count($files) > 0 ) {
+
+            foreach($files as $file) {
+
+                $path = $file->storeAs('images', md5(time()).".".$file->extension());
+                
+                $img_input = [
+                    'data_id' => $p_class->get_model_id(),
+                    'item_id' => $product_id,
+                    'path' => $path,
+                    'data_type' => $file->getClientMimeType(),
+                    'description' => $file->getClientOriginalName()
+                ];
+                $product_img  = \App\Models\Shop\ProductImage::create($img_input);
+
+            }
+
+        }        
+
+        // 規格
+        //$p_spec = app(\App\Models\Shop\ProductSpec::class);
+        foreach($input['spec_parent_name'] as $k => $spec_name ) {
+
+            $spec_input = [
+                'category_id' => $input["spec_childen"][$k],
+                'product_id' => $product_id,
+                'reserve_num' => $input["spec_reserve"][$k],
+                'low_reserve_num' => $input["spec_low_reserve"][$k],
+                'volume' => $input["spec_volume"][$k],
+                'weight' => $input["spec_weight"][$k],
+                'order' => $input["spec_order"][$k]
+            ];
+
+            $p_spec = app(\App\Models\Shop\ProductSpec::class);
+            if ($input["spec_id"][$k] == '0' ) {
+                $p_spec->create($spec_input);
+            } else {
+                $obj = $p_spec->findOrFail($input["spec_id"][$k]);
+                $obj->update($spec_input);
+            }           
+            
+        }
+
+        // 全站分類
+        $category_input = [
+            'data_id' => $p_class->get_model_id(),
+            'category_id' => $input['category_childen'],
+            'item_id' => $product_id
+        ];
+        
+        $category = app(\App\Models\RelationShipCatory::class);
+        $obj = $category->findOrFail($input['category_id']);
+        $obj->update($category_input);
+        
+        return redirect()->route('product.edit', ['product'=>$id]);
     }
 
     /**
@@ -321,5 +466,27 @@ class ProductController extends Controller
             'data' => $data,
             'status' => 1
         ]);
+    }
+
+    public function delete_spec($id)
+    {
+        if( empty($id) ) {
+            return response()->json([
+                'data' => [],
+                'error' => 'empyt id value',
+                'status' => 0
+            ]);
+        }
+
+        $spec = app(\App\Models\Shop\ProductSpec::class);
+        $data = $spec->findOrFail($id);
+        $data->delete();
+
+        return response()->json([
+            'data' => [],
+            'msg' => '刪除成功!',
+            'status' => 1
+        ]);
+
     }
 }
