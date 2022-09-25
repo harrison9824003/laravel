@@ -15,7 +15,7 @@ class DataTypeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {        
         $datatype = app(DataType::class);
         $data = $datatype->paginate(10);
         $binding = [

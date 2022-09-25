@@ -19,7 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(['prefix' => 'adm', 'middleware' => ['admin.menu']], function(){
+Route::group(['prefix' => 'adm', 'middleware' => ['auth', 'admin.menu']], function(){
     
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
 
@@ -37,6 +37,6 @@ Route::group(['prefix' => 'adm', 'middleware' => ['admin.menu']], function(){
     Route::post('/delete/img/{id}', [App\Http\Controllers\AdminController::class, 'delete_img'])->name('delete_img');
 
 });
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes([ 'verify' => true ]);
+Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');

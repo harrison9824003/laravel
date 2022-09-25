@@ -21,7 +21,7 @@
                 <tbody class="table-border-bottom-0">
                     @foreach ( $paginate as $spec_category )
                     <tr>                        
-                        <td width="40%">{{ $spec_category->parent_id != 0 ? $spec_category->parent($spec_category->parent_id)->name : '' }}</td>                        
+                        <td width="40%">{{ $spec_category->parent_id != 0 ? $spec_category->parent->name : '' }}</td>                        
                         <td width="40%">{{ $spec_category->name }}</td>  
                         <td class="text-end">
                             <div class="dropdown">
