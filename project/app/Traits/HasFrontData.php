@@ -18,7 +18,7 @@
          * update_person: 修改人員
          * content: 主內容
          * simple_content: 簡介內容
-         * other: 其他內容 e.g. 商品的規格、分類等, 由頁面本身撈取
+         * other: 其他內容 e.g. 商品的規格、分類等, 由頁面本身判斷顯示
          */
         public function get_front_data() {
 

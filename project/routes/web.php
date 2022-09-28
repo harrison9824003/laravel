@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('main');
 });
 
 Route::group(['prefix' => 'adm', 'middleware' => ['auth', 'admin.menu']], function(){

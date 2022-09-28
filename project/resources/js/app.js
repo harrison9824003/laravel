@@ -5,8 +5,10 @@
  */
 
 require('./bootstrap');
-
 window.Vue = require('vue').default;
+import store from './src/store'
+import router from './src/router'
+
 
 /**
  * The following block of code may be used to automatically register your
@@ -27,6 +29,12 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.config.productionTip = false
 const app = new Vue({
     el: '#app',
+    store,
+    router,
+    mounted() {
+        console.log(this)
+    }
 });
