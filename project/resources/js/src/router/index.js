@@ -4,13 +4,13 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 // 引入 Components
-import Product from '../../components/ProductComponent'
+import indexComponent from '../../components/pages/indexComponent'
 
 export default new VueRouter({
     routes:[
         {
-            path: '/product',
-            component: Product
+            path: '/',
+            component: indexComponent
         }
     ]
 })
