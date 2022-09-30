@@ -15,6 +15,13 @@ class Article extends Model
     protected $fillable = [
         'title',
         'start_date',
-        'content'
+        'end_date',
+        'content',
+        'sub_title',
+        'is_active',
     ];
+
+    public function category() {
+        return $this->hasOneThrough(\App\Models\Categroy::class, \App\Models\RelationShipCatory::class, 'item_id', 'id', 'id', 'category_id');
+    }
 }

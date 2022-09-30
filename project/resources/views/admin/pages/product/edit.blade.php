@@ -226,7 +226,7 @@
                 <div class="col-6">
                     <div class="row">                        
                         @foreach( $p_images as $p_image )       
-                            <div class="col-6 position-relative mt-5">
+                            <div class="col-6 position-relative mt-5 img_block">
                                 <img class="img-fluid" src="{{ url($p_image->path) }}" style="background-position: center center; background-size: cover;" alt="">
                                 <button type="button" 
                                         class="btn btn-icon btn-danger position-absolute top-0 start-75 translate-middle img_delete_btn" 
@@ -369,6 +369,7 @@
                             template += `<option value='`+res.data[i].name+`' data-id="`+res.data[i].id+`"></option>`;
                         }
                         $('#datalistOptions_childen').append(template);
+                        $('#category_name_childen').val('');
                         $('#category_name_childen').show();
                     } else {
                         alert('此類別無子分類, 請到全站分類設定, 或選擇其他分類!');
@@ -529,7 +530,7 @@
                     success:function(res) {                        
                         
                         if(res.status == 1) {
-                            $(obj).remove()
+                            $(obj).closest(".img_block").remove()
                             alert(res.msg);
                             //window.location.reload();
                         }

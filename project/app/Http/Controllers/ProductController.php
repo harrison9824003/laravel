@@ -371,7 +371,7 @@ class ProductController extends Controller
             } else {
                 $obj = $p_spec->findOrFail($input["spec_id"][$k]);
                 $obj->update($spec_input);
-            }           
+            }
             
         }
 
