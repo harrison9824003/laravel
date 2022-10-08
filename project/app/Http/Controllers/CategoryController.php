@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -47,29 +47,16 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $input = $request->only(['name', 'parent_id']);
-        $rules = [
-            'name' => 'required|unique:pj_category,name|max:255',
-            'parent_id' => 'nullable|integer',
-        ];
-
-        $column_name = [
-            'name' => '類別名稱',
-            'parent_id' => '父階層',
-        ];
-
-        $validator = Validator::make($input, $rules, [], $column_name);
-        if($validator->fails()){
-            return back()->withErrors($validator)->withInput($input);
-        }
+        $input = $request->only(['name', 'parent_id', 'display']);       
 
         if ( !isset($input['parent_id']) || empty($input['parent_id']) ) {
             $input['parent_id'] = 0;
         }
 
         $input['order'] = 0;
+        if(isset($input['display'])) $input['display'] = '0';
 
         $category = app(\App\Models\Categroy::class);        
         $category->create($input);
@@ -125,10 +112,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
-        $input = $request->only(['name', 'parent_id', 'order']);
-        $rules = [
+        $input = $request->only(['name', 'parent_id', 'order', 'display']);
+        /*$rules = [
             'name' => [
                 'required', 
                 Rule::unique('pj_category')->ignore($id), 
@@ -136,18 +123,22 @@ class CategoryController extends Controller
             ],
             'parent_id' => 'nullable|integer',
             'order' => 'nullable|integer',
-        ];
+            'display' => 'nullable|integer',
+        ];*/
 
-        $column_name = [
-            'name' => '類別名稱',
-            'parent_id' => '父階層',
-            'order' => '排序'
-        ];
+        // $column_name = [
+        //     'name' => '類別名稱',
+        //     'parent_id' => '父階層',
+        //     'order' => '排序',
+        //     'display' => '是否顯示於前台選單'
+        // ];
 
-        $validator = Validator::make($input, $rules, [], $column_name);
-        if($validator->fails()){
-            return back()->withErrors($validator)->withInput($input);
-        }
+        //$validator = Validator::make($input, $rules, [], $column_name);
+        // if($validator->fails()){
+        //     return back()->withErrors($validator)->withInput($input);
+        // }
+        $validated = $request->validated();
+        
 
         if ( !isset($input['parent_id']) || empty($input['parent_id']) ) {
             $input['parent_id'] = 0;
@@ -162,6 +153,7 @@ class CategoryController extends Controller
         $object->name = $input['name'];
         $object->parent_id = $input['parent_id'];
         $object->order = $input['order'];
+        $object->display = (isset($input['display'])) ? $input['display'] : '0';
         $object->update();
 
         return redirect(route('category.index'));
@@ -205,5 +197,5 @@ class CategoryController extends Controller
             'data' => $data,
             'status' => 1
         ]);
-    }
+    }    
 }
