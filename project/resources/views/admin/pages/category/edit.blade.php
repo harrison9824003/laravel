@@ -28,6 +28,18 @@
                     <label for="order" class="form-label">排序</label>
                     <input type="text" name="order" class="form-control" id="order" placeholder="" aria-describedby="defaultFormControlHelp" value="{{ old('order', $category->order) }}">                    
                 </div>
+                <div class="col-6">     
+                    <label class="form-label" for="defaultCheck1"> 顯示於前台選單內 </label>           
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" 
+                                name="display" 
+                                type="checkbox" 
+                                value="1" 
+                                id="defaultCheck1" 
+                                @if( $category->display ) checked @endif 
+                        />                  
+                    </div>
+                </div>
             </div>
             <div class="mt-3 text-end">
                 <input type="hidden" name="parent_id" value="{{ $category->parent_id }}">

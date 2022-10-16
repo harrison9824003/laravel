@@ -115,30 +115,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, $id)
     {
         $input = $request->only(['name', 'parent_id', 'order', 'display']);
-        /*$rules = [
-            'name' => [
-                'required', 
-                Rule::unique('pj_category')->ignore($id), 
-                'max:255'
-            ],
-            'parent_id' => 'nullable|integer',
-            'order' => 'nullable|integer',
-            'display' => 'nullable|integer',
-        ];*/
-
-        // $column_name = [
-        //     'name' => '類別名稱',
-        //     'parent_id' => '父階層',
-        //     'order' => '排序',
-        //     'display' => '是否顯示於前台選單'
-        // ];
-
-        //$validator = Validator::make($input, $rules, [], $column_name);
-        // if($validator->fails()){
-        //     return back()->withErrors($validator)->withInput($input);
-        // }
-        $validated = $request->validated();
-        
+        $validated = $request->validated();        
 
         if ( !isset($input['parent_id']) || empty($input['parent_id']) ) {
             $input['parent_id'] = 0;

@@ -14,7 +14,8 @@ class Categroy extends Model
     protected $fillable = [
         'parent_id',
         'name',
-        'order'
+        'order',
+        'display'
     ];
 
     public function category() {

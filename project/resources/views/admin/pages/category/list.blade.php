@@ -14,6 +14,7 @@
                     <tr>
                         <th>父階層</th>
                         <th>分類名稱</th>
+                        <th>顯示</th>
                         <th class="text-end">操作</th>
                     </tr>
                 </thead>   
@@ -23,6 +24,7 @@
                     <tr>                        
                         <td width="40%">{{ $category->parent_id != 0 ? $category->parent->name : '' }}</td>                        
                         <td width="40%">{{ $category->name }}</td>  
+                        <td width="20%">{{ $category->display ? '是' : '否' }}</td>  
                         <td class="text-end">
                             <div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

@@ -104,12 +104,41 @@ class FrontController extends Controller
             $datas = $datas->keyBy('id');
             
             // 依序回填到 $r_object 物件內
-            foreach ( $items as $key => $item ) {                
+            foreach ( $items as $key => $item ) {
                 $item->front = new FrontResource($datas[$item->item_id]);
             }
 
         }
         
         return response()->json($r_object);
+    }
+
+    public function mainMenu() {
+        
+        $category = app(\App\Models\Categroy::class);
+        $data = $category->select(['id', 'parent_id', 'name', 'order', 'display'])->where('display', '1')->where('parent_id', '0')->orderBy('order')->get();
+        
+        $menu = [];
+        foreach( $data as $k => $c ) {
+            // 父類別
+            $menu[$k] = $c;
+            
+            // 子類別            
+            if( $category->where('parent_id', $c->id)->where('display', '1')->count() > 0 ) {
+                $childens = [];
+                $childen = $category->select(['id', 'parent_id', 'name', 'order', 'display'])->where('parent_id', $c->id)->where('display', '1')->orderBy('order')->get();
+                foreach( $childen as $c_k => $c_c ) {
+                    $childens[] = $c_c;                    
+                }
+                $menu[$k]->childen = $childens;
+                $menu[$k]->childen_cnt = count($childens);
+            }
+        }
+
+        $state = 0;
+        if (count($menu)) $state = 1;
+        
+        return response()->json(['data' => $menu, 'state' => $state]);
+        
     }
 }

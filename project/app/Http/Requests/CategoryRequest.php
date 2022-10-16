@@ -64,4 +64,21 @@ class CategoryRequest extends FormRequest
 
     //     throw new \Illuminate\Validation\ValidationException($validator, $response);
     // }
+
+    protected function prepareForValidation()
+    {
+        
+        $this->merge([
+            'name' => trim($this->name),
+        ]);
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function($validator){
+            if( true ) {
+                $validator->errors()->add('1111', 'something is faild');
+            }
+        });
+    }
 }

@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::name('front.')->prefix('front')->group(function(){   
 
@@ -25,4 +25,10 @@ Route::name('front.')->prefix('front')->group(function(){
 
     // 顯示單一類別列表
     Route::get('/category/{category}', [\App\Http\Controllers\Api\FrontController::class, 'category'])->name('category');
+
+    
 });
+
+// 前台選單
+Route::get('/menu', [\App\Http\Controllers\Api\FrontController::class, 'mainMenu'])->name('menu');
+

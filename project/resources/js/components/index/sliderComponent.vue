@@ -92,9 +92,14 @@
 </template>
 
 <script>
+import {mapState, mapGetters} from 'vuex'
 export default {
+    computed:{
+        ...mapState('Banner', ['banners'])
+    },
     mounted(){
         console.log('slider component mounted')
+        this.$store.dispatch('Banner/getBanner', '14')
     }
 }
 </script>
