@@ -227,7 +227,7 @@
                     <div class="row">                        
                         @foreach( $p_images as $p_image )       
                             <div class="col-6 position-relative mt-5 img_block">
-                                <img class="img-fluid" src="{{ url($p_image->path) }}" style="background-position: center center; background-size: cover;" alt="">
+                                <img class="img-fluid" src="{{ url('/uploads/'.$p_image->path) }}" style="background-position: center center; background-size: cover;" alt="">
                                 <button type="button" 
                                         class="btn btn-icon btn-danger position-absolute top-0 start-75 translate-middle img_delete_btn" 
                                         data-id="{{ $p_image->id }}">

@@ -95,7 +95,7 @@ class ProductController extends Controller
 
             foreach($files as $file) {
 
-                $path = $file->storeAs('images', md5(time()).".".$file->extension());
+                $path = $file->storeAs('images', md5(time()).".".$file->extension(), 'uploads');
                 
                 $img_input = [
                     'data_id' => $p_class->get_model_id(),
@@ -232,7 +232,7 @@ class ProductController extends Controller
 
             foreach($files as $file) {
 
-                $path = $file->storeAs('images', md5(time()).".".$file->extension());
+                $path = $file->storeAs('images', md5(time()).".".$file->extension(), 'uploads');
                 
                 $img_input = [
                     'data_id' => $p_class->get_model_id(),
@@ -310,7 +310,7 @@ class ProductController extends Controller
                 $images = $p_image->where('item_id', $id)->where('data_id', $product->get_model_id())->get();
                 $d_image = [];
                 foreach( $images as $k => $image ){
-                    $d_image[] = storage_path($image->path);
+                    $d_image[] = public_path($image->path);
                     $image->delete();
                     
                 }
@@ -323,7 +323,7 @@ class ProductController extends Controller
                 
                 // 圖片檔案刪除
                 foreach ( $d_image as $k => $path ){
-                    @unlink(storage_path($path));
+                    @unlink(public_path($path));
                 }
 
             });

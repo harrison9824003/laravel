@@ -2416,16 +2416,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   computed: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapState)('newArrival', ['new_arrivals'])), (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)('newArrival', ['getSlice'])),
@@ -2437,19 +2427,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     console.log('new arrivals component mounted');
     Promise.all([this.$store.dispatch('newArrival/getNewArrival', '5')]).then(function () {
-      console.log('111');
-
-      _this.$nextTick(function () {
-        console.log('222');
-        $(".owl-carousel5").owlCarousel({
-          pagination: false,
-          navigation: true,
-          items: 5,
-          addClassActive: true,
-          itemsCustom: [[0, 1], [320, 1], [480, 2], [660, 2], [700, 3], [768, 3], [992, 4], [1024, 4], [1200, 5], [1400, 5], [1600, 5]]
-        });
-      });
+      _this.$nextTick(function () {});
     }); //this.getProducts(5)
+  },
+  updated: function updated() {
+    console.log('update');
+    $(".owl-carousel5").owlCarousel({
+      pagination: false,
+      navigation: true,
+      items: 5,
+      addClassActive: true,
+      itemsCustom: [[0, 1], [320, 1], [480, 2], [660, 2], [700, 3], [768, 3], [992, 4], [1024, 4], [1200, 5], [1400, 5], [1600, 5]]
+    });
   }
 });
 
@@ -5292,7 +5281,7 @@ var render = function () {
                 _c("img", {
                   staticClass: "img-responsive",
                   attrs: {
-                    src: product.front.other.images[0].path,
+                    src: "/uploads/" + product.front.other.images[0].path,
                     alt: "Berry Lace Dress",
                   },
                 }),

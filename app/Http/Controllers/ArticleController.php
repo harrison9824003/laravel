@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Exception;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -105,7 +103,7 @@ class ArticleController extends Controller
 
             foreach($files as $file) {
 
-                $path = $file->storeAs('images', md5(time()).".".$file->extension());
+                $path = $file->storeAs('images', md5(time()).".".$file->extension(), 'uploads');
                 
                 $img_input = [
                     'data_id' => $a_class->get_model_id(),
@@ -238,7 +236,7 @@ class ArticleController extends Controller
 
             foreach($files as $file) {
 
-                $path = $file->storeAs('images', md5(time()).".".$file->extension());
+                $path = $file->storeAs('images', md5(time()).".".$file->extension(), 'uploads');
                 
                 $img_input = [
                     'data_id' => $a_class->get_model_id(),

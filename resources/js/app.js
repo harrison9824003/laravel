@@ -39,7 +39,6 @@ const app = new Vue({
     router,
     mounted() {
         console.log(this)
-        console.log('app.js')
-        
+        console.log('app.js')        
     }
 });
