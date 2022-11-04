@@ -2,6 +2,8 @@
 /public/hot
 /public/storage
 /public/uploads
+/public/admin
+/public/js
 /public/admin/assets/img
 /resources/admin/assets/img
 /public/front/assets
