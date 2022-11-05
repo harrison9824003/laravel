@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
-// use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-// use Illuminate\Validation\Rule;
 use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
@@ -20,10 +18,10 @@ class ProductController extends Controller
     public function index()
     {
         $products = app(\App\Models\Shop\Product::class);
-        $paginate = $products->paginate(10); 
+        $paginate = $products->paginate(10);
         $binding = [
             'paginate' => $paginate
-        ];           
+        ];
         return view('admin.pages.product.list', $binding);
     }
 
@@ -71,15 +69,15 @@ class ProductController extends Controller
             'start_date'
         ]);
 
-        if ( !isset($p_input['market_price']) || empty($p_input['market_price']) ) {
+        if (!isset($p_input['market_price']) || empty($p_input['market_price'])) {
             $p_input['market_price'] = 0;
         }
 
-        if ( !isset($p_input['simple_intro']) || empty($p_input['simple_intro']) ) {
+        if (!isset($p_input['simple_intro']) || empty($p_input['simple_intro'])) {
             $p_input['simple_intro'] = '';
         }
 
-        if ( !isset($p_input['simple_intro']) || empty($p_input['simple_intro']) ) {
+        if (!isset($p_input['simple_intro']) || empty($p_input['simple_intro'])) {
             $p_input['part_number'] = '';
         }
 
@@ -91,12 +89,12 @@ class ProductController extends Controller
         $p_class = app(\App\Models\Shop\Product::class);
 
         // 商品圖片
-        if ( is_array($files) && count($files) > 0 ) {
+        if (is_array($files) && count($files) > 0) {
 
-            foreach($files as $file) {
+            foreach ($files as $file) {
 
-                $path = $file->storeAs('images', md5(time()).".".$file->extension(), 'uploads');
-                
+                $path = $file->storeAs('images', md5(time()) . "." . $file->extension(), 'uploads');
+
                 $img_input = [
                     'data_id' => $p_class->get_model_id(),
                     'item_id' => $product_id,
@@ -105,15 +103,13 @@ class ProductController extends Controller
                     'description' => $file->getClientOriginalName()
                 ];
                 $product_img  = \App\Models\Shop\ProductImage::create($img_input);
-
             }
-
         }
-        
+
 
         // 規格
         //$p_spec = app(\App\Models\Shop\ProductSpec::class);
-        foreach($input['spec_parent_name'] as $k => $spec_name ) {
+        foreach ($input['spec_parent_name'] as $k => $spec_name) {
 
             $spec_input = [
                 'category_id' => $input["spec_childen"][$k],
@@ -126,7 +122,6 @@ class ProductController extends Controller
             ];
 
             $p_spec = \App\Models\Shop\ProductSpec::create($spec_input);
-            
         }
 
         // 全站分類
@@ -137,7 +132,7 @@ class ProductController extends Controller
         ];
 
         $category = \App\Models\RelationShipCatory::create($category_input);
-        
+
         return redirect()->route('product.index');
     }
 
@@ -193,7 +188,7 @@ class ProductController extends Controller
     public function update(ProductRequest $request, $id)
     {
         $input = $request->all();
-        $files = $request->file('productImg');              
+        $files = $request->file('productImg');
 
         // 商品基本資料
         $p_input = $request->safe()->only([
@@ -205,17 +200,17 @@ class ProductController extends Controller
             'part_number',
             'start_date'
         ]);
-        
-        
-        if ( !isset($p_input['market_price']) || empty($p_input['market_price']) ) {
+
+
+        if (!isset($p_input['market_price']) || empty($p_input['market_price'])) {
             $p_input['market_price'] = 0;
         }
 
-        if ( !isset($p_input['simple_intro']) || empty($p_input['simple_intro']) ) {
+        if (!isset($p_input['simple_intro']) || empty($p_input['simple_intro'])) {
             $p_input['simple_intro'] = '';
         }
 
-        if ( !isset($p_input['simple_intro']) || empty($p_input['simple_intro']) ) {
+        if (!isset($p_input['simple_intro']) || empty($p_input['simple_intro'])) {
             $p_input['part_number'] = '';
         }
 
@@ -228,12 +223,12 @@ class ProductController extends Controller
         $p_class = app(\App\Models\Shop\Product::class);
 
         // 商品圖片
-        if ( is_array($files) && count($files) > 0 ) {
+        if (is_array($files) && count($files) > 0) {
 
-            foreach($files as $file) {
+            foreach ($files as $file) {
 
-                $path = $file->storeAs('images', md5(time()).".".$file->extension(), 'uploads');
-                
+                $path = $file->storeAs('images', md5(time()) . "." . $file->extension(), 'uploads');
+
                 $img_input = [
                     'data_id' => $p_class->get_model_id(),
                     'item_id' => $product_id,
@@ -242,14 +237,12 @@ class ProductController extends Controller
                     'description' => $file->getClientOriginalName()
                 ];
                 $product_img  = \App\Models\Shop\ProductImage::create($img_input);
-
             }
-
-        }        
+        }
 
         // 規格
         //$p_spec = app(\App\Models\Shop\ProductSpec::class);
-        foreach($input['spec_parent_name'] as $k => $spec_name ) {
+        foreach ($input['spec_parent_name'] as $k => $spec_name) {
 
             $spec_input = [
                 'category_id' => $input["spec_childen"][$k],
@@ -262,13 +255,12 @@ class ProductController extends Controller
             ];
 
             $p_spec = app(\App\Models\Shop\ProductSpec::class);
-            if ($input["spec_id"][$k] == '0' ) {
+            if ($input["spec_id"][$k] == '0') {
                 $p_spec->create($spec_input);
             } else {
                 $obj = $p_spec->findOrFail($input["spec_id"][$k]);
                 $obj->update($spec_input);
             }
-            
         }
 
         // 全站分類
@@ -277,12 +269,12 @@ class ProductController extends Controller
             'category_id' => $input['category_childen'],
             'item_id' => $product_id
         ];
-        
+
         $category = app(\App\Models\RelationShipCatory::class);
         $obj = $category->findOrFail($input['category_id']);
         $obj->update($category_input);
-        
-        return redirect()->route('product.edit', ['product'=>$id]);
+
+        return redirect()->route('product.edit', ['product' => $id]);
     }
 
     /**
@@ -292,11 +284,10 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {    
-        
-        try{
-            
-            DB::transaction(function() use($id) {
+    {
+        try {
+
+            DB::transaction(function () use ($id) {
 
                 $product = app(\App\Models\Shop\Product::class);
                 $p_image = app(\App\Models\Shop\ProductImage::class);
@@ -309,10 +300,9 @@ class ProductController extends Controller
                 // 圖片資料
                 $images = $p_image->where('item_id', $id)->where('data_id', $product->get_model_id())->get();
                 $d_image = [];
-                foreach( $images as $k => $image ){
+                foreach ($images as $k => $image) {
                     $d_image[] = public_path($image->path);
                     $image->delete();
-                    
                 }
 
                 // 規格
@@ -320,15 +310,14 @@ class ProductController extends Controller
 
                 // 全站分類
                 $r_category->where('item_id', $id)->where('data_id', $product->get_model_id())->delete();
-                
+
                 // 圖片檔案刪除
-                foreach ( $d_image as $k => $path ){
+                foreach ($d_image as $k => $path) {
                     @unlink(public_path($path));
                 }
-
             });
 
-        } catch(Exception $e) {
+        } catch (Exception $e) {
 
             return response()->json([
                 'data' => [],
@@ -336,12 +325,13 @@ class ProductController extends Controller
                 'status' => 0
             ]);
 
-        } 
-        
+        }
+
         return response()->json(['status' => '1', 'msg' => '刪除成功']);
     }
 
-    public function get_childen_spec($id) {
+    public function get_childen_spec($id)
+    {
 
         try {
 
@@ -355,18 +345,19 @@ class ProductController extends Controller
                 'error' => $e->getMessage(),
                 'status' => 0
             ]);
-            
-        }        
+
+        }
 
         return response()->json([
             'data' => $data,
             'status' => 1
         ]);
+
     }
 
     public function delete_spec($id)
     {
-        if( empty($id) ) {
+        if (empty($id)) {
             return response()->json([
                 'data' => [],
                 'error' => 'empyt id value',
@@ -383,6 +374,5 @@ class ProductController extends Controller
             'msg' => '刪除成功!',
             'status' => 1
         ]);
-
     }
 }

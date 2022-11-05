@@ -10,4 +10,3 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 FilePond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
 
 window.FilePond = FilePond
-
