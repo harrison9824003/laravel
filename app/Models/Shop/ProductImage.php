@@ -8,7 +8,8 @@ use App\Traits\HasModelId;
 
 class ProductImage extends Model
 {
-    use HasFactory, HasModelId;
+    use HasFactory;
+    use HasModelId;
 
     protected $table = 'pj_image';
 

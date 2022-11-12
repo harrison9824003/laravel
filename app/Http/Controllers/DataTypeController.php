@@ -15,7 +15,7 @@ class DataTypeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {        
+    {
         $datatype = app(DataType::class);
         $data = $datatype->paginate(10);
         $binding = [
@@ -66,8 +66,8 @@ class DataTypeController extends Controller
         $input = $request->only(['name', 'icon', 'disabled', 'router_path']);
         $rules = [
             'name' => [
-                'required', 
-                Rule::unique('pj_data_type')->ignore($id), 
+                'required',
+                Rule::unique('pj_data_type')->ignore($id),
                 'max:255'
             ],
             'icon' => 'nullable|string',
@@ -75,7 +75,7 @@ class DataTypeController extends Controller
             'router_path' => 'nullable|string',
         ];
         $validator = Validator::make($input, $rules);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput($input);
         }
 

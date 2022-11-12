@@ -14,6 +14,6 @@ class FrontResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->get_front_data();
+        return $this->getFrontData();
     }
 }

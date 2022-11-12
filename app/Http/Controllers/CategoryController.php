@@ -15,7 +15,7 @@ class CategoryController extends Controller
     public function index()
     {
         $category = app(\App\Models\Categroy::class);
-        $paginate = $category->paginate(10); 
+        $paginate = $category->paginate(10);
         $binding = [
             'paginate' => $paginate
         ];
@@ -29,7 +29,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $category = app(\App\Models\Categroy::class);  
+        $category = app(\App\Models\Categroy::class);
         $parent_category = $category->where('parent_id', '0')->get();
         $category->refresh();
 
@@ -47,16 +47,18 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $input = $request->only(['name', 'parent_id', 'display']);       
+        $input = $request->only(['name', 'parent_id', 'display']);
 
-        if ( !isset($input['parent_id']) || empty($input['parent_id']) ) {
+        if (!isset($input['parent_id']) || empty($input['parent_id'])) {
             $input['parent_id'] = 0;
         }
 
         $input['order'] = 0;
-        if(isset($input['display'])) $input['display'] = '0';
+        if (isset($input['display'])) {
+            $input['display'] = '0';
+        }
 
-        $category = app(\App\Models\Categroy::class);        
+        $category = app(\App\Models\Categroy::class);
         $category->create($input);
 
         return redirect(route('category.index'));
@@ -70,7 +72,6 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-
     }
 
     /**
@@ -81,25 +82,25 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = app(\App\Models\Categroy::class);  
+        $category = app(\App\Models\Categroy::class);
         $parent_category = $category->where('parent_id', '0')->where('id', '!=', $id)->get();
         $category->refresh();
 
         $current_category = $category->findOrFail($id);
         $parent_name = '';
 
-        if( $current_category->parent_id != '0' ) {
-            $parent = $parent_category->filter(function($value, $key) use($current_category) {
+        if ($current_category->parent_id != '0') {
+            $parent = $parent_category->filter(function ($value, $key) use ($current_category) {
                 return ( $value->id == $current_category->parent_id);
-            });            
+            });
             $parent_name = $parent->first()->name;
-        }        
+        }
 
         $binding = [
             'category' => $current_category,
             'parent_category' => $parent_category,
             'parent_name' => $parent_name
-        ];  
+        ];
         return view('admin.pages.category.edit', $binding);
     }
 
@@ -113,17 +114,17 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, $id)
     {
         $input = $request->only(['name', 'parent_id', 'order', 'display']);
-        $validated = $request->validated();        
+        $validated = $request->validated();
 
-        if ( !isset($input['parent_id']) || empty($input['parent_id']) ) {
+        if (!isset($input['parent_id']) || empty($input['parent_id'])) {
             $input['parent_id'] = 0;
         }
 
-        if ( !isset($input['order']) || empty($input['order']) ) {
+        if (!isset($input['order']) || empty($input['order'])) {
             $input['order'] = 0;
         }
 
-        $category = app(\App\Models\Categroy::class);        
+        $category = app(\App\Models\Categroy::class);
         $object = $category->findOrFail($id);
         $object->name = $input['name'];
         $object->parent_id = $input['parent_id'];
@@ -149,28 +150,24 @@ class CategoryController extends Controller
         return response()->json(['status' => '1', 'msg' => '刪除成功']);
     }
 
-    public function get_childen_category($id)
+    public function getChildenCategory($id)
     {
         try {
-
             $category = app(\App\Models\Categroy::class);
             $data = $category->select(['id', 'name', 'parent_id'])
                             ->where('parent_id', $id)
                             ->orderBy('order')->get();
-
         } catch (Exception $e) {
-
             return response()->json([
                 'data' => [],
                 'error' => $e->getMessage(),
                 'status' => 0
             ]);
-
-        }        
+        }
 
         return response()->json([
             'data' => $data,
             'status' => 1
         ]);
-    }    
+    }
 }

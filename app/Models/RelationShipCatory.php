@@ -16,5 +16,4 @@ class RelationShipCatory extends Model
         'category_id',
         'item_id'
     ];
-    
 }

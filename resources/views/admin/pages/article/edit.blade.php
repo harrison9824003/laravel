@@ -127,7 +127,7 @@
             $('#datalistOptions_childen').empty();
             $('#category_name_childen').hide();
             $.ajax({
-                url: '/adm/get_childen_category/'+option_obj.data('id'),
+                url: '/adm/getChildenCategory/'+option_obj.data('id'),
                 method: 'post',
                 dataType: 'json',
                 headers:{

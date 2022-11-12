@@ -16,7 +16,7 @@ class SpecCategoryController extends Controller
     public function index()
     {
         $spec_category = app(\App\Models\Shop\SpecCategory::class);
-        $paginate = $spec_category->paginate(10);        
+        $paginate = $spec_category->paginate(10);
         $binding = [
             'paginate' => $paginate
         ];
@@ -31,7 +31,7 @@ class SpecCategoryController extends Controller
      */
     public function create()
     {
-        $spec_category = app(\App\Models\Shop\SpecCategory::class);  
+        $spec_category = app(\App\Models\Shop\SpecCategory::class);
         $parent_category = $spec_category->where('parent_id', '0')->get();
         $spec_category->refresh();
 
@@ -55,15 +55,15 @@ class SpecCategoryController extends Controller
             'parent_id' => 'nullable|integer',
         ];
         $validator = Validator::make($input, $rules);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput($input);
         }
 
-        if ( !isset($input['parent_id']) || empty($input['parent_id']) ) {
+        if (!isset($input['parent_id']) || empty($input['parent_id'])) {
             $input['parent_id'] = 0;
         }
 
-        $spec_category = app(\App\Models\Shop\SpecCategory::class);        
+        $spec_category = app(\App\Models\Shop\SpecCategory::class);
         $spec_category->create($input);
 
         return redirect(route('spec.index'));
@@ -88,25 +88,25 @@ class SpecCategoryController extends Controller
      */
     public function edit($id)
     {
-        $spec_category = app(\App\Models\Shop\SpecCategory::class);  
+        $spec_category = app(\App\Models\Shop\SpecCategory::class);
         $parent_category = $spec_category->where('parent_id', '0')->where('id', '!=', $id)->get();
         $spec_category->refresh();
 
         $current_spec = $spec_category->findOrFail($id);
         $parent_name = '';
 
-        if( $current_spec->parent_id != '0' ) {
-            $parent = $parent_category->filter(function($value, $key) use($current_spec) {
+        if ($current_spec->parent_id != '0') {
+            $parent = $parent_category->filter(function ($value, $key) use ($current_spec) {
                 return ( $value->id == $current_spec->parent_id);
-            });            
+            });
             $parent_name = $parent->first()->name;
-        }        
+        }
 
         $binding = [
             'spec_category' => $current_spec,
             'parent_category' => $parent_category,
             'parent_name' => $parent_name
-        ];  
+        ];
         return view('admin.pages.product.spec_edit', $binding);
     }
 
@@ -121,30 +121,30 @@ class SpecCategoryController extends Controller
     {
         $input = $request->only(['name', 'parent_id']);
 
-        $spec_category = app(\App\Models\Shop\SpecCategory::class);        
+        $spec_category = app(\App\Models\Shop\SpecCategory::class);
         $spec_category = $spec_category->find($id);
-        
+
         $rules = [
             'name' => [
-                'required', 
-                Rule::unique('pj_spec_category')->ignore($id), 
+                'required',
+                Rule::unique('pj_spec_category')->ignore($id),
                 'max:255'
             ],
             'parent_id' => 'nullable|integer',
         ];
         $validator = Validator::make($input, $rules);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput($input);
         }
 
-        if ( !isset($input['parent_id']) || empty($input['parent_id']) ) {
+        if (!isset($input['parent_id']) || empty($input['parent_id'])) {
             $input['parent_id'] = 0;
         }
 
-        
+
         $spec_category->name = $input['name'];
         $spec_category->parent_id = $input['parent_id'];
-        
+
         $spec_category->save();
 
         return redirect(route('spec.edit', ['spec' => $id]));
@@ -157,7 +157,7 @@ class SpecCategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {        
+    {
         $spec_category = app(\App\Models\Shop\SpecCategory::class);
         $spec_category = $spec_category->findOrFail($id);
         $spec_category->delete();

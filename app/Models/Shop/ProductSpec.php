@@ -10,7 +10,7 @@ class ProductSpec extends Model
     use HasFactory;
 
     protected $table = "pj_product_spec";
- 
+
     protected $fillable = [
         'category_id',
         'product_id',
@@ -21,11 +21,13 @@ class ProductSpec extends Model
         'order'
     ];
 
-    public function product() {
+    public function product()
+    {
         return $this->belongsTo(\App\Models\Shop\Product::class);
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(\App\Models\Shop\SpecCategory::class);
     }
 }

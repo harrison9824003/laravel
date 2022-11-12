@@ -9,7 +9,8 @@ use App\Models\DataTypeFolder;
 
 class DataType extends Model
 {
-    use HasFactory, HasModelId;
+    use HasFactory;
+    use HasModelId;
 
     protected $table = 'pj_data_type';
 
@@ -23,7 +24,8 @@ class DataType extends Model
         'router_path'
     ];
 
-    public function folder(){
+    public function folder()
+    {
         return $this->hasOne(DataTypeFolder::class, 'id', 'folder_id');
     }
 }

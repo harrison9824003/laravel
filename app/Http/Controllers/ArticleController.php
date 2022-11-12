@@ -17,10 +17,10 @@ class ArticleController extends Controller
     public function index()
     {
         $article = app(\App\Models\Article::class);
-        $paginate = $article->paginate(10); 
+        $paginate = $article->paginate(10);
         $binding = [
             'paginate' => $paginate
-        ];           
+        ];
         return view('admin.pages.article.list', $binding);
     }
 
@@ -30,14 +30,14 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {       
+    {
         // 全站分類
         $category = app(\App\Models\Categroy::class);
         $data = $category->where('parent_id', '0')->get();
 
         $binding = [
             'category_parent' => $data,
-        ];            
+        ];
         return view('admin.pages.article.create', $binding);
     }
 
@@ -53,8 +53,8 @@ class ArticleController extends Controller
         $files = $request->file('articleImg');
 
         $rules = [
-            'title' => 'required|unique:pj_article|max:255',   
-            'sub_title' => 'nullable|max:255',   
+            'title' => 'required|unique:pj_article|max:255',
+            'sub_title' => 'nullable|max:255',
             'content' => 'required|string|max:2000',
             'start_date' => 'required|date_format:Y-m-d',
             'articleImg.*' => 'mimes:jpg,jpeg,png|max:2000',
@@ -64,17 +64,17 @@ class ArticleController extends Controller
             'category_childen' => 'integer',
         ];
 
-        $rule_text =[
+        $rule_text = [
             'articleImg.*.mimes' => '僅能上傳格視為 jpg,jpeg,png 圖片',
             'articleImg.*.max' => '圖片最大尺寸為 2MB',
             'category_name_parent.string' => '全站類別名稱須為文字',
             'category_parent.integer' => '全站類別id必須為數字',
             'category_name_childen.string' => '全站子類別名稱須為文字',
-            'category_childen.integer' => '全站子類別id必須為數字',            
+            'category_childen.integer' => '全站子類別id必須為數字',
         ];
-        
+
         $validator = Validator::make($input, $rules, $rule_text);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput($input);
         }
 
@@ -86,10 +86,11 @@ class ArticleController extends Controller
             'start_date'
         ]);
 
-        if ( isset($input['is_active']) )
+        if (isset($input['is_active'])) {
             $a_input['end_date'] = '2035-12-31';
-        else 
+        } else {
             $a_input['end_date'] = date("Y-m-d", strtotime("-1 days"));
+        }
 
         $a_input['is_active'] = $input['is_active'] ?? 0;
 
@@ -99,36 +100,31 @@ class ArticleController extends Controller
         $a_class = app(\App\Models\Article::class);
 
         // 商品圖片
-        if ( is_array($files) && count($files) > 0 ) {
+        if (is_array($files) && count($files) > 0) {
+            foreach ($files as $file) {
+                $path = $file->storeAs('images', md5(time()) . "." . $file->extension(), 'uploads');
 
-            foreach($files as $file) {
-
-                $path = $file->storeAs('images', md5(time()).".".$file->extension(), 'uploads');
-                
                 $img_input = [
-                    'data_id' => $a_class->get_model_id(),
+                    'data_id' => $a_class->getModelId(),
                     'item_id' => $article_id,
                     'path' => $path,
                     'data_type' => $file->getClientMimeType(),
                     'description' => $file->getClientOriginalName()
                 ];
                 $product_img  = \App\Models\Shop\ProductImage::create($img_input);
-
             }
-
         }
 
         // 全站分類
         $category_input = [
-            'data_id' => $a_class->get_model_id(),
+            'data_id' => $a_class->getModelId(),
             'category_id' => $input['category_childen'],
             'item_id' => $article_id
         ];
 
         $category = \App\Models\RelationShipCatory::create($category_input);
-        
-        return redirect()->route('article.index');
 
+        return redirect()->route('article.index');
     }
 
     /**
@@ -160,9 +156,9 @@ class ArticleController extends Controller
 
         $binding = [
             'article' => $article->findOrFail($id),
-            'a_images' => $a_image->where('item_id', $id)->where('data_id', $article->get_model_id())->get(),
-            'r_category' => $r_category->where('item_id', $id)->where('data_id', $article->get_model_id())->first(),
-            'category_parent' => $category->where('parent_id', '0')->get()            
+            'a_images' => $a_image->where('item_id', $id)->where('data_id', $article->getModelId())->get(),
+            'r_category' => $r_category->where('item_id', $id)->where('data_id', $article->getModelId())->first(),
+            'category_parent' => $category->where('parent_id', '0')->get()
         ];
 
         return view('admin.pages.article.edit', $binding);
@@ -182,11 +178,11 @@ class ArticleController extends Controller
 
         $rules = [
             'title' => [
-                'required', 
-                Rule::unique('pj_article')->ignore($id), 
+                'required',
+                Rule::unique('pj_article')->ignore($id),
                 'max:255'
-            ],               
-            'sub_title' => 'nullable|max:255',   
+            ],
+            'sub_title' => 'nullable|max:255',
             'content' => 'required|string|max:2000',
             'start_date' => 'required|date_format:Y-m-d',
             'articleImg.*' => 'mimes:jpg,jpeg,png|max:2000',
@@ -196,17 +192,17 @@ class ArticleController extends Controller
             'category_childen' => 'integer',
         ];
 
-        $rule_text =[
+        $rule_text = [
             'articleImg.*.mimes' => '僅能上傳格視為 jpg,jpeg,png 圖片',
             'articleImg.*.max' => '圖片最大尺寸為 2MB',
             'category_name_parent.string' => '全站類別名稱須為文字',
             'category_parent.integer' => '全站類別id必須為數字',
             'category_name_childen.string' => '全站子類別名稱須為文字',
-            'category_childen.integer' => '全站子類別id必須為數字',            
+            'category_childen.integer' => '全站子類別id必須為數字',
         ];
-        
+
         $validator = Validator::make($input, $rules, $rule_text);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput($input);
         }
 
@@ -218,10 +214,11 @@ class ArticleController extends Controller
             'start_date'
         ]);
 
-        if ( isset($input['is_active']) )
+        if (isset($input['is_active'])) {
             $a_input['end_date'] = '2035-12-31';
-        else 
+        } else {
             $a_input['end_date'] = date("Y-m-d", strtotime("-1 days"));
+        }
 
         $a_input['is_active'] = $input['is_active'] ?? 0;
 
@@ -232,28 +229,24 @@ class ArticleController extends Controller
 
 
         // 商品圖片
-        if ( is_array($files) && count($files) > 0 ) {
+        if (is_array($files) && count($files) > 0) {
+            foreach ($files as $file) {
+                $path = $file->storeAs('images', md5(time()) . "." . $file->extension(), 'uploads');
 
-            foreach($files as $file) {
-
-                $path = $file->storeAs('images', md5(time()).".".$file->extension(), 'uploads');
-                
                 $img_input = [
-                    'data_id' => $a_class->get_model_id(),
+                    'data_id' => $a_class->getModelId(),
                     'item_id' => $article_id,
                     'path' => $path,
                     'data_type' => $file->getClientMimeType(),
                     'description' => $file->getClientOriginalName()
                 ];
                 $product_img  = \App\Models\Shop\ProductImage::create($img_input);
-
             }
-
         }
 
         // 全站分類
         $category_input = [
-            'data_id' => $a_class->get_model_id(),
+            'data_id' => $a_class->getModelId(),
             'category_id' => $input['category_childen'],
             'item_id' => $article_id
         ];
@@ -261,8 +254,8 @@ class ArticleController extends Controller
         $category = app(\App\Models\RelationShipCatory::class);
         $obj = $category->findOrFail($input['category_id']);
         $obj->update($category_input);
-        
-        return redirect()->route('article.edit', ['article'=>$id]);
+
+        return redirect()->route('article.edit', ['article' => $id]);
     }
 
     /**

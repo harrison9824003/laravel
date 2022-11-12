@@ -12,7 +12,8 @@ use App\Traits\HasModelId;
  */
 class SpecCategory extends Model
 {
-    use HasFactory, HasModelId;
+    use HasFactory;
+    use HasModelId;
 
     protected $table = 'pj_spec_category';
 

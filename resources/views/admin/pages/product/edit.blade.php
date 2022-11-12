@@ -353,7 +353,7 @@
             $('#datalistOptions_childen').empty();
             $('#category_name_childen').hide();
             $.ajax({
-                url: '/adm/get_childen_category/'+option_obj.data('id'),
+                url: '/adm/getChildenCategory/'+option_obj.data('id'),
                 method: 'post',
                 dataType: 'json',
                 headers:{
@@ -427,7 +427,7 @@
             $('[id="spec_childen_list['+parent_row_order+']"]').empty();
             $('[id="spec_name_childen['+parent_row_order+']"]').hide();
             $.ajax({
-                url: '/adm/get_childen_spec/'+option_obj.data('id'),
+                url: '/adm/getChildenSpec/'+option_obj.data('id'),
                 method: 'post',
                 dataType: 'json',
                 headers:{

@@ -17,7 +17,7 @@ class DataTypeFolderController extends Controller
     public function index()
     {
         $datatypefolder = app(\App\Models\DataTypeFolder::class);
-        $paginate = $datatypefolder->paginate(10); 
+        $paginate = $datatypefolder->paginate(10);
         $binding = [
             'paginate' => $paginate
         ];
@@ -53,19 +53,19 @@ class DataTypeFolderController extends Controller
             'datatype' => 'required'
         ];
 
-        $column_name = [            
+        $column_name = [
             'name' => '分類名稱',
             'datatype' => 'models 模組'
         ];
 
         $validator = Validator::make($input, $rules, [], $column_name);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput($input);
         }
 
         $input['models'] = json_encode($input['datatype']);
 
-        $datatypefolder = app(\App\Models\DataTypeFolder::class);        
+        $datatypefolder = app(\App\Models\DataTypeFolder::class);
         $datatypefolder->create($input);
         $last_id = $datatypefolder->latest()->first()->id;
 
@@ -94,12 +94,12 @@ class DataTypeFolderController extends Controller
      */
     public function edit($id)
     {
-        $datatypefolder = app(\App\Models\DatatypeFolder::class);  
+        $datatypefolder = app(\App\Models\DatatypeFolder::class);
 
         $data = $datatypefolder->findOrFail($id);
-        $datatype = app(\App\Models\Datatype::class);  
+        $datatype = app(\App\Models\Datatype::class);
         $datatypes = json_decode($data->models, 1);
-        $datatype_data = $datatype->where(function($query) use ($datatypes){
+        $datatype_data = $datatype->where(function ($query) use ($datatypes) {
             $query->where('folder_id', '0')
                 ->orWhereIn('id', $datatypes);
         })->get();
@@ -108,8 +108,8 @@ class DataTypeFolderController extends Controller
             'datatypefolder' => $data,
             'datatypes' => $datatype_data,
             'datatypes_exists' => $datatypes
-        ];  
-        
+        ];
+
         return view('admin.pages.datatypefolder.edit', $binding);
     }
 
@@ -125,26 +125,26 @@ class DataTypeFolderController extends Controller
         $input = $request->only(['name', 'datatype']);
         $rules = [
             'name' => [
-                'required', 
-                Rule::unique('pj_datatype_folder')->ignore($id), 
+                'required',
+                Rule::unique('pj_datatype_folder')->ignore($id),
                 'max:255'
             ],
             'datatype' => 'required'
         ];
 
-        $column_name = [            
+        $column_name = [
             'name' => '分類名稱',
             'datatype' => 'models 模組'
         ];
-        
+
         $validator = Validator::make($input, $rules, [], $column_name);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator)->withInput($input);
         }
 
         $input['models'] = json_encode($input['datatype']);
 
-        $datatypefolder = app(\App\Models\DataTypeFolder::class);        
+        $datatypefolder = app(\App\Models\DataTypeFolder::class);
         $datatypefolder->findOrFail($id);
 
         $datatypefolder->name = $input['name'];
@@ -167,13 +167,13 @@ class DataTypeFolderController extends Controller
     public function destroy($id)
     {
         $datatypefolder = app(\App\Models\DataTypeFolder::class);
-        $object = $datatypefolder->findOrFail($id);        
+        $object = $datatypefolder->findOrFail($id);
         $datatype = app(\App\Models\DataType::class);
 
-        DB::transaction(function () use ($datatype, $object, $id){
+        DB::transaction(function () use ($datatype, $object, $id) {
             $datatype->where('folder_id', $id)->update(['folder_id' => '0']);
             $object->delete();
-        });        
+        });
 
         return response()->json(['status' => '1', 'msg' => '刪除成功']);
     }

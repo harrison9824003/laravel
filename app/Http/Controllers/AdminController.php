@@ -6,15 +6,16 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         return view('admin.index');
     }
 
     // 刪除全站圖片
-    public function delete_img($id)
+    public function deleteImg($id)
     {
 
-        if( empty($id) ) {
+        if (empty($id)) {
             return response()->json([
                 'data' => [],
                 'error' => 'empyt id value',
@@ -33,6 +34,5 @@ class AdminController extends Controller
             'msg' => '刪除成功!',
             'status' => 1
         ]);
-
     }
 }

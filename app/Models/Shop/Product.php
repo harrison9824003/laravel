@@ -9,10 +9,12 @@ use App\Traits\HasFrontData;
 
 class Product extends Model
 {
-    use HasFactory,HasModelId,HasFrontData;
+    use HasFactory;
+    use HasModelId;
+    use HasFrontData;
 
     protected $table = 'pj_product';
-    
+
     protected $fillable = [
         'name',
         'price',
@@ -25,22 +27,32 @@ class Product extends Model
     ];
 
     public function images()
-    {        
+    {
         $model_app = app(\App\Models\Shop\Product::class);
-        return $this->hasMany(\App\Models\Shop\ProductImage::class, 'item_id', 'id')->where('data_id', $model_app->get_model_id());
+        return $this->hasMany(\App\Models\Shop\ProductImage::class, 'item_id', 'id')
+            ->where('data_id', $model_app->getModelId());
     }
 
-    public function category() {
-        return $this->hasOneThrough(\App\Models\Categroy::class, \App\Models\RelationShipCatory::class, 'item_id', 'id', 'id', 'category_id');
+    public function category()
+    {
+        return $this->hasOneThrough(
+            \App\Models\Categroy::class,
+            \App\Models\RelationShipCatory::class,
+            'item_id',
+            'id',
+            'id',
+            'category_id'
+        );
     }
 
-    public function specs() {
+    public function specs()
+    {
         return $this->hasMany(\App\Models\Shop\ProductSpec::class, 'product_id', 'id');
     }
 
     /**
      * 回傳前台統一格式
-     * 
+     *
      * category: 網站總分類
      * title: 資料標題
      * sub_title: 資料副標題
@@ -51,8 +63,9 @@ class Product extends Model
      * content: 主內容
      * simple_content: 簡介內容
      * other: 其他內容 e.g. 商品的規格、分類等, 由頁面本身判斷顯示
-    */
-    public function get_front_data() {
+     */
+    public function getFrontData()
+    {
 
         return [
             'category' => strip_tags($this->category->name),
@@ -69,6 +82,5 @@ class Product extends Model
                 'specs' => $this->specs
             ]
         ];
-
     }
 }

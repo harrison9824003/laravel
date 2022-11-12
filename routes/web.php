@@ -31,10 +31,10 @@ Route::group(['prefix' => 'adm', 'middleware' => ['auth', 'admin.menu']], functi
     Route::resource('datatype', 'App\Http\Controllers\DataTypeController')->except(['create', 'store', 'destory']);
 
     // API
-    Route::post('/get_childen_category/{category}', [App\Http\Controllers\CategoryController::class, 'get_childen_category'])->name('get_childen_category');
-    Route::post('/get_childen_spec/{spec}', [App\Http\Controllers\ProductController::class, 'get_childen_spec'])->name('get_childen_spec');
-    Route::post('/delete/spec/{id}', [App\Http\Controllers\ProductController::class, 'delete_spec'])->name('delete_spec');
-    Route::post('/delete/img/{id}', [App\Http\Controllers\AdminController::class, 'delete_img'])->name('delete_img');
+    Route::post('/getChildenCategory/{category}', [App\Http\Controllers\CategoryController::class, 'getChildenCategory'])->name('getChildenCategory');
+    Route::post('/getChildenSpec/{spec}', [App\Http\Controllers\ProductController::class, 'getChildenSpec'])->name('getChildenSpec');
+    Route::post('/delete/spec/{id}', [App\Http\Controllers\ProductController::class, 'deleteSpec'])->name('deleteSpec');
+    Route::post('/delete/img/{id}', [App\Http\Controllers\AdminController::class, 'deleteImg'])->name('deleteImg');
 
 });
 

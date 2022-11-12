@@ -17,10 +17,10 @@ class ForgotPasswordController extends Controller
     | your application to your users. Feel free to explore this trait.
     |
     */
-
     use SendsPasswordResetEmails;
 
-    public function showLinkRequestForm() {
+    public function showLinkRequestForm()
+    {
         return view('admin.pages.user.reset');
     }
 }

@@ -90,13 +90,11 @@ class ProductController extends Controller
 
         // 商品圖片
         if (is_array($files) && count($files) > 0) {
-
             foreach ($files as $file) {
-
                 $path = $file->storeAs('images', md5(time()) . "." . $file->extension(), 'uploads');
 
                 $img_input = [
-                    'data_id' => $p_class->get_model_id(),
+                    'data_id' => $p_class->getModelId(),
                     'item_id' => $product_id,
                     'path' => $path,
                     'data_type' => $file->getClientMimeType(),
@@ -110,7 +108,6 @@ class ProductController extends Controller
         // 規格
         //$p_spec = app(\App\Models\Shop\ProductSpec::class);
         foreach ($input['spec_parent_name'] as $k => $spec_name) {
-
             $spec_input = [
                 'category_id' => $input["spec_childen"][$k],
                 'product_id' => $product_id,
@@ -126,7 +123,7 @@ class ProductController extends Controller
 
         // 全站分類
         $category_input = [
-            'data_id' => $p_class->get_model_id(),
+            'data_id' => $p_class->getModelId(),
             'category_id' => $input['category_childen'],
             'item_id' => $product_id
         ];
@@ -168,9 +165,9 @@ class ProductController extends Controller
 
         $binding = [
             'product' => $product->findOrFail($id),
-            'p_images' => $p_image->where('item_id', $id)->where('data_id', $product->get_model_id())->get(),
+            'p_images' => $p_image->where('item_id', $id)->where('data_id', $product->getModelId())->get(),
             'p_specs' => $p_spec->where('product_id', $id)->get(),
-            'r_category' => $r_category->where('item_id', $id)->where('data_id', $product->get_model_id())->first(),
+            'r_category' => $r_category->where('item_id', $id)->where('data_id', $product->getModelId())->first(),
             'category_parent' => $category->where('parent_id', '0')->get(),
             'spec_parent' => $spec->where('parent_id', '0')->get()
         ];
@@ -224,13 +221,11 @@ class ProductController extends Controller
 
         // 商品圖片
         if (is_array($files) && count($files) > 0) {
-
             foreach ($files as $file) {
-
                 $path = $file->storeAs('images', md5(time()) . "." . $file->extension(), 'uploads');
 
                 $img_input = [
-                    'data_id' => $p_class->get_model_id(),
+                    'data_id' => $p_class->getModelId(),
                     'item_id' => $product_id,
                     'path' => $path,
                     'data_type' => $file->getClientMimeType(),
@@ -243,7 +238,6 @@ class ProductController extends Controller
         // 規格
         //$p_spec = app(\App\Models\Shop\ProductSpec::class);
         foreach ($input['spec_parent_name'] as $k => $spec_name) {
-
             $spec_input = [
                 'category_id' => $input["spec_childen"][$k],
                 'product_id' => $product_id,
@@ -265,7 +259,7 @@ class ProductController extends Controller
 
         // 全站分類
         $category_input = [
-            'data_id' => $p_class->get_model_id(),
+            'data_id' => $p_class->getModelId(),
             'category_id' => $input['category_childen'],
             'item_id' => $product_id
         ];
@@ -286,7 +280,6 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-
             DB::transaction(function () use ($id) {
 
                 $product = app(\App\Models\Shop\Product::class);
@@ -298,7 +291,7 @@ class ProductController extends Controller
                 $product->where('id', $id)->delete();
 
                 // 圖片資料
-                $images = $p_image->where('item_id', $id)->where('data_id', $product->get_model_id())->get();
+                $images = $p_image->where('item_id', $id)->where('data_id', $product->getModelId())->get();
                 $d_image = [];
                 foreach ($images as $k => $image) {
                     $d_image[] = public_path($image->path);
@@ -309,53 +302,45 @@ class ProductController extends Controller
                 $p_spec->where('product_id', $id)->delete();
 
                 // 全站分類
-                $r_category->where('item_id', $id)->where('data_id', $product->get_model_id())->delete();
+                $r_category->where('item_id', $id)->where('data_id', $product->getModelId())->delete();
 
                 // 圖片檔案刪除
                 foreach ($d_image as $k => $path) {
                     @unlink(public_path($path));
                 }
             });
-
         } catch (Exception $e) {
-
             return response()->json([
                 'data' => [],
                 'error' => $e->getMessage(),
                 'status' => 0
             ]);
-
         }
 
         return response()->json(['status' => '1', 'msg' => '刪除成功']);
     }
 
-    public function get_childen_spec($id)
+    public function getChildenSpec($id)
     {
 
         try {
-
             $spec = app(\App\Models\Shop\SpecCategory::class);
             $data = $spec->select(['id', 'name', 'parent_id'])->where('parent_id', $id)->get();
-
         } catch (Exception $e) {
-
             return response()->json([
                 'data' => [],
                 'error' => $e->getMessage(),
                 'status' => 0
             ]);
-
         }
 
         return response()->json([
             'data' => $data,
             'status' => 1
         ]);
-
     }
 
-    public function delete_spec($id)
+    public function deleteSpec($id)
     {
         if (empty($id)) {
             return response()->json([

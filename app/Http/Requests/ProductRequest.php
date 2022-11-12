@@ -26,7 +26,9 @@ class ProductRequest extends FormRequest
     {
         $id = $this->route('product');
         $unique_name = Rule::unique('pj_product');
-        if ($id != '')  $unique_name->ignore($id);
+        if ($id != '') {
+            $unique_name->ignore($id);
+        }
         return [
             'name' => [
                 'required',

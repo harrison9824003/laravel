@@ -28,7 +28,9 @@ class CategoryRequest extends FormRequest
     {
         $id = $this->input('id');
         $unique_name = Rule::unique('pj_category');
-        if ($id != '')  $unique_name->ignore($id);
+        if ($id != '') {
+            $unique_name->ignore($id);
+        }
 
         return [
             'name' => [

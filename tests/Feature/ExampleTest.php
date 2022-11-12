@@ -2,17 +2,19 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Database\Events\DatabaseRefreshed;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use DatabaseRefreshed;
+
     /**
      * A basic test example.
      *
      * @return void
      */
-    public function test_example()
+    public function testExample()
     {
         $response = $this->get('/');
 

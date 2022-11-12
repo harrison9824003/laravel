@@ -10,7 +10,7 @@ class FrontController extends Controller
 {
     // 列表頁顯示筆數
     protected $page_count = 15;
-    
+
     // 小區塊顯示筆數
     protected $block_count = 5;
 
@@ -21,7 +21,6 @@ class FrontController extends Controller
      */
     public function index()
     {
-        
     }
 
     /**
@@ -32,7 +31,6 @@ class FrontController extends Controller
      */
     public function store(Request $request)
     {
-        
     }
 
     /**
@@ -50,11 +48,11 @@ class FrontController extends Controller
         // 在關係表中查到該筆資料屬於哪一個模組
         $datetype = app(\App\Models\DataType::class);
         $d_object = $datetype->findOrFail($r_object->data_id);
-        
+
         // 建立 eloquent
-        $m_object = new $d_object->class_name;
+        $m_object = new $d_object->class_name();
         $data = $m_object->findOrFail($r_object->item_id);
-        
+
         return new FrontResource($data);
     }
 
@@ -67,7 +65,6 @@ class FrontController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
     }
 
     /**
@@ -78,57 +75,60 @@ class FrontController extends Controller
      */
     public function destroy($id)
     {
-        
     }
 
-    public function category($id){
+    public function category($id)
+    {
 
         // 模組與資料的關係表
         $relation = app(\App\Models\RelationShipCatory::class);
         $r_object = $relation->where('category_id', $id)->paginate($this->page_count);
-        
+
         // 模組
         $subset = $r_object->groupBy('data_id');
-        
+
         $datetype = app(\App\Models\DataType::class);
-        foreach($subset as $model_id => $items ) {            
-            
+        foreach ($subset as $model_id => $items) {
             $d_object = $datetype->findOrFail($model_id);
 
             // 建立 eloquent
-            $m_object = new $d_object->class_name;
+            $m_object = new $d_object->class_name();
             // 取出所有資料 id
             $datas_id = array_column($items->toArray(), 'item_id');
-            $datas = $m_object->whereIn('id', $datas_id)->get(); 
-            // 將 key 改為資料的 id   
+            $datas = $m_object->whereIn('id', $datas_id)->get();
+            // 將 key 改為資料的 id
             $datas = $datas->keyBy('id');
-            
+
             // 依序回填到 $r_object 物件內
-            foreach ( $items as $key => $item ) {
+            foreach ($items as $key => $item) {
                 $item->front = new FrontResource($datas[$item->item_id]);
             }
-
         }
-        
+
         return response()->json($r_object);
     }
 
-    public function mainMenu() {
-        
+    public function mainMenu()
+    {
+
         $category = app(\App\Models\Categroy::class);
-        $data = $category->select(['id', 'parent_id', 'name', 'order', 'display'])->where('display', '1')->where('parent_id', '0')->orderBy('order')->get();
-        
+        $data = $category->select(['id', 'parent_id', 'name', 'order', 'display'])
+            ->where('display', '1')->where('parent_id', '0')
+            ->orderBy('order')->get();
+
         $menu = [];
-        foreach( $data as $k => $c ) {
+        foreach ($data as $k => $c) {
             // 父類別
             $menu[$k] = $c;
-            
-            // 子類別            
-            if( $category->where('parent_id', $c->id)->where('display', '1')->count() > 0 ) {
+
+            // 子類別
+            if ($category->where('parent_id', $c->id)->where('display', '1')->count() > 0) {
                 $childens = [];
-                $childen = $category->select(['id', 'parent_id', 'name', 'order', 'display'])->where('parent_id', $c->id)->where('display', '1')->orderBy('order')->get();
-                foreach( $childen as $c_k => $c_c ) {
-                    $childens[] = $c_c;                    
+                $childen = $category->select(['id', 'parent_id', 'name', 'order', 'display'])
+                    ->where('parent_id', $c->id)
+                    ->where('display', '1')->orderBy('order')->get();
+                foreach ($childen as $c_k => $c_c) {
+                    $childens[] = $c_c;
                 }
                 $menu[$k]->childen = $childens;
                 $menu[$k]->childen_cnt = count($childens);
@@ -136,9 +136,10 @@ class FrontController extends Controller
         }
 
         $state = 0;
-        if (count($menu)) $state = 1;
-        
+        if (count($menu)) {
+            $state = 1;
+        }
+
         return response()->json(['data' => $menu, 'state' => $state]);
-        
     }
 }

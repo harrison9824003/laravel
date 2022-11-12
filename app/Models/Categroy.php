@@ -8,7 +8,8 @@ use App\Traits\HasModelId;
 
 class Categroy extends Model
 {
-    use HasFactory, HasModelId;
+    use HasFactory;
+    use HasModelId;
 
     protected $table = 'pj_category';
     protected $fillable = [
@@ -18,11 +19,13 @@ class Categroy extends Model
         'display'
     ];
 
-    public function category() {
+    public function category()
+    {
         return $this->hasMany(\App\Models\RelationShipCatory::class, 'category_id', 'id');
     }
 
-    public function parent() {
+    public function parent()
+    {
         return $this->belongsTo(\App\Models\Categroy::class);
     }
 

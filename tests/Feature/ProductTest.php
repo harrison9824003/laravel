@@ -16,7 +16,7 @@ class ProductTest extends TestCase
      *
      * @return void
      */
-    public function test_get_product_admin()
+    public function testGetProductAdmin()
     {
         $user = User::findOrFail(5);
         $response = $this->actingAs($user)->withHeaders([
@@ -26,10 +26,10 @@ class ProductTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_get_menu()
+    public function testGetMenu()
     {
         $response = $this->getJson('api/menu');
-        
+
         $response->assertStatus(200)->assertJsonStructure(['data']);
     }
 }

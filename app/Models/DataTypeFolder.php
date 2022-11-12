@@ -8,7 +8,8 @@ use App\Traits\HasModelId;
 
 class DataTypeFolder extends Model
 {
-    use HasFactory, HasModelId;
+    use HasFactory;
+    use HasModelId;
 
     protected $table = 'pj_datatype_folder';
 
