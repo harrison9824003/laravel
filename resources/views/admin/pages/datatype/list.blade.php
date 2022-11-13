@@ -29,6 +29,7 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="{{ route('datatype.edit', ['datatype' => $datatype->id]) }}"><i class="bx bx-edit-alt me-1"></i> 編輯</a>
+                                    <a class="dropdown-item" href="{{ route('permission.index', ['datatype' => $datatype->id]) }}"><i class="bx bx-edit-alt me-1"></i> 權限設定</a>
                                 </div>
                             </div>
                         </td>

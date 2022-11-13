@@ -24,6 +24,7 @@ class Product extends Model
         'part_number',
         'start_date',
         'end_date',
+        'user_id',
     ];
 
     public function images()

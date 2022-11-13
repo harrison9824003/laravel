@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ProductRequest;
+use App\Models\RelationShipCatory;
+use App\Models\Shop\ProductImage;
+use App\Models\Shop\ProductSpec;
+use App\Models\Shop\Product;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\ProductRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProductController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +22,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = app(\App\Models\Shop\Product::class);
+        $products = app(Product::class);
         $paginate = $products->paginate(10);
         $binding = [
             'paginate' => $paginate
@@ -83,10 +88,12 @@ class ProductController extends Controller
 
         $p_input['end_date'] = '2035-12-31';
 
-        $product = \App\Models\Shop\Product::create($p_input);
+        $p_input = auth()->id();
+
+        $product = Product::create($p_input);
         $product_id = $product->id;
 
-        $p_class = app(\App\Models\Shop\Product::class);
+        $p_class = app(Product::class);
 
         // 商品圖片
         if (is_array($files) && count($files) > 0) {
@@ -100,13 +107,11 @@ class ProductController extends Controller
                     'data_type' => $file->getClientMimeType(),
                     'description' => $file->getClientOriginalName()
                 ];
-                $product_img  = \App\Models\Shop\ProductImage::create($img_input);
+                productImage::create($img_input);
             }
         }
 
-
         // 規格
-        //$p_spec = app(\App\Models\Shop\ProductSpec::class);
         foreach ($input['spec_parent_name'] as $k => $spec_name) {
             $spec_input = [
                 'category_id' => $input["spec_childen"][$k],
@@ -118,7 +123,7 @@ class ProductController extends Controller
                 'order' => $input["spec_order"][$k]
             ];
 
-            $p_spec = \App\Models\Shop\ProductSpec::create($spec_input);
+            ProductSpec::create($spec_input);
         }
 
         // 全站分類
@@ -128,7 +133,7 @@ class ProductController extends Controller
             'item_id' => $product_id
         ];
 
-        $category = \App\Models\RelationShipCatory::create($category_input);
+        RelationShipCatory::create($category_input);
 
         return redirect()->route('product.index');
     }
@@ -151,11 +156,11 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        $product = app(\App\Models\Shop\Product::class);
-        $p_image = app(\App\Models\Shop\ProductImage::class);
-        $p_spec = app(\App\Models\Shop\ProductSpec::class);
-        $r_category = app(\App\Models\RelationShipCatory::class);
+    {       
+        $product = app(Product::class);        
+        $p_image = app(ProductImage::class);
+        $p_spec = app(ProductSpec::class);
+        $r_category = app(RelationShipCatory::class);
 
         // 全站分類
         $category = app(\App\Models\Categroy::class);
@@ -163,8 +168,12 @@ class ProductController extends Controller
         // 規格
         $spec = app(\App\Models\Shop\SpecCategory::class);
 
+        $productObj = $product->findOrFail($id);
+        
+        $this->authorize('update-product', $productObj);
+
         $binding = [
-            'product' => $product->findOrFail($id),
+            'product' => $productObj,
             'p_images' => $p_image->where('item_id', $id)->where('data_id', $product->getModelId())->get(),
             'p_specs' => $p_spec->where('product_id', $id)->get(),
             'r_category' => $r_category->where('item_id', $id)->where('data_id', $product->getModelId())->first(),
@@ -212,12 +221,14 @@ class ProductController extends Controller
         }
 
         $p_input['end_date'] = '2035-12-31';
-        $product = app(\App\Models\Shop\Product::class);
+        $p_input = auth()->id();
+
+        $product = app(Product::class);
         $product = $product->findOrFail($id);
         $product_id = $product->id;
         $product->update($p_input);
 
-        $p_class = app(\App\Models\Shop\Product::class);
+        $p_class = app(Product::class);
 
         // 商品圖片
         if (is_array($files) && count($files) > 0) {
@@ -231,12 +242,12 @@ class ProductController extends Controller
                     'data_type' => $file->getClientMimeType(),
                     'description' => $file->getClientOriginalName()
                 ];
-                $product_img  = \App\Models\Shop\ProductImage::create($img_input);
+                ProductImage::create($img_input);
             }
         }
 
         // 規格
-        //$p_spec = app(\App\Models\Shop\ProductSpec::class);
+        //$p_spec = app(ProductSpec::class);
         foreach ($input['spec_parent_name'] as $k => $spec_name) {
             $spec_input = [
                 'category_id' => $input["spec_childen"][$k],
@@ -248,7 +259,7 @@ class ProductController extends Controller
                 'order' => $input["spec_order"][$k]
             ];
 
-            $p_spec = app(\App\Models\Shop\ProductSpec::class);
+            $p_spec = app(ProductSpec::class);
             if ($input["spec_id"][$k] == '0') {
                 $p_spec->create($spec_input);
             } else {
@@ -264,7 +275,7 @@ class ProductController extends Controller
             'item_id' => $product_id
         ];
 
-        $category = app(\App\Models\RelationShipCatory::class);
+        $category = app(RelationShipCatory::class);
         $obj = $category->findOrFail($input['category_id']);
         $obj->update($category_input);
 
@@ -282,10 +293,10 @@ class ProductController extends Controller
         try {
             DB::transaction(function () use ($id) {
 
-                $product = app(\App\Models\Shop\Product::class);
-                $p_image = app(\App\Models\Shop\ProductImage::class);
-                $p_spec = app(\App\Models\Shop\ProductSpec::class);
-                $r_category = app(\App\Models\RelationShipCatory::class);
+                $product = app(Product::class);
+                $p_image = app(ProductImage::class);
+                $p_spec = app(ProductSpec::class);
+                $r_category = app(RelationShipCatory::class);
 
                 // 商品資料刪除
                 $product->where('id', $id)->delete();
@@ -350,7 +361,7 @@ class ProductController extends Controller
             ]);
         }
 
-        $spec = app(\App\Models\Shop\ProductSpec::class);
+        $spec = app(ProductSpec::class);
         $data = $spec->findOrFail($id);
         $data->delete();
 
