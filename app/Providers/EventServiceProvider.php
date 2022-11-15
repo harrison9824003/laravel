@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\DeleteProduct;
+use App\Listeners\DeleteProductListeners;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        DeleteProduct::class => [
+            DeleteProductListeners::class,
+        ]
     ];
 
     /**
@@ -27,6 +32,9 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Event::listen(
+            DeleteProduct::class,
+            [DeleteProductListeners::class, 'handle']
+        );
     }
 }

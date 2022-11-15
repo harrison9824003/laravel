@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeleteProduct;
 use App\Http\Requests\ProductRequest;
+use App\Mail\ProductCreate;
+use App\Mail\ProductUpdate;
 use App\Models\RelationShipCatory;
 use App\Models\Shop\ProductImage;
 use App\Models\Shop\ProductSpec;
@@ -10,6 +13,7 @@ use App\Models\Shop\Product;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Mail;
 
 class ProductController extends Controller
 {
@@ -88,7 +92,7 @@ class ProductController extends Controller
 
         $p_input['end_date'] = '2035-12-31';
 
-        $p_input = auth()->id();
+        $p_input['user_id'] = auth()->id();
 
         $product = Product::create($p_input);
         $product_id = $product->id;
@@ -135,6 +139,8 @@ class ProductController extends Controller
 
         RelationShipCatory::create($category_input);
 
+        Mail::to(auth()->user())->send(new ProductCreate($product));
+
         return redirect()->route('product.index');
     }
 
@@ -156,8 +162,8 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {       
-        $product = app(Product::class);        
+    {
+        $product = app(Product::class);
         $p_image = app(ProductImage::class);
         $p_spec = app(ProductSpec::class);
         $r_category = app(RelationShipCatory::class);
@@ -169,7 +175,7 @@ class ProductController extends Controller
         $spec = app(\App\Models\Shop\SpecCategory::class);
 
         $productObj = $product->findOrFail($id);
-        
+
         $this->authorize('update-product', $productObj);
 
         $binding = [
@@ -221,7 +227,7 @@ class ProductController extends Controller
         }
 
         $p_input['end_date'] = '2035-12-31';
-        $p_input = auth()->id();
+        $p_input['user_id'] = auth()->id();
 
         $product = app(Product::class);
         $product = $product->findOrFail($id);
@@ -278,6 +284,7 @@ class ProductController extends Controller
         $category = app(RelationShipCatory::class);
         $obj = $category->findOrFail($input['category_id']);
         $obj->update($category_input);
+        Mail::to(auth()->user())->later(60, new ProductUpdate($product));
 
         return redirect()->route('product.edit', ['product' => $id]);
     }
@@ -299,7 +306,8 @@ class ProductController extends Controller
                 $r_category = app(RelationShipCatory::class);
 
                 // 商品資料刪除
-                $product->where('id', $id)->delete();
+                $data = $product->findOrFail($id);
+                $data->delete();
 
                 // 圖片資料
                 $images = $p_image->where('item_id', $id)->where('data_id', $product->getModelId())->get();
@@ -319,6 +327,8 @@ class ProductController extends Controller
                 foreach ($d_image as $k => $path) {
                     @unlink(public_path($path));
                 }
+
+                event(new DeleteProduct(auth()->user(), $data));
             });
         } catch (Exception $e) {
             return response()->json([
