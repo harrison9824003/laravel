@@ -100,7 +100,7 @@ class FrontController extends Controller
             $datas = $datas->keyBy('id');
 
             // 依序回填到 $r_object 物件內
-            foreach ($items as $key => $item) {
+            foreach ($items as $item) {
                 $item->front = new FrontResource($datas[$item->item_id]);
             }
         }
