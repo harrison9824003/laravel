@@ -8,7 +8,6 @@
 /public/admin/assets/img
 /resources/admin/assets/img
 /public/front/assets
-/resources/front/assets
 /storage/*.key
 /vendor
 .env
