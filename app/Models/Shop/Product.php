@@ -46,6 +46,12 @@ class Product extends Model
         );
     }
 
+    public function relationship()
+    {
+        $model_app = app(\App\Models\Shop\Product::class);
+        return $this->hasOne(\App\Models\RelationShipCatory::class, ['data_id', 'item_id'], [$model_app->getModelId(), 'id']);
+    }
+
     public function specs()
     {
         return $this->hasMany(\App\Models\Shop\ProductSpec::class, 'product_id', 'id');
