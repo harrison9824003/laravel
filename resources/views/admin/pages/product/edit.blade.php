@@ -54,10 +54,10 @@
                             name="category_name_parent"
                             value="{{ old('category_name_parent', $product->category->parent->name) }}"
                         />
-                        <datalist id="datalistOptions_parent">  
+                        <datalist id="datalistOptions_parent">
                             @foreach( $category_parent as $category )
                                 <option value="{{ $category->name }}" data-id="{{ $category->id }}" />
-                            @endforeach                          
+                            @endforeach
                         </datalist>
                         <input type="hidden" name="category_parent" id="category_parent" value="{{ old('category_parent', $product->category->parent->id) }}">
                     </div>                
@@ -89,12 +89,12 @@
 
                 <div class="spec_wapper">
                     <h3>規格</h3>    
-                    @foreach( $p_specs as $p_spec )                
-                    <div class="spec_sub_item row" data-order="{{ $loop->iteration }}"> 
+                    @foreach( $p_specs as $p_spec )
+                    <div class="spec_sub_item row" data-order="{{ $loop->iteration }}">
                         <div class="col-12">
-                            <div class="row">                                
+                            <div class="row">
                                 <div class="mb-3 col-2">
-                                    <label for="spec_name_parent[{{ $loop->iteration }}]" class="form-label">規格分類</label>    
+                                    <label for="spec_name_parent[{{ $loop->iteration }}]" class="form-label">規格分類</label>
                                     <div id="category">
                                         <!-- 規格 -->
                                         <input

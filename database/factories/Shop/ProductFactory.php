@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Shop;
 
-use App\Models\Categroy;
+use App\Models\Category;
 use App\Models\RelationShipCatory;
 use App\Models\Shop\Product;
 use App\Models\Shop\ProductImage;
@@ -44,7 +44,7 @@ class ProductFactory extends Factory
             ];
             $picture = Arr::random($images);
             $file_name =  Str::uuid() . '.jpg';
-            $copy_path = public_path('uploads') . '/' . $file_name;
+            $copy_path = public_path('uploads/images') . '/' . $file_name;
             File::copy(resource_path('fake/images') . '/' . $picture, $copy_path);
             ProductImage::create([
                 'data_id' => '2',
@@ -55,7 +55,7 @@ class ProductFactory extends Factory
             ]);
 
             // 建立網站類別關係對應
-            $category = Categroy::all()->random(1)->first()->id;
+            $category = Category::where('parent_id', '!=', '0')->get()->random(1)->first()->id;
             RelationShipCatory::create([
                 'data_id' => '2',
                 'category_id' => $category,

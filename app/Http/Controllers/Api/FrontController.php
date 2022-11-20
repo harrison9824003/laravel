@@ -111,7 +111,7 @@ class FrontController extends Controller
     public function mainMenu()
     {
 
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $data = $category->select(['id', 'parent_id', 'name', 'order', 'display'])
             ->where('display', '1')->where('parent_id', '0')
             ->orderBy('order')->get();

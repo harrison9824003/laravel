@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 
 class ProductController extends Controller
 {
@@ -23,6 +24,7 @@ class ProductController extends Controller
         private Product $product,
         private ProductSpec $productSpec,
         private ProductImage $productImage,
+        private Redis $redis,
     )
     {
         
@@ -51,7 +53,7 @@ class ProductController extends Controller
     public function create()
     {
         // 全站分類
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $data = $category->where('parent_id', '0')->get();
 
         // 規格
@@ -151,6 +153,8 @@ class ProductController extends Controller
             RelationShipCatory::create($category_input);
 
             DB::commit();
+
+            cache()->set('product_'.$product_id, $product->toJson());
         } catch (Exception $e) {
             $errors = ['database_error' => $e->getMessage()];
             DB::rollBack();
@@ -184,7 +188,7 @@ class ProductController extends Controller
         $r_category = app(RelationShipCatory::class);
 
         // 全站分類
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
 
         // 規格
         $spec = app(\App\Models\Shop\SpecCategory::class);
@@ -244,62 +248,72 @@ class ProductController extends Controller
         $p_input['end_date'] = '2035-12-31';
         $p_input['user_id'] = auth()->id();
 
-        $product = app(Product::class);
-        $product = $product->findOrFail($id);
-        $product_id = $product->id;
-        $product->update($p_input);
+        DB::beginTransaction();
+        try {
 
-        $productClass = app(Product::class);
+            $product = app(Product::class);
+            $product = $product->findOrFail($id);
+            $product_id = $product->id;
+            $product->update($p_input);
 
-        // 商品圖片
-        if (is_array($files) && count($files) > 0) {
-            foreach ($files as $file) {
-                $path = $file->storeAs('images', md5(time()) . "." . $file->extension(), 'uploads');
+            $productClass = app(Product::class);
 
-                $img_input = [
-                    'data_id' => $productClass->getModelId(),
-                    'item_id' => $product_id,
-                    'path' => $path,
-                    'data_type' => $file->getClientMimeType(),
-                    'description' => $file->getClientOriginalName()
-                ];
-                ProductImage::create($img_input);
+            // 商品圖片
+            if (is_array($files) && count($files) > 0) {
+                foreach ($files as $file) {
+                    $path = $file->storeAs('images', md5(time()) . "." . $file->extension(), 'uploads');
+
+                    $img_input = [
+                        'data_id' => $productClass->getModelId(),
+                        'item_id' => $product_id,
+                        'path' => $path,
+                        'data_type' => $file->getClientMimeType(),
+                        'description' => $file->getClientOriginalName()
+                    ];
+                    ProductImage::create($img_input);
+                }
             }
-        }
 
-        // 規格
-        //$p_spec = app(ProductSpec::class);
-        foreach ($input['spec_parent_name'] as $k => $spec_name) {
-            $spec_input = [
-                'category_id' => $input["spec_childen"][$k],
-                'product_id' => $product_id,
-                'reserve_num' => $input["spec_reserve"][$k],
-                'low_reserve_num' => $input["spec_low_reserve"][$k],
-                'volume' => $input["spec_volume"][$k],
-                'weight' => $input["spec_weight"][$k],
-                'order' => $input["spec_order"][$k]
+            // 規格
+            //$p_spec = app(ProductSpec::class);
+            foreach ($input['spec_parent_name'] as $k => $spec_name) {
+                $spec_input = [
+                    'category_id' => $input["spec_childen"][$k],
+                    'product_id' => $product_id,
+                    'reserve_num' => $input["spec_reserve"][$k],
+                    'low_reserve_num' => $input["spec_low_reserve"][$k],
+                    'volume' => $input["spec_volume"][$k],
+                    'weight' => $input["spec_weight"][$k],
+                    'order' => $input["spec_order"][$k]
+                ];
+
+                $p_spec = app(ProductSpec::class);
+                if ($input["spec_id"][$k] == '0') {
+                    $p_spec->create($spec_input);
+                } else {
+                    $obj = $p_spec->findOrFail($input["spec_id"][$k]);
+                    $obj->update($spec_input);
+                }
+            }
+
+            // 全站分類
+            $category_input = [
+                'data_id' => $productClass->getModelId(),
+                'category_id' => $input['category_childen'],
+                'item_id' => $product_id
             ];
 
-            $p_spec = app(ProductSpec::class);
-            if ($input["spec_id"][$k] == '0') {
-                $p_spec->create($spec_input);
-            } else {
-                $obj = $p_spec->findOrFail($input["spec_id"][$k]);
-                $obj->update($spec_input);
-            }
+            $category = app(RelationShipCatory::class);
+            $obj = $category->findOrFail($input['category_id']);
+            $obj->update($category_input);
+
+            cache()->set('product_'.$product_id, $product->toJson());
+            Mail::to(auth()->user())->later(60, new ProductUpdate($product));
+
+            DB::commit();
+        } catch (Exception) {
+            DB::rollBack();
         }
-
-        // 全站分類
-        $category_input = [
-            'data_id' => $productClass->getModelId(),
-            'category_id' => $input['category_childen'],
-            'item_id' => $product_id
-        ];
-
-        $category = app(RelationShipCatory::class);
-        $obj = $category->findOrFail($input['category_id']);
-        $obj->update($category_input);
-        Mail::to(auth()->user())->later(60, new ProductUpdate($product));
 
         return redirect()->route('product.edit', ['product' => $id]);
     }

@@ -27,7 +27,7 @@ class Article extends Model
     public function category()
     {
         return $this->hasOneThrough(
-            \App\Models\Categroy::class,
+            \App\Models\Category::class,
             \App\Models\RelationShipCatory::class,
             'item_id',
             'id',

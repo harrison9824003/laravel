@@ -32,7 +32,7 @@ class ArticleController extends Controller
     public function create()
     {
         // 全站分類
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $data = $category->where('parent_id', '0')->get();
 
         $binding = [
@@ -151,7 +151,7 @@ class ArticleController extends Controller
         $r_category = app(\App\Models\RelationShipCatory::class);
 
         // 全站分類
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
 
 
         $binding = [

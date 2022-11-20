@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasModelId;
 
-class Categroy extends Model
+class Category extends Model
 {
     use HasFactory;
     use HasModelId;
@@ -26,11 +26,11 @@ class Categroy extends Model
 
     public function parent()
     {
-        return $this->belongsTo(\App\Models\Categroy::class);
+        return $this->belongsTo(\App\Models\Category::class);
     }
 
     public function childern()
     {
-        return $this->hasMany(\App\Models\Categroy::class, 'parent_id', 'id');
+        return $this->hasMany(\App\Models\Category::class, 'parent_id', 'id');
     }
 }

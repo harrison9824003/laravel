@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $paginate = $category->paginate(10);
         $binding = [
             'paginate' => $paginate
@@ -29,7 +29,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $parent_category = $category->where('parent_id', '0')->get();
         $category->refresh();
 
@@ -58,7 +58,7 @@ class CategoryController extends Controller
             $input['display'] = '0';
         }
 
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $category->create($input);
 
         return redirect(route('category.index'));
@@ -82,7 +82,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $parent_category = $category->where('parent_id', '0')->where('id', '!=', $id)->get();
         $category->refresh();
 
@@ -124,7 +124,7 @@ class CategoryController extends Controller
             $input['order'] = 0;
         }
 
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $object = $category->findOrFail($id);
         $object->name = $input['name'];
         $object->parent_id = $input['parent_id'];
@@ -143,7 +143,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = app(\App\Models\Categroy::class);
+        $category = app(\App\Models\Category::class);
         $object = $category->findOrFail($id);
         $object->delete();
 
@@ -153,7 +153,7 @@ class CategoryController extends Controller
     public function getChildenCategory($id)
     {
         try {
-            $category = app(\App\Models\Categroy::class);
+            $category = app(\App\Models\Category::class);
             $data = $category->select(['id', 'name', 'parent_id'])
                             ->where('parent_id', $id)
                             ->orderBy('order')->get();

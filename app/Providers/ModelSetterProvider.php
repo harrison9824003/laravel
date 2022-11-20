@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\DataType;
 use App\Models\Article;
-use App\Models\Categroy;
+use App\Models\Category;
 use App\Models\DataTypeFolder;
 use App\Models\Shop\Product;
 use App\Models\Shop\SpecCategory;
@@ -18,7 +18,7 @@ class ModelSetterProvider extends ServiceProvider
         Product::class => 2,
         SpecCategory::class => 3,
         DataType::class => 4,
-        Categroy::class => 5,
+        Category::class => 5,
         DataTypeFolder::class => 6,
         ProductImage::class => 7,
     ];
@@ -28,7 +28,7 @@ class ModelSetterProvider extends ServiceProvider
         Product::class => 'product',
         SpecCategory::class => 'spec',
         DataType::class => 'datatype',
-        Categroy::class => 'category',
+        Category::class => 'category',
         DataTypeFolder::class => 'datatypefolder',
         ProductImage::class => 'productimg',
     ];
@@ -38,7 +38,7 @@ class ModelSetterProvider extends ServiceProvider
         Product::class => 'bxl-product-hunt',
         SpecCategory::class => 'bx-category',
         DataType::class => 'bx-briefcase',
-        Categroy::class => 'bx-category',
+        Category::class => 'bx-category',
         DataTypeFolder::class => 'bx-folder',
         ProductImage::class => 'bx-image-alt',
     ];
@@ -48,7 +48,7 @@ class ModelSetterProvider extends ServiceProvider
         Product::class => '商品',
         SpecCategory::class => '規格分類',
         DataType::class => '模組',
-        Categroy::class => '全站分類',
+        Category::class => '全站分類',
         DataTypeFolder::class => '模組分類',
         ProductImage::class => '商品圖片',
     ];
@@ -96,9 +96,9 @@ class ModelSetterProvider extends ServiceProvider
         });
 
         // 全站分類管理
-        $this->app->singleton(Categroy::class, function ($app) {
-            $category = new Categroy();
-            $category->setModelId(self::MODELIDS[Categroy::class]);
+        $this->app->singleton(Category::class, function ($app) {
+            $category = new Category();
+            $category->setModelId(self::MODELIDS[Category::class]);
             return $category;
         });
 
