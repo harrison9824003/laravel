@@ -183,9 +183,9 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = app(Product::class);
-        $p_image = app(ProductImage::class);
-        $p_spec = app(ProductSpec::class);
-        $r_category = app(RelationShipCatory::class);
+        $pImage = app(ProductImage::class);
+        $pSpec = app(ProductSpec::class);
+        $rCategory = app(RelationShipCatory::class);
 
         // 全站分類
         $category = app(\App\Models\Category::class);
@@ -199,9 +199,9 @@ class ProductController extends Controller
 
         $binding = [
             'product' => $productObj,
-            'p_images' => $p_image->where('item_id', $id)->where('data_id', $product->getModelId())->get(),
-            'p_specs' => $p_spec->where('product_id', $id)->get(),
-            'r_category' => $r_category->where('item_id', $id)->where('data_id', $product->getModelId())->first(),
+            'p_images' => $pImage->where('item_id', $id)->where('data_id', $product->getModelId())->get(),
+            'p_specs' => $pSpec->where('product_id', $id)->get(),
+            'r_category' => $rCategory->where('item_id', $id)->where('data_id', $product->getModelId())->first(),
             'category_parent' => $category->where('parent_id', '0')->get(),
             'spec_parent' => $spec->where('parent_id', '0')->get()
         ];
@@ -222,7 +222,7 @@ class ProductController extends Controller
         $files = $request->file('productImg');
 
         // 商品基本資料
-        $p_input = $request->safe()->only([
+        $pInput = $request->safe()->only([
             'name',
             'price',
             'market_price',
@@ -233,20 +233,20 @@ class ProductController extends Controller
         ]);
 
 
-        if (!isset($p_input['market_price']) || empty($p_input['market_price'])) {
-            $p_input['market_price'] = 0;
+        if (!isset($pInput['market_price']) || empty($pInput['market_price'])) {
+            $pInput['market_price'] = 0;
         }
 
-        if (!isset($p_input['simple_intro']) || empty($p_input['simple_intro'])) {
-            $p_input['simple_intro'] = '';
+        if (!isset($pInput['simple_intro']) || empty($pInput['simple_intro'])) {
+            $pInput['simple_intro'] = '';
         }
 
-        if (!isset($p_input['simple_intro']) || empty($p_input['simple_intro'])) {
-            $p_input['part_number'] = '';
+        if (!isset($pInput['simple_intro']) || empty($pInput['simple_intro'])) {
+            $pInput['part_number'] = '';
         }
 
-        $p_input['end_date'] = '2035-12-31';
-        $p_input['user_id'] = auth()->id();
+        $pInput['end_date'] = '2035-12-31';
+        $pInput['user_id'] = auth()->id();
 
         DB::beginTransaction();
         try {
@@ -254,7 +254,7 @@ class ProductController extends Controller
             $product = app(Product::class);
             $product = $product->findOrFail($id);
             $product_id = $product->id;
-            $product->update($p_input);
+            $product->update($pInput);
 
             $productClass = app(Product::class);
 
@@ -275,7 +275,7 @@ class ProductController extends Controller
             }
 
             // 規格
-            //$p_spec = app(ProductSpec::class);
+            //$pSpec = app(ProductSpec::class);
             foreach ($input['spec_parent_name'] as $k => $spec_name) {
                 $spec_input = [
                     'category_id' => $input["spec_childen"][$k],
@@ -287,11 +287,11 @@ class ProductController extends Controller
                     'order' => $input["spec_order"][$k]
                 ];
 
-                $p_spec = app(ProductSpec::class);
+                $pSpec = app(ProductSpec::class);
                 if ($input["spec_id"][$k] == '0') {
-                    $p_spec->create($spec_input);
+                    $pSpec->create($spec_input);
                 } else {
-                    $obj = $p_spec->findOrFail($input["spec_id"][$k]);
+                    $obj = $pSpec->findOrFail($input["spec_id"][$k]);
                     $obj->update($spec_input);
                 }
             }
@@ -330,16 +330,16 @@ class ProductController extends Controller
             DB::transaction(function () use ($id) {
 
                 $product = app(Product::class);
-                $p_image = app(ProductImage::class);
-                $p_spec = app(ProductSpec::class);
-                $r_category = app(RelationShipCatory::class);
+                $pImage = app(ProductImage::class);
+                $pSpec = app(ProductSpec::class);
+                $rCategory = app(RelationShipCatory::class);
 
                 // 商品資料刪除
                 $data = $product->findOrFail($id);
                 $data->delete();
 
                 // 圖片資料
-                $images = $p_image->where('item_id', $id)->where('data_id', $product->getModelId())->get();
+                $images = $pImage->where('item_id', $id)->where('data_id', $product->getModelId())->get();
                 $d_image = [];
                 foreach ($images as $k => $image) {
                     $d_image[] = public_path($image->path);
@@ -347,10 +347,10 @@ class ProductController extends Controller
                 }
 
                 // 規格
-                $p_spec->where('product_id', $id)->delete();
+                $pSpec->where('product_id', $id)->delete();
 
                 // 全站分類
-                $r_category->where('item_id', $id)->where('data_id', $product->getModelId())->delete();
+                $rCategory->where('item_id', $id)->where('data_id', $product->getModelId())->delete();
 
                 // 圖片檔案刪除
                 foreach ($d_image as $k => $path) {

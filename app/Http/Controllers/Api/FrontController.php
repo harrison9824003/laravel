@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\FrontResource;
+use App\Models\Category;
 
 class FrontController extends Controller
 {
@@ -79,10 +80,18 @@ class FrontController extends Controller
 
     public function category($id)
     {
-
+        $category = Category::FindOrFail($id);
         // 模組與資料的關係表
         $relation = app(\App\Models\RelationShipCatory::class);
-        $r_object = $relation->where('category_id', $id)->paginate($this->page_count);
+
+        if($category->parent_id === 0){
+
+            $sub = Category::where('parent_id', $id)->pluck('id');
+            $r_object = $relation->whereIn('category_id', $sub)->paginate($this->page_count);
+        } else {            
+            $r_object = $relation->where('category_id', $id)->paginate($this->page_count);
+        }
+        
 
         // 模組
         $subset = $r_object->groupBy('data_id');

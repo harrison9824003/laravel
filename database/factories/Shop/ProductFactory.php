@@ -49,21 +49,21 @@ class ProductFactory extends Factory
             ProductImage::create([
                 'data_id' => '2',
                 'item_id' => $product->id,
-                'path' => 'uploads/' . $file_name,
+                'path' => 'images/' . $file_name,
                 'data_type' => 'jpeg',
                 'description' => $this->faker->text(100),
             ]);
 
             // 建立網站類別關係對應
-            $category = Category::where('parent_id', '!=', '0')->get()->random(1)->first()->id;
+            $productSubCategory = config('product.sub_category');
             RelationShipCatory::create([
                 'data_id' => '2',
-                'category_id' => $category,
+                'category_id' => Arr::random($productSubCategory)['id'],
                 'item_id' => $product->id
             ]);
 
             // 建立規格
-            $specCategory = SpecCategory::all()->random(1)->first()->id;
+            $specCategory = SpecCategory::where('parent_id', '!=', '0')->get()->random(1)->first()->id;
             ProductSpec::create([
                 'category_id' => $specCategory,
                 'product_id' => $product->id,

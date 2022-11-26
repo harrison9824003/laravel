@@ -61,7 +61,7 @@ export default {
     mounted(){
         console.log('new arrivals component mounted')
         Promise.all(
-            [this.$store.dispatch('newArrival/getNewArrival', '5')]
+            [this.$store.dispatch('newArrival/getNewArrival', '1')]
         ).then(()=>{
             
             this.$nextTick(function () {
