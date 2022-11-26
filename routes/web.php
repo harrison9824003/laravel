@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Api\FrontController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -41,3 +42,6 @@ Route::group(['prefix' => 'adm', 'middleware' => ['auth', 'admin.menu']], functi
 
 Auth::routes([ 'verify' => true ]);
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
+// 加入購物車
+Route::post('/cart/add', [FrontController::class, 'cart'])->name('cartAdd');

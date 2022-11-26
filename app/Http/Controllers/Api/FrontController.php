@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\FrontResource;
 use App\Models\Category;
+use App\Models\Shop\Cart;
+use App\Models\Shop\ProductSpec;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 
 class FrontController extends Controller
 {
@@ -84,14 +89,14 @@ class FrontController extends Controller
         // 模組與資料的關係表
         $relation = app(\App\Models\RelationShipCatory::class);
 
-        if($category->parent_id === 0){
+        if ($category->parent_id === 0) {
 
             $sub = Category::where('parent_id', $id)->pluck('id');
             $r_object = $relation->whereIn('category_id', $sub)->paginate($this->page_count);
-        } else {            
+        } else {
             $r_object = $relation->where('category_id', $id)->paginate($this->page_count);
         }
-        
+
 
         // 模組
         $subset = $r_object->groupBy('data_id');
@@ -150,5 +155,57 @@ class FrontController extends Controller
         }
 
         return response()->json(['data' => $menu, 'state' => $state]);
+    }
+
+    public function cart(): JsonResponse
+    {
+        $product_id = request()->input('product_id');
+        $spec_id = request()->input('spec_id');
+        $number = request()->input('number');
+
+        // 取的 user id
+        $sessionID = session()->getId();
+
+        // product spec 資訊
+        $productSpecInfo = ProductSpec::cart($product_id, $spec_id)->get()->first();
+        if($productSpecInfo === null){
+            throw new Exception();
+        }
+        try{
+            $cart = Cart::where('user_id', $sessionID)->firstOrFail();
+            $cartInfo = collect(json_decode($cart->cart, 1));
+        } catch (ModelNotFoundException) {
+            $cartInfo = collect();
+            $cart = Cart::create([
+                'user_id' => $sessionID,
+                'cart' => ''
+            ]);
+        }
+
+        // 是否有在購物車內
+        $productCartInfo = $cartInfo->get($product_id, []);
+
+        $totalCartNumber = 0;
+        if(isset($productCartInfo[$spec_id])){
+            $productCartInfo[$spec_id]['number'] += $number;
+        } else {
+            $productCartInfo[$spec_id]['number'] = $number;
+        }
+
+        if($productSpecInfo->reserve_num >= $totalCartNumber) {
+            
+            $cartInfo->put($product_id, $productCartInfo);
+        }
+
+        // $cart->cart = json_encode($cartInfo->toArray());
+        $cart->where('user_id', $sessionID)->update([
+            'cart' => json_encode($cartInfo->toArray())
+        ]);
+
+        return response()->json([
+            'status' => '1',
+            'msg' => '商品成功加入購物車',
+            'cart' => $cartInfo->toArray()
+        ]);
     }
 }

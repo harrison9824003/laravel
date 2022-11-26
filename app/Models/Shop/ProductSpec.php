@@ -30,4 +30,9 @@ class ProductSpec extends Model
     {
         return $this->belongsTo(\App\Models\Shop\SpecCategory::class);
     }
+
+    public function scopeCart($query, $product_id, $category_id)
+    {
+        return $query->where('product_id', $product_id)->where('category_id', $category_id);
+    }
 }

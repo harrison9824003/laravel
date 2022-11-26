@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\FrontController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,14 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::name('front.')->prefix('front')->group(function(){   
 
     // 顯示單一筆資料
-    Route::get('/{front}', [\App\Http\Controllers\Api\FrontController::class, 'show'])->name('show');
+    Route::get('/{front}', [FrontController::class, 'show'])->name('show');
 
     // 顯示單一類別列表
-    Route::get('/category/{category}', [\App\Http\Controllers\Api\FrontController::class, 'category'])->name('category');
-
+    Route::get('/category/{category}', [FrontController::class, 'category'])->name('category');    
     
 });
 
 // 前台選單
-Route::get('/menu', [\App\Http\Controllers\Api\FrontController::class, 'mainMenu'])->name('menu');
-
+Route::get('/menu', [FrontController::class, 'mainMenu'])->name('menu');

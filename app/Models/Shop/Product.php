@@ -75,6 +75,7 @@ class Product extends Model
     {
 
         return [
+            'id' => $this->id,
             'category' => strip_tags($this->category->name),
             'title' => strip_tags($this->name),
             'sub_title' => null,

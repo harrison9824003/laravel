@@ -9,6 +9,7 @@ trait HasFrontData
 {
     /**
      * 回傳前台統一格式
+     * id: model item id
      * category: 網站總分類
      * title: 資料標題
      * sub_title: 資料副標題
