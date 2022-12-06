@@ -25,9 +25,7 @@ class ProductController extends Controller
         private ProductSpec $productSpec,
         private ProductImage $productImage,
         private Redis $redis,
-    )
-    {
-        
+    ) {
     }
 
     /**
@@ -154,7 +152,7 @@ class ProductController extends Controller
 
             DB::commit();
 
-            cache()->set('product_'.$product_id, $product->toJson());
+            cache()->set('product_' . $product_id, $product->toJson());
         } catch (Exception $e) {
             $errors = ['database_error' => $e->getMessage()];
             DB::rollBack();
@@ -307,7 +305,7 @@ class ProductController extends Controller
             $obj = $category->findOrFail($input['category_id']);
             $obj->update($category_input);
 
-            cache()->set('product_'.$product_id, $product->toJson());
+            cache()->set('product_' . $product_id, $product->toJson());
             Mail::to(auth()->user())->later(60, new ProductUpdate($product));
 
             DB::commit();

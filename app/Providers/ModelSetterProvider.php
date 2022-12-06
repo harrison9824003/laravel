@@ -10,6 +10,7 @@ use App\Models\DataTypeFolder;
 use App\Models\Shop\Product;
 use App\Models\Shop\SpecCategory;
 use App\Models\Shop\ProductImage;
+use Illuminate\Support\Facades\Schema;
 
 class ModelSetterProvider extends ServiceProvider
 {
@@ -117,7 +118,9 @@ class ModelSetterProvider extends ServiceProvider
      */
     public function boot()
     {
-        if(!DataType::all()->count()){
+        // 判斷 table 是否存在, 避免 migrate 時找不到資料庫
+        // todo: 改成手動點擊時更新
+        if (!DataType::all()->count()) {
             $checks = DataType::pluck('id')->toArray();
 
             //  檢查綁定的 model 是否有建立 model id 到資料庫
@@ -130,12 +133,11 @@ class ModelSetterProvider extends ServiceProvider
                         'disabled' => 0,
                         'icon' => isset(self::MODELICON[$model_name]) ? self::MODELICON[$model_name] : 'bx-note',
                         'folder_id' => 0,
-                        'router_path' => 'adm/'. self::MODELROUTE[$model_name]
+                        'router_path' => 'adm/' . self::MODELROUTE[$model_name]
                     ]);
                     //$datetype->save();
                 }
             }
         }
-        
     }
 }
