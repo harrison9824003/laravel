@@ -9,11 +9,11 @@
 
 1. docker compose yml: https://github.com/harrison9824003/docker/tree/master/server/laravel
 
-​		server 環境包含 nginx + mysql + php + redis, php image 有另外用 Dockerfile 產生[[檔案連結](https://github.com/harrison9824003/docker/tree/master/php/fpm/swoole)]
-
-​		.env 檔案環境變數, 目前只有網站資料夾 WEBSITE
-
-​		server 資料夾 laravel 放置與 laravel 同層
+    <ul>
+        <li>server 環境包含 nginx + mysql + php + redis, php image 有另外用 Dockerfile 產生(檔案連結:https://github.com/harrison9824003/docker/tree/master/php/fpm/swoole)</li>
+        <li>.env 檔案環境變數, 目前只有網站資料夾 WEBSITE</li>
+        <li>server 資料夾 laravel 放置與 laravel 同層</li>
+    </ul>
 
 2. 啟動 docker
 
