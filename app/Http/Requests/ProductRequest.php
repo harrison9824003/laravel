@@ -24,15 +24,10 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('product');
-        $unique_name = Rule::unique('pj_product');
-        if ($id != '') {
-            $unique_name->ignore($id);
-        }
         return [
             'name' => [
                 'required',
-                $unique_name,
+                Rule::unique('pj_product')->ignore($this->route('product')),
                 'max:255'
             ],
             'price' => 'required|integer',

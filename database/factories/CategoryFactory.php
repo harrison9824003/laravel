@@ -21,17 +21,4 @@ class CategoryFactory extends Factory
             'display' => '1'
         ];
     }
-
-    public function configure()
-    {
-        return $this->afterMaking(function (Category $category) {
-        })->afterCreating(function (Category $category) {
-            Category::create([
-                'parent_id' => $category->id,
-                'name' => $this->faker->text(20),
-                'order' => '0',
-                'display' => '1'
-            ]);
-        });
-    }
 }

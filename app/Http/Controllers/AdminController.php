@@ -14,7 +14,6 @@ class AdminController extends Controller
     // 刪除全站圖片
     public function deleteImg($id)
     {
-
         if (empty($id)) {
             return response()->json([
                 'data' => [],

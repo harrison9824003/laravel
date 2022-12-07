@@ -16,30 +16,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
         // 商品類別
-        $productCategoryId = config('product.category.id');
-        $productSubCategory = config('product.sub_category');
-        Category::factory()->create([
-            'id' => $productCategoryId,
-            'name' => config('product.category.name'),
-        ]);
-        foreach($productSubCategory as $item){
-            Category::factory()->create([
-                'parent_id' => $productCategoryId,
-                'id' => $item['id'],
-                'name' => $item['name'],
-            ]);
-        }
+        // $productCategoryId = config('product.category.id');
+        // $productSubCategory = config('product.sub_category');
+        // Category::factory()->create([
+        //     'id' => $productCategoryId,
+        //     'name' => config('product.category.name'),
+        // ]);
+        // foreach($productSubCategory as $item){
+        //     Category::factory()->create([
+        //         'parent_id' => $productCategoryId,
+        //         'id' => $item['id'],
+        //         'name' => $item['name'],
+        //     ]);
+        // }
         
-        // 全站類別
-        Category::factory(5)->create();
-        
+        // // 全站類別
+        // Category::factory(5)->create();
 
-        // 規格
-        SpecCategory::factory(10)->create();
+        // // 規格
+        // SpecCategory::factory(10)->create();
 
-        Product::factory(10)->create();
+        // Product::factory(10)->create();
     }
 }

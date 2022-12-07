@@ -16,16 +16,10 @@ class CategoryRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->input('id');
-        $unique_name = Rule::unique('pj_category');
-        if ($id != '') {
-            $unique_name->ignore($id);
-        }
-
         return [
             'name' => [
                 'required',
-                $unique_name,
+                Rule::unique('pj_category')->ignore($this->input('id')),
                 'max:255'
             ],
             'parent_id' => 'nullable|integer',
