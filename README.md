@@ -15,8 +15,6 @@
 
 ​		server 資料夾 laravel 放置與 laravel 同層
 
-​		![image-20221207220409432](C:\Users\harri\AppData\Roaming\Typora\typora-user-images\image-20221207220409432.png)
-
 2. 啟動 docker
 
    `docker compose up -d`
