@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FrontController;
+use App\Http\Controllers\Member\Register;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,10 @@ Route::name('front.')->prefix('front')->group(function(){
     // 顯示單一類別列表
     Route::get('/category/{category}', [FrontController::class, 'category'])->name('category');    
     
+});
+
+Route::name('member.')->prefix('member')->group(function(){
+    Route::post('register', Register::class)->name('memberRegister');
 });
 
 // 前台選單
