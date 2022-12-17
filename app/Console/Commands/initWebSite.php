@@ -50,7 +50,7 @@ class initWebSite extends Command
                 'disabled' => 0,
                 'icon' => !empty($item['icon']) ? $item['icon'] : 'bx-note',
                 'folder_id' => 0,
-                'router_path' => 'adm/' . $item['name']
+                'router_path' => 'adm/' . $item['route']
             ]);
         });
         // 商品類別初始

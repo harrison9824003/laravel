@@ -153,7 +153,6 @@ class ArticleController extends Controller
         // 全站分類
         $category = app(\App\Models\Category::class);
 
-
         $binding = [
             'article' => $article->findOrFail($id),
             'a_images' => $a_image->where('item_id', $id)->where('data_id', $article->getModelId())->get(),

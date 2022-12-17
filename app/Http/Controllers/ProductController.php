@@ -14,7 +14,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Redis\RedisManager;
 
 class ProductController extends Controller
 {
@@ -24,7 +24,7 @@ class ProductController extends Controller
         private Product $product,
         private ProductSpec $productSpec,
         private ProductImage $productImage,
-        private Redis $redis,
+        private RedisManager $redis,
     ) {
     }
 
@@ -153,6 +153,7 @@ class ProductController extends Controller
             DB::commit();
 
             cache()->set('product_' . $product_id, $product->toJson());
+            
         } catch (Exception $e) {
             $errors = ['database_error' => $e->getMessage()];
             DB::rollBack();
@@ -304,8 +305,9 @@ class ProductController extends Controller
             $category = app(RelationShipCatory::class);
             $obj = $category->findOrFail($input['category_id']);
             $obj->update($category_input);
-
+            
             cache()->set('product_' . $product_id, $product->toJson());
+            $this->redis->rpush('test', '123');
             Mail::to(auth()->user())->later(60, new ProductUpdate($product));
 
             DB::commit();
