@@ -11,9 +11,10 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/filepond.js', 'public/admin/assets/js/filepond.js')
+mix
+.js('resources/js/filepond.js', 'public/admin/assets/js/filepond.js')
 .js('resources/js/app.js', 'public/js').vue()
 .copyDirectory('resources/admin', 'public/admin')
 .copyDirectory('resources/front/assets', 'public/front/assets').version();
 
-// mix.sass('resources/sass/app.scss', 'public/css').version();
+mix.sass('resources/sass/app.scss', 'public/css');

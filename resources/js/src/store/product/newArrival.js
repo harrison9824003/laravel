@@ -19,8 +19,7 @@ export default {
     },
     mutations:{ 
         GETNEWARRIVAL(state, data) {
-            state.new_arrivals = data.products
-            
+            state.new_arrivals = data.products            
         }
     },
     state:{       
