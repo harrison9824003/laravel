@@ -9,11 +9,20 @@ class Member extends Model
 {
     use HasFactory;
 
-    protected $fallable = [
-        'name',
+    protected $table = 'pj_members';
+
+    protected $fillable = [
+        'firstname',
+        'lastname',
+        'telephone',
         'account',
         'email',
         'pwd',
+        'address',
+        'city',
+        'postCode',
+        'country',
+        'regionState',
         'login_time'
     ];
 }

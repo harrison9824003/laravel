@@ -5,6 +5,7 @@ namespace App\Http\Requests\Member;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class Register extends FormRequest
 {
@@ -41,7 +42,7 @@ class Register extends FormRequest
                 'required',
                 'max:10'
             ],
-            'password' => [
+            'pwd' => [
                 'string',
                 'required',
                 'confirmed',
@@ -49,25 +50,31 @@ class Register extends FormRequest
             ],
             'address' => [
                 'string',
-                'max:255'
+                'max:255',
+                'nullable'
             ],
             'city' => [
-                'integer'
+                'integer',
+                'nullable'
             ],
             'postCode' => [
-                'integer'
+                'integer',
+                'nullable'
             ],
             'country' => [
-                'integer'
+                'integer',
+                'nullable'
             ],
             'regionState' => [
-                'integer'
+                'integer',
+                'nullable'
             ],
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
+        // todo 改寫成 resource
         throw new HttpResponseException(
             response()->json([
                 'errors' => $validator->errors(),

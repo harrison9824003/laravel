@@ -95,21 +95,21 @@
                         <input type="text" id="telephone" v-model="telephone" class="form-control">
                       </div>
                       <div class="form-group">
-                        <label for="account">account</label>
+                        <label for="account">account <span class="require">*</span></label>
                         <p class="account_error"></p>
                         <input type="text" id="account" v-model="account" class="form-control">
                       </div>
 
                       <h3>Your Password</h3>
                       <div class="form-group">
-                        <label for="password">Password <span class="require">*</span></label>
-                        <p class="password_error"></p>
-                        <input type="password" id="password" v-model="password" class="form-control">
+                        <label for="pwd">Password <span class="require">*</span></label>
+                        <p class="pwd_error"></p>
+                        <input type="password" id="pwd" v-model="pwd" class="form-control">
                       </div>
                       <div class="form-group">
-                        <label for="password-confirm">Password Confirm <span class="require">*</span></label>
+                        <label for="pwd-confirm">Password Confirm <span class="require">*</span></label>
                         <p class="password_confirmation_error"></p>
-                        <input type="text" id="password-confirm" v-model="password_confirmation" class="form-control">
+                        <input type="text" id="pwd-confirm" v-model="pwd_confirmation" class="form-control">
                       </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
@@ -128,17 +128,17 @@
                         <input type="text" id="address2" v-model="address2" class="form-control">
                       </div> -->
                       <div class="form-group">
-                        <label for="city">City <span class="require">*</span></label>
+                        <label for="city">City</label>
                         <p class="city_error"></p>
                         <input type="text" id="city" v-model="city" class="form-control">
                       </div>
                       <div class="form-group">
-                        <label for="post-code">Post Code <span class="require">*</span></label>
+                        <label for="post-code">Post Code</label>
                         <p class="postCode_error"></p>
                         <input type="text" id="post-code" v-model="postCode" class="form-control">
                       </div>
                       <div class="form-group">
-                        <label for="country">Country <span class="require">*</span></label>
+                        <label for="country">Country</label>
                         <p class="country_error"></p>
                         <select class="form-control input-sm" id="country" v-model="country">
                           <option value=""> --- Please Select --- </option>
@@ -148,7 +148,7 @@
                         </select>
                       </div>
                       <div class="form-group">
-                        <label for="region-state">Region/State <span class="require">*</span></label>
+                        <label for="region-state">Region/State</label>
                         <p class="regionState_error"></p>
                         <select class="form-control input-sm" id="region-state" v-model="regionState">
                           <option value=""> --- Please Select --- </option><option value="3513">Aberdeen</option><option value="3514">Aberdeenshire</option><option value="3515">Anglesey</option>
@@ -199,8 +199,8 @@ export default {
         email:'',
         telephone:'',
         account:'',
-        password:'',
-        password_confirmation:'',
+        pwd:'',
+        pwd_confirmation:'',
         address:'',
         city:'',
         postCode:'',
@@ -217,8 +217,8 @@ export default {
               email: this.email,
               telephone: this.telephone,
               account: this.account,
-              password: this.password,
-              password_confirmation: this.password_confirmation,
+              pwd: this.pwd,
+              pwd_confirmation: this.pwd_confirmation,
               address: this.address,
               city: this.city,
               postCode: this.postCode,
