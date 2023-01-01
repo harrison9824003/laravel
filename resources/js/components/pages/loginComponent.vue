@@ -109,7 +109,7 @@
                       <div class="form-group">
                         <label for="pwd-confirm">Password Confirm <span class="require">*</span></label>
                         <p class="password_confirmation_error"></p>
-                        <input type="text" id="pwd-confirm" v-model="pwd_confirmation" class="form-control">
+                        <input type="password" id="pwd-confirm" v-model="pwd_confirmation" class="form-control">
                       </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
@@ -227,9 +227,14 @@ export default {
             }).then(
                 response => {
                     console.log(response.data)
-                    for(var x in response.data.errors){
-                      let ele = document.getElementsByClassName(x + '_error')[0];
-                      ele.innerHTML = response.data.errors[x].join(',');
+                    if(response.data.status === 1) {
+                      // todo 改成 popup
+                      alert('新建帳號成功');
+                    } else {
+                      for(var x in response.data.errors){
+                        let ele = document.getElementsByClassName(x + '_error')[0];
+                        ele.innerHTML = response.data.errors[x].join(',');
+                      }
                     }
                 },
                 error => {

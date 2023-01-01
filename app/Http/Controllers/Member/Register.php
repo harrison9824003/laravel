@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\Register as Request;
 use App\Models\Shop\Member;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Crypt;
 use PDOException;
 
 class Register extends Controller
@@ -14,12 +13,6 @@ class Register extends Controller
     public function __invoke(Request $request)
     {
         $input = $request->post();
-        
-        // 個資加密
-        $input['email'] = Crypt::encrypt($input['email']);
-        $input['pwd'] = Crypt::encrypt($input['pwd']);
-        $input['telephone'] = Crypt::encrypt($input['telephone']);
-        $input['lastname'] = Crypt::encrypt($input['lastname']);
 
         // 檢查資料庫是否有相同
         $checkExists = [];
@@ -29,7 +22,7 @@ class Register extends Controller
         if(count($checkExists)) {
             throw new HttpResponseException(response()->json([
                 'errors' => [
-                    'email 帳號已註冊過'
+                    'email' => ['email 帳號已註冊過']
                 ],
                 'status' => 0,
                 'message' => 'email 帳號已註冊過'
