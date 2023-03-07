@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Member;
 
+use App\Crypt\Openssl;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\Register as Request;
 use App\Models\Shop\Member;
@@ -10,16 +11,23 @@ use PDOException;
 
 class Register extends Controller
 {
+    public function __construct(private Openssl $crypt)
+    {
+    }
+
     public function __invoke(Request $request)
     {
         $input = $request->post();
 
+        $input['email'] = $this->crypt->myEncrypt($input['email']);
+        $input['telephone'] = $this->crypt->myEncrypt($input['telephone']);
+
         // 檢查資料庫是否有相同
         $checkExists = [];
-        if(Member::where('email', $input['email'])->exists()) {
+        if (Member::where('email', $input['email'])->exists()) {
             $checkExists[] = 'email';
         }
-        if(count($checkExists)) {
+        if (count($checkExists)) {
             throw new HttpResponseException(response()->json([
                 'errors' => [
                     'email' => ['email 帳號已註冊過']
@@ -27,8 +35,8 @@ class Register extends Controller
                 'status' => 0,
                 'message' => 'email 帳號已註冊過'
             ], 200));
-        }
-        
+        }       
+
         try {
             $member = Member::create($input);
         } catch (PDOException $e) {
