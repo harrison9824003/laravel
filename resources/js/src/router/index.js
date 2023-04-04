@@ -10,6 +10,7 @@ import searchComponent from '../../components/pages/searchComponent'
 import articleComponent from '../../components/pages/articleComponent'
 import productComponent from '../../components/pages/productComponent'
 import userComponent from '../../components/pages/userComponent'
+import loginComponent from '../../components/pages/loginComponent'
 import cartComponent from '../../components/pages/cartComponent'
 import payComponent from '../../components/pages/payComponent'
 
@@ -39,6 +40,10 @@ export default new VueRouter({
         {
             path: '/product/:product',
             component: productComponent
+        },
+        {
+            path: '/member',
+            component: loginComponent
         },
         {
             path: '/user/:user',

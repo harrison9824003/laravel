@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\FrontController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -40,8 +41,19 @@ Route::group(['prefix' => 'adm', 'middleware' => ['auth', 'admin.menu']], functi
 
 });
 
-Auth::routes([ 'verify' => true ]);
+Route::prefix('adm')->group(function(){
+    Auth::routes([ 'verify' => false ]);
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->middleware('auth')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+     
+        return redirect('/adm');
+    })->middleware(['auth', 'signed'])->name('verification.verify');
+});
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
 
 // 加入購物車
 Route::post('/cart/add', [FrontController::class, 'cart'])->name('cartAdd');

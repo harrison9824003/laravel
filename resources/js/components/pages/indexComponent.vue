@@ -13,7 +13,6 @@ import ContentComponent from '../index/contentComponent.vue'
 export default {
     mounted() {
         console.log("index component mounted")
-        
     },
     components:{
         SliderComponent,

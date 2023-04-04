@@ -54,8 +54,6 @@ services:
             - ./docker/redis/conf/redis.conf:/etc/redis/redis.conf
             - ./docker/redis/data:/data
         tty: true
-        command: 
-            "redis-server /etc/redis/redis.conf"
 networks:
     my_network:
         driver: bridge

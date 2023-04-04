@@ -14,7 +14,7 @@ class PjCart extends Migration
     public function up()
     {
         Schema::create('pj_cart', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->string('user_id')->primary();
             $table->longText('cart')->comment('購物車內容');
             $table->timestamps();
         });

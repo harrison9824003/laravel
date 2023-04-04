@@ -4,8 +4,8 @@ export default{
     namespaced: true,
     actions:{
         addCart(context, value){
-            console.log('addCart actions');
-            console.log(value);
+            // console.log('addCart actions');
+            // console.log(value);
             let url = '/cart/add';
             axios.post(url, {
                 'product_id': value.product_id,

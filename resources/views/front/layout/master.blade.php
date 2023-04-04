@@ -35,6 +35,8 @@ Purchase Premium Metronic Admin Theme: http://themeforest.net/item/metronic-resp
   <meta property="og:url" content="-CUSTOMER VALUE-">
 
   <link rel="shortcut icon" href="favicon.ico">
+  <!-- CSRF Token -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!-- css -->
   @include('front.components.front_css')  

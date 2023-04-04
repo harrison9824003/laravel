@@ -34,7 +34,7 @@
                             <li><a href="shop-account.html">My Account</a></li>
                             <li><a href="shop-wishlist.html">My Wishlist</a></li>
                             <li><a href="shop-checkout.html">Checkout</a></li>
-                            <li><a href="page-login.html">Log In</a></li>
+                            <li><router-link active-class="active" to="/member">Log In</router-link></li>
                         </ul>
                     </div>
                     <!-- END TOP BAR MENU -->
@@ -180,6 +180,7 @@ export default {
     mounted() {
         console.log('menu component mounted')        
         this.$store.dispatch('Menu/getMenu')
+        this.$store.dispatch('Member/loadMember')
     }
 }
 </script>
