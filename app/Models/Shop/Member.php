@@ -3,11 +3,13 @@
 namespace App\Models\Shop;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
+use Laravel\Sanctum\HasApiTokens;
 
-class Member extends Model
+class Member extends User
 {
     use HasFactory;
+    use HasApiTokens;
 
     protected $table = 'pj_members';
 
@@ -15,9 +17,7 @@ class Member extends Model
         'firstname',
         'lastname',
         'telephone',
-        'account',
         'email',
-        'pwd',
         'address',
         'city',
         'postCode',

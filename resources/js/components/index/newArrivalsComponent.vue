@@ -32,8 +32,8 @@ import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 
 export default {
     computed:{
-        ...mapState('newArrival', ['new_arrivals']),
-        ...mapGetters('newArrival', ['getSlice'])
+        ...mapState('NewArrival', ['new_arrivals']),
+        ...mapGetters('NewArrival', ['getSlice'])
     },
     methods:{
         // ...mapMutations({getARRIVAL:'GETNEWARRIVAL'}),
@@ -49,7 +49,7 @@ export default {
     mounted(){
         console.log('new arrivals component mounted')
         Promise.all(
-            [this.$store.dispatch('newArrival/getNewArrival', '1')]
+            [this.$store.dispatch('NewArrival/getNewArrival', '1')]
         ).then(()=>{
             
             this.$nextTick(function () {

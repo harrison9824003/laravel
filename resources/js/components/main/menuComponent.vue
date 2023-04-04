@@ -180,6 +180,7 @@ export default {
     mounted() {
         console.log('menu component mounted')        
         this.$store.dispatch('Menu/getMenu')
+        this.$store.dispatch('Member/loadMember')
     }
 }
 </script>

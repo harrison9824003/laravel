@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FrontController;
+use App\Http\Controllers\Member\LoginController;
 use App\Http\Controllers\Member\Register;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +21,7 @@ use App\Http\Controllers\Member\Register;
 //     return $request->user();
 // });
 
-Route::name('front.')->prefix('front')->group(function(){   
+Route::name('front.')->prefix('front')->group(function(){
 
     // 顯示單一筆資料
     Route::get('/{front}', [FrontController::class, 'show'])->name('show');
@@ -31,6 +33,7 @@ Route::name('front.')->prefix('front')->group(function(){
 
 Route::name('member.')->prefix('member')->group(function(){
     Route::post('register', Register::class)->name('memberRegister');
+    Route::post('login', [LoginController::class, 'login'])->name('memberLogin');
 });
 
 // 前台選單

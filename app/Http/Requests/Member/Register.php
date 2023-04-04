@@ -5,7 +5,6 @@ namespace App\Http\Requests\Member;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rule;
 
 class Register extends FormRequest
 {
@@ -19,12 +18,10 @@ class Register extends FormRequest
         return [
             'firstname' => [
                 'string',
-                'required',
                 'max:1'
             ],
             'lastname' => [
                 'string',
-                'required',
                 'max:2'
             ],
             'email' => [
@@ -34,13 +31,12 @@ class Register extends FormRequest
             ],
             'account' => [
                 'string',
-                'required',
                 'max:50'
             ],
             'telephone' => [
                 'string',
-                'required',
-                'max:10'
+                'max:10',
+                'nullable'
             ],
             'pwd' => [
                 'string',

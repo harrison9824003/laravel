@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropCloumToCart extends Migration
+class AddIsAdminColumnToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class DropCloumToCart extends Migration
      */
     public function up()
     {
-        Schema::table('pj_cart', function (Blueprint $table) {
-            $table->dropColumn('id');
-            $table->unique('user_id');
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('is_admin')->default(false);
         });
     }
 
@@ -26,9 +25,8 @@ class DropCloumToCart extends Migration
      */
     public function down()
     {
-        Schema::table('pj_cart', function (Blueprint $table) {
-            $table->string('id');
-            $table->dropUnique('user_id');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('is_admin');
         });
     }
 }

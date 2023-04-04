@@ -14,11 +14,11 @@
             <div class="panel-group checkout-page accordion scrollable" id="checkout-page">
 
               <!-- BEGIN CHECKOUT -->
-              <div id="checkout" class="panel panel-default">
+              <div id="checkout" class="panel panel-default" v-if="!_token">
                 <div class="panel-heading">
                   <h2 class="panel-title">
                     <a data-toggle="collapse" data-parent="#checkout-page" href="#checkout-content" class="accordion-toggle">
-                      Step 1: Checkout Options
+                      登入
                     </a>
                   </h2>
                 </div>
@@ -34,15 +34,15 @@
                       <form role="form" action="#">
                         <div class="form-group">
                           <label for="email-login">E-Mail</label>
-                          <input type="text" id="email-login" class="form-control">
+                          <input type="text" id="email-login" v-model="emailLogin" class="form-control">
                         </div>
                         <div class="form-group">
                           <label for="password-login">Password</label>
-                          <input type="password" id="password-login" class="form-control">
+                          <input type="password" id="password-login" v-model="passwordLogin" class="form-control">
                         </div>
                         <a href="javascript:;">Forgotten Password?</a>
                         <div class="padding-top-20">                  
-                          <button class="btn btn-primary" type="submit">Login</button>
+                          <button class="btn btn-primary" type="submit" @click="login">Login</button>
                         </div>
                         <hr>
                         <div class="login-socio">
@@ -62,11 +62,11 @@
               <!-- END CHECKOUT -->
 
               <!-- BEGIN PAYMENT ADDRESS -->
-              <div id="payment-address" class="panel panel-default">
+              <div id="payment-address" class="panel panel-default" v-if="!_token">
                 <div class="panel-heading">
                   <h2 class="panel-title">
                     <a data-toggle="collapse" data-parent="#checkout-page" href="#payment-address-content" class="accordion-toggle">
-                      Step 2: Account &amp; Billing Details
+                      註冊
                     </a>
                   </h2>
                 </div>
@@ -90,15 +90,15 @@
                         <input type="text" id="email" v-model="email" class="form-control">
                       </div>
                       <div class="form-group">
-                        <label for="telephone">Telephone <span class="require">*</span></label>
-                        <p class="telephone_error"></p>
-                        <input type="text" id="telephone" v-model="telephone" class="form-control">
-                      </div>
-                      <div class="form-group">
                         <label for="account">account <span class="require">*</span></label>
                         <p class="account_error"></p>
                         <input type="text" id="account" v-model="account" class="form-control">
                       </div>
+                      <div class="form-group">
+                        <label for="telephone">Telephone</label>
+                        <p class="telephone_error"></p>
+                        <input type="text" id="telephone" v-model="telephone" class="form-control">
+                      </div>                      
 
                       <h3>Your Password</h3>
                       <div class="form-group">
@@ -178,6 +178,14 @@
                 </div>
               </div>
               <!-- END PAYMENT ADDRESS -->
+
+              <div id="payment-address" class="panel panel-default" v-if="_token">
+                <h2 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#checkout-page" href="#payment-address-content" class="accordion-toggle">
+                      您已登入!
+                    </a>
+                </h2>
+              </div>
             </div>
             <!-- END CHECKOUT PAGE -->
           </div>
@@ -188,9 +196,14 @@
 </template>
 
 <script>
+import {mapState, mapGetters} from 'vuex'
 export default {
     mounted() {
-        console.log('login mounted')
+        console.log('login mounted')        
+    },
+    computed: {
+      ...mapState('Member', ['_token']),
+      ...mapGetters('Member', ['getToken'])
     },
     data() {
       return {
@@ -205,42 +218,71 @@ export default {
         city:'',
         postCode:'',
         country:'',
-        regionState:''
+        regionState:'',
+        emailLogin: '',
+        passwordLogin: '',
       }
     },
     methods: {
       register(event){
         let url = '/api/member/register'
-            axios.post(url, {
-              firstname: this.firstname,
-              lastname: this.lastname,
-              email: this.email,
-              telephone: this.telephone,
-              account: this.account,
-              pwd: this.pwd,
-              pwd_confirmation: this.pwd_confirmation,
-              address: this.address,
-              city: this.city,
-              postCode: this.postCode,
-              country: this.country,
-              regionState: this.regionState,
-            }).then(
-                response => {
-                    console.log(response.data)
-                    if(response.data.status === 1) {
-                      // todo 改成 popup
-                      alert('新建帳號成功');
-                    } else {
-                      for(var x in response.data.errors){
-                        let ele = document.getElementsByClassName(x + '_error')[0];
-                        ele.innerHTML = response.data.errors[x].join(',');
-                      }
-                    }
-                },
-                error => {
-                    console.log(error)
+        axios.post(url, {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          email: this.email,
+          telephone: this.telephone,
+          account: this.account,
+          pwd: this.pwd,
+          pwd_confirmation: this.pwd_confirmation,
+          address: this.address,
+          city: this.city,
+          postCode: this.postCode,
+          country: this.country,
+          regionState: this.regionState,
+        }).then(
+            response => {
+                console.log(response.data)
+                if(response.data.status === 1) {
+                  // todo 改成 popup
+                  alert('新建帳號成功');
+                } else {
+                  for(var x in response.data.errors){
+                    let ele = document.getElementsByClassName(x + '_error')[0];
+                    ele.innerHTML = response.data.errors[x].join(',');
+                  }
                 }
-            )
+            },
+            error => {
+                console.log(error)
+            }
+        )
+      },
+      login(event){
+        event.preventDefault()
+        let url = '/api/member/login'
+        axios.post(url, {
+          email: this.emailLogin,
+          password: this.passwordLogin,
+        }).then(
+            response => {
+                console.log(response)
+                if(response.status === 200) {
+                  // todo 改成 popup
+                  alert('成功登入');
+                  this.$store.dispatch('Member/setToken', {
+                    _token: response.data.access_token
+                  })
+                } else {
+                  for(var x in response.data.errors){
+                    let ele = document.getElementsByClassName(x + '_error')[0];
+                    ele.innerHTML = response.data.errors[x].join(',');
+                  }
+                }
+            },
+            error => {
+                console.log(error)
+            }
+        )
       }
     }
 }

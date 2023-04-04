@@ -179,6 +179,7 @@ return [
         * custom
         */ 
         App\Providers\ModelSetterProvider::class,
+        App\Providers\CryptProvider::class,
     ],
 
     /*
